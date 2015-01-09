@@ -7,11 +7,12 @@
 
     = hidden_field_tag :surveyor_javascript_enabled, false
 
-    = render 'partials/section_menu' # unless @sections.size < 3
-    .survey_title= @survey.translation(I18n.locale)[:title]
-    .previous_section= previous_section
+    /= render 'partials/section_menu' # unless @sections.size < 3
+    /.survey_title= @survey.translation(I18n.locale)[:title]
+    %br
     = render 'partials/dependents' unless @dependents.empty?
     = render "/partials/section", :f => f
+    .previous_section= previous_section
     .next_section= next_section
   %br
 
