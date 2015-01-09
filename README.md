@@ -5,7 +5,7 @@ surveyor_gui
 
 Need a way to quickly add surveys to your Rails application?  Need a way for users to create customizable surveys with little or no training?  Need reports and graphs out of the box?  Don't want to use a third-party service or closed solution?
 
-Surveyor_gui can help!
+Surveyor_gui can help!!
 
 You can add surveyor_gui to a new or existing rails application to provide a way to create and administer surveys.
 
