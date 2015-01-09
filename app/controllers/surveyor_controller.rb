@@ -40,10 +40,10 @@ module SurveyorControllerCustomMethods
         if m.survey_section_id != survey_section
           survey_section = m.survey_section_id
           flashmsg << ""
-          flashmsg << "&nbsp;&nbsp;" + m.survey_section.title
+          # flashmsg << "&nbsp;&nbsp;" + m.survey_section.title
         end
 
-        flashmsg << "&nbsp;&nbsp;&nbsp;&nbsp;question&nbsp;" + question_number[m.id.to_s].to_s + ') '+ m.text
+        flashmsg << "&nbsp;&nbsp;" + m.text
       end
       respond_to do |format|
         format.js do
