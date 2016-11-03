@@ -58,12 +58,12 @@ PermittedParams.class_eval do
   alias_method_chain :survey_attributes, :custom_survey_attributes
 
   alias_method :base_survey_section_attributes, :survey_section_attributes
-  def survey_section_attributes
-    base_survey_section_attributes +
-    [:title, :display_order, :questions_attributes, :survey_id, :modifiable,
-     :id, questions_attributes: question_attributes]
-  end
-  alias_method :base_question_group_attributes, :question_group_attributes
+  # def survey_section_attributes
+  #   base_survey_section_attributes +
+  #   [:title, :display_order, :questions_attributes, :survey_id, :modifiable,
+  #    :id, questions_attributes: question_attributes]
+  # end
+  # alias_method :base_question_group_attributes, :question_group_attributes
   def question_group_attributes
     base_question_group_attributes +
     [:id, :question_type, :question_type_id, :question_id, :survey_section_id, :is_mandatory, 
@@ -78,3 +78,12 @@ PermittedParams.class_eval do
     [:id, :text, :question_group_id, :answers_textbox]
   end
 end
+
+module ParamDecorator
+  def survey_attributes
+    super +
+        [:title, :access_code, :template, :id, :user_id,
+         survey_sections_attributes: survey_section_attributes]
+  end
+end
+PermittedParams.prepend(ParamDecorator)
