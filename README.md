@@ -69,7 +69,18 @@ Bundle, install, and migrate:
     rails g surveyor_gui:install
 
 Note that the installer will run db:migrate (so any un-applied migrations you have in your project will be pulled in).
-The survey editor can be found at '/surveyforms'.  Users can take surveys at the '/surveys' url.
+
+You will need to add mountpoints to your routes.rb file.  E.g., a starting routes.rb might look like this:
+
+
+    Rails.application.routes.draw do
+      mount SurveyorGui::Engine => "/surveyor_gui", :as => "surveyor_gui"
+      mount Surveyor::Engine => "/surveys", :as => "surveyor"
+    end
+
+SurveyorGui::Engine points to the survey editor.  Surveyor::Engine points to the url where users will take the surveys.
+The routes.rb file in the testbed application (see Test Environment section) uses the default mountpoints noted above, however
+they are arbitrary and can be change to anything you would prefer (e.g., mount SurveyorGui::Engine => "my/survey/engine", :as => "surveyor_gui").
 
 ## Limitations
 
@@ -120,14 +131,13 @@ Then run
     bundle exec rake gui_testbed
     cd testbed
 
-Start the rails server and go to /surveyforms
+Start the rails server.
+
+The survey editor can be found at '/surveyor_gui/surveyforms'.  Take surveys by going to the '/surveys' url or clicking the
+link at the bottom of the surveyforms home page.
 
 Before contributing, please run the tests:
     bundle exec rspec spec
-
-## Taking surveys
-
-Go to /surveys (or click the link at the bottom of the surveyforms home page) to see the surveys and take one.
 
 ## Reports
 
@@ -143,8 +153,9 @@ responses using randomized answers.
 
 You can also view an individual response at "localhost:3000/surveyor_gui/results/:id/show".
 
-## Devise etc.
+## Use of Devise and additional customization
 
+### Devise
 Surveyor_Gui will work with Devise or like gems.
 
 Surveyor_gui adds a user_id attribute to the Survey model.  It will try to set user_id to current_user when a new survey
@@ -185,6 +196,29 @@ Note that SurveyorGui controllers expect to use surveyor_gui's own layout view, 
       <%= link_to "Login", main_app.new_user_session_path %>
     <% end %>
 
+### Additional Customization
+
+If you need to perform more extensive customization of Surveyor_gui, take a look at NUBIC/surveyor for customization documentation.  The process of customizing Surveyor_gui is largely the same.  There are a couple of points to keep in mind.  As mentioned above, Surveyor_gui expects its own layout view.  If you need to change it or override the default layout in your own custom SurveyorController, make sure to add the following html (or HAML equivalent):
+
+     <div id="surveyor-gui-mount-point" data-surveyor-gui-mount-point="<%= surveyor_gui.surveyforms_path %>"></div>
+
+This snippet of code allows the javascript files to find the correct mountpoint for the Surveyor_gui gem, which, as mentioned above, may be modified to suit your needs.  You will also need to add javascript and stylesheet include tags for surveyor_gui_all.
+
+If you wish to customize the SurveyorController, add the following snippet to the top of your conroller:
+
+     include Surveyor::SurveyorControllerMethods
+     include SurveyorControllerCustomMethods
+ 
+These statements are necessary if calling super from within your customized methods.  Be sure to insert the statements in the order shown above.
+
+If customizing models, you'll need to include both the Surveyor and Surveyor_gui libraries.  For instance, to customize question.rb, start with the following shell:
+
+    class Question < ActiveRecord::Base
+      include Surveyor::Models::QuestionMethods
+      include SurveyorGui::Models::QuestionMethods
+    end
+
+Take a look at the surveyor_gui/app/models directory for examples.    
 
 ## Surveyor
 
