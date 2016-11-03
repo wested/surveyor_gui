@@ -50,12 +50,12 @@ PermittedParams.class_eval do
     [:survey, :responses_attributes, :user_id, :survey_id, :test_data]
   end
 
-  alias_method :base_survey_attributes, :survey_attributes
-  def survey_attributes
-    base_survey_attributes +
-    [:title, :access_code, :template, :id, :user_id,
-      survey_sections_attributes: survey_section_attributes]
+  def survey_attributes_with_custom_survey_attributes
+    survey_attributes_without_custom_survey_attributes +
+        [:title, :access_code, :template, :id, :user_id,
+         survey_sections_attributes: survey_section_attributes]
   end
+  alias_method_chain :survey_attributes, :custom_survey_attributes
 
   alias_method :base_survey_section_attributes, :survey_section_attributes
   def survey_section_attributes
