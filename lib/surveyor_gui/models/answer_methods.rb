@@ -19,6 +19,12 @@ module SurveyorGui
         part == :pre ? text.split("|",2)[0] : (part == :post ? text.split("|",2)[1] : text)
       end
 
+      private
+
+      # Overriding Surveyor method so we can add an image class for styling.
+      def imaged(text)
+        self.display_type == "image" && !text.blank? ? ActionController::Base.helpers.image_tag(text, class: "image-answer") : text
+      end
     end
   end
 end

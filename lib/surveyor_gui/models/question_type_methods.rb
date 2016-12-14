@@ -231,6 +231,11 @@ module SurveyorGui
           text: new_text
         }.merge(args)
 
+        # If the answer text is a URL then that means the answer is an image
+        if new_text =~ /\A#{URI::regexp(['http', 'https'])}\z/
+          params.merge!( { display_type: "image", custom_class: "image-answer" } )
+        end
+
         Answer.create!(params)
       end
 
