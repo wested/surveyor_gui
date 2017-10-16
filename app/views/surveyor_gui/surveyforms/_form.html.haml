@@ -23,7 +23,9 @@
       = f.label :title, :required => false,  :style => 'font-size: 150%;'
       = f.input :title, :input_html => { :size => '35', :style=>'margin-top: 0.5%; font-size: 110%; float:left;'}, :required=>false , :label=>false
       = f.input :template, :disabled=>@survey_locked, :label => false, :input_html=>{:style=>"float:right;"}
-      = link_to "Show", surveyor_gui.surveyform_path(@surveyform), class: "btn-sm btn-primary"
+
+      - if @surveyform.id
+        = link_to "Show", surveyor_gui.surveyform_path(@surveyform), class: "btn-sm btn-primary"
       = link_to "View All", surveyor_gui.surveyforms_path, class: "btn-sm btn-link"
 
     %span{:style => "position:relative; float: right;"}
