@@ -1,10 +1,17 @@
 
 #survey
   %h1= @title
+
+    %p
+    = link_to "New Survey", new_surveyform_path(), class: "btn btn-primary"
+    &nbsp
+    = link_to "Take a Survey", surveyor.available_surveys_path, class: "btn btn-primary"
+
   = form_tag surveyforms_path, :method => 'get' do
     %p
       = text_field_tag :search, params[:search]
       = submit_tag "Search", :name => nil
+
   = will_paginate
   %br/
   %table.table.table-striped
@@ -28,7 +35,3 @@
           = link_to "View Responses" , responses_path(id: survey)
   %br/
   = will_paginate
-  %p
-    = link_to "New Survey", new_surveyform_path()
-    &;nbsp
-    = link_to "Take a Survey", surveyor.available_surveys_path
