@@ -17,6 +17,7 @@ log/*
 rerun.txt
 pickle-email-*.html
 .project
+.idea
 config/initializers/secret_token.rb
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 #
