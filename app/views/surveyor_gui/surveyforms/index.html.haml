@@ -18,11 +18,11 @@
         %td= survey.survey_version
         %td
           = link_to "Show", survey
-          &;nbsp
+          &nbsp
           = link_to "Edit", edit_surveyform_path(survey)
-          &;nbsp
+          &nbsp
           = link_to "Clone", clone_survey_surveyform_path(survey)
-          &;nbsp
+          &nbsp
           = link_to "Destroy", survey, data: { confirm: 'Are you sure?' }, :method => :delete
           = link_to "Run Report", report_path(survey)
           = link_to "View Responses" , responses_path(id: survey)
