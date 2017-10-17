@@ -1,0 +1,110 @@
+// Get function from string, with or without scopes (by Nicolas Gauthier)
+getFunctionFromString = function(string)
+{
+  if (string == undefined) {
+    return;
+  }
+
+  var scope = window;
+  var scopeSplit = string.split('.');
+
+  for (i = 0; i < scopeSplit.length - 1; i++) {
+    scope = scope[scopeSplit[i]];
+    if (scope == undefined) {
+      return;
+    }
+  }
+
+  return scope[scopeSplit[scopeSplit.length - 1]];
+};
+
+
+// Function to ajax-ify any links or form buttons that contain a data-ajax-target attribute
+$(document).on("click", "[data-ajax-target]", function(event) {
+  var ajaxTarget = $( $(this).data("ajax-target") );
+  var ajaxErrorTarget = $( $(this).data("ajax-error-target") || ajaxTarget) ;
+  var ajaxMethod = $(this).data("ajax-method") || "get";
+  var ajaxDataType = $(this).data("ajax-data-type") || "html";
+  var ajaxHandler = getFunctionFromString($(this).data("ajax-handler"));
+  var ajaxErrorHandler = getFunctionFromString($(this).data("ajax-error-handler"));
+  var ajaxUpdateTarget = !!$(this).data("ajax-replace-target") ? "replaceWith" : "html";
+  var href = $(this).attr("href");
+  var $form = $( $(this).closest("form") );
+
+  if ( ajaxTarget.length || $(this).data("ajax-target") === "no_content") { // Only proceed if we found a target element
+    $(".modal").modal("hide"); // Hide any modals that might be showing before loading the ajax content
+    $(".modal").empty(); // clear out the modal, in case there is one.
+
+    if (href) {
+      $.ajax( {
+        url: href,
+        type: ajaxMethod,
+        dataType: ajaxDataType
+      }).done(function(data) {
+        // If we didn't define a callback function, then load the response into the target element.
+        if (undefined == ajaxHandler) {
+          ajaxTarget.html(data);
+        } else {
+          ajaxHandler(data, ajaxTarget);
+        }
+        unblockCurrentlyBlockedElement();
+        $(document).trigger('ajaxlinks:load');
+
+      }).fail(function() {
+        unblockCurrentlyBlockedElement();
+        alert("An unexpected AJAX error occurred. Please check the logs and try again.");
+      });
+    } else {
+      // Submit the form over ajax instead of regularly
+      $.ajax( {
+        url: $form.attr("action"),
+        type: $form.attr("method"),
+        data: $form.serialize(),
+//        data: new FormData($form[0]),
+        dataType: ajaxDataType,
+        success: function(data, textStatus, jqXHR ) {
+          if (ajaxHandler == undefined) {
+            if(jqXHR.getResponseHeader('X-Form-Errors') == 'true') {
+              ajaxErrorTarget.html(data) // put form errors in the error target
+            } else {
+              ajaxTarget[ajaxUpdateTarget](data);     // Load the response into the target element using html() or replaceWith() as defined above
+            }
+          } else {
+            ajaxHandler(data, ajaxTarget) // Or call our custom callback
+          }
+
+          unblockCurrentlyBlockedElement();
+        },
+        error: function(jqXHR, textStatus, errorThrown ) {
+          if (ajaxErrorHandler == undefined) {
+            ajaxErrorTarget.html(jqXHR.responseText); // Load the response into the target element
+          } else {
+            ajaxErrorHandler(jqXHR.responseText, ajaxErrorTarget, jqXHR.status);
+          }
+
+          unblockCurrentlyBlockedElement();
+        }
+      }).done(function(data) {
+        $(document).trigger('ajaxlinks:load');
+      });
+    }
+    event.preventDefault();
+  }
+});
+
+function unblockCurrentlyBlockedElement() {
+    $(".blockUI").parent().unblock();
+}
+
+// Used if you want to verify a select list value was chosen when used in conjunction with AjaxLinks
+function verifySelectionAndBlock(event, selectionEl, blockEl) {
+    if ( $(selectionEl).val() ) {
+        blockElement(blockEl);
+    } else {
+        alert("You must first make a selection from the list.");
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    }
+
+}

@@ -37,10 +37,15 @@ class SurveyorGui::SurveySectionsController < ApplicationController
   def update
     @title = "Update Survey Section"
     @survey_section = SurveySection.find(params[:id])
-    if @survey_section.update_attributes(survey_section_params)
-      render :blank, :layout => 'surveyor_gui/surveyor_gui_blank'
-    else
-      render :action => 'edit', :layout => 'surveyor_gui/surveyor_gui_blank'
+
+    respond_to do |format|
+      format.html do
+        if @survey_section.update_attributes(survey_section_params)
+          render html: @survey_section.title, :layout => false
+        else
+          render :action => 'edit', :layout => false
+        end
+      end
     end
   end
 
