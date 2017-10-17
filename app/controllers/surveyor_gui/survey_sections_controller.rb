@@ -15,6 +15,8 @@ class SurveyorGui::SurveySectionsController < ApplicationController
   def edit
     @title = "Edit Survey Section"
     @survey_section = SurveySection.find(params[:id])
+
+    render :action => 'edit', :layout => false
   end
 
   def create
