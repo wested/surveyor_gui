@@ -7,9 +7,9 @@ class SurveyorGui::SurveySectionsController < ApplicationController
     prev_section = SurveySection.find(params[:prev_section_id])
     @last_survey_section = survey.survey_sections.last
     @survey_section = survey.survey_sections
-                            .build(:title => 'New Section',
-                                   :display_order => prev_section.display_order + 1,
-                                   :modifiable => true)
+                          .build(:title => 'New Section',
+                                 :display_order => prev_section.display_order + 1,
+                                 :modifiable => true)
   end
 
   def edit
@@ -22,8 +22,8 @@ class SurveyorGui::SurveySectionsController < ApplicationController
   def create
     survey = Survey.find(params[:survey_section][:survey_id])
     SurveySection.where(:survey_id => survey.id)
-                 .where("display_order >= ?", params[:survey_section][:display_order])
-                 .update_all("display_order = display_order+1")
+        .where("display_order >= ?", params[:survey_section][:display_order])
+        .update_all("display_order = display_order+1")
     @survey_section = survey.survey_sections.build(survey_section_params)
     @survey_section.display_order = params[:survey_section][:display_order].to_i
     #@survey_section.questions.build(:text=>'New question',:pick=>'none',:display_order=>0,:display_type=>'default').answers.build(:text=>'string', :response_class=>'string', :display_order=>1, :template=>true)
@@ -43,7 +43,7 @@ class SurveyorGui::SurveySectionsController < ApplicationController
         if @survey_section.update_attributes(survey_section_params)
           render html: @survey_section.title, :layout => false
         else
-          render :action => 'edit', :layout => false
+          render :action => 'edit', :layout => false, status: :unprocessable_entity
         end
       end
     end
