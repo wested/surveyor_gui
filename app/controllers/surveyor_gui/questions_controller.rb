@@ -1,10 +1,12 @@
 class SurveyorGui::QuestionsController < ApplicationController
-  layout 'surveyor_gui/surveyor_gui_blank'
+  # layout 'surveyor_gui/surveyor_gui_blank'
+
+  layout 'surveyor_gui/surveyor_gui_default'
 
   def new
     @title = "Add Question"
-    survey_section = SurveySection.find(params[:survey_section_id])
-    survey = Survey.find(survey_section.survey_id)
+    @survey_section = SurveySection.find(params[:survey_section_id])
+    @survey = Survey.find(@survey_section.survey_id)
     @question_group = QuestionGroup.new
     if params[:prev_question_id]
       prev_question_display_order = _get_prev_display_order(params[:prev_question_id])
@@ -20,8 +22,6 @@ class SurveyorGui::QuestionsController < ApplicationController
     end
     @question.question_type_id = params[:question_type_id] if !params[:question_type_id].blank?
     @question.answers.build(:text => '', :response_class=>"string")
-
-    render partial: "form", layout: false
   end
 
   def edit
@@ -53,14 +53,10 @@ class SurveyorGui::QuestionsController < ApplicationController
       #load any page - if it has no flash errors, the colorbox that contains it will be closed immediately after the page loads
       # render :inline => '<div id="cboxQuestionId">'+@question.id.to_s+'</div>', :layout => 'surveyor_gui/surveyor_gui_blank'
 
-      @question_no = 0
-      @surveyform = @question.survey_section.surveyform
-
-      render partial: "surveyor_gui/surveyforms/form", :layout => :false
+      redirect_to surveyor_gui.edit_surveyform_url(@question.survey_section.survey)
 
     else
-      @title = "Add Question"
-      render partial: "form", :layout => :false, status: :unprocessable_entity
+      render "new"
     end
   end
 

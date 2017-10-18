@@ -1,64 +1,55 @@
-.modal-dialog{:role => "document"}
-  .modal-content
-    = render "surveyor_gui/partials/url_helpers"
-    = simple_form_for [surveyor_gui, @question] do |f|
-      .modal-header
-        %h5#exampleModalLongTitle.modal-title= @title
-        %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
-        %span{"aria-hidden" => "true"} ×
 
+= render "surveyor_gui/partials/url_helpers"
+= simple_form_for [surveyor_gui, @question] do |f|
+  .questions
+    = f.error_messages
+    = f.hidden_field :id
+    = f.hidden_field :survey_section_id
+    = f.hidden_field :display_order
+    = f.hidden_field :pick
+    = f.hidden_field :display_type
+    = f.hidden_field :modifiable
+    = f.hidden_field :question_group_id
+    = f.label :Question, :input_html=>{:size=>'15'}
+    = f.input :text , :label => false, :input_html=>{:size=>'55', value: adjusted_text}
+    %span.fl
+      %strong Mandatory?
+    = f.input :is_mandatory, :label => false, :wrapper_html=>{:class=>'fl notfirst'}
+    %br/
+    %br/
+    %strong Question Type
+    %br/
+    .question_type.row
+      .col-md-3
+        = f.input :question_type_id,
+          collection: question_type_subset([:pick_one]) ,
+          :as => :radio_buttons , :wrapper_html=>{:size=>'60'}, :label => false
 
-      .modal-body
-        .questions
-          = f.error_messages
-          = f.hidden_field :id
-          = f.hidden_field :survey_section_id
-          = f.hidden_field :display_order
-          = f.hidden_field :pick
-          = f.hidden_field :display_type
-          = f.hidden_field :modifiable
-          = f.hidden_field :question_group_id
-          = f.label :Question, :input_html=>{:size=>'15'}
-          = f.input :text , :label => false, :input_html=>{:size=>'55', value: adjusted_text}
-          %span.fl
-            %strong Mandatory?
-          = f.input :is_mandatory, :label => false, :wrapper_html=>{:class=>'fl notfirst'}
-          %br/
-          %br/
-          %strong Question Type
-          %br/
-          .question_type
-            %span.question_type_grid1
-              = f.input :question_type_id,                                            |
-                collection: question_type_subset([:pick_one]) ,
-                :as => :radio_buttons , :wrapper_html=>{:size=>'60'}, :label => false
-            %span.question_type_grid1
-              = f.input :question_type_id,                                            |
-                collection: question_type_subset([:pick_any]) ,
-                :as => :radio_buttons , :wrapper_html=>{:size=>'60'}, :label => false
-            %br/
-            %span.question_type_grid
-              = f.input :question_type_id,                                                              |
-                collection: question_type_subset([:dropdown, :string, :number, :stars, :label, :box]) ,
-                :as => :radio_buttons , :wrapper_html=>{:size=>'60'}, :label => false
-            %span.question_type_grid
-              = f.input :question_type_id,                                                              |
-                collection: question_type_subset([:date, :datetime, :time, :slider, :group_default ]) ,
-                :as => :radio_buttons , :wrapper_html=>{:size=>'60'}, :label => false
-            %span.question_type_grid
-              = f.input :question_type_id,                                                                                  |
-                collection: question_type_subset([:file, :grid_one, :grid_any, :grid_dropdown, :group_inline, :repeater]) ,
-                :as => :radio_buttons , :wrapper_html=>{:size=>'60'}, :label => false
-          %br/
-          #answer_choice
-            = render 'picks', :f => f
-          #number_questions
-          #report_code{:style => "display:none"}
-            %br/
-            = f.input :report_code, :label=>'Report Code', :label_html=>{:style=>'width:10em;'},:hint=>'Use this code to uniquely identify application data driven questions for reporting.'
-            %br/
-          %br/
+        = f.input :question_type_id,
+          collection: question_type_subset([:pick_any]) ,
+          :as => :radio_buttons , :wrapper_html=>{:size=>'60'}, :label => false
 
-      .modal-footer
-        = f.button :submit, 'Save Changes', data: { "ajax-target" => ".content", "ajax-error-handler" => "modalErrorHandler", "ajax-error-target" => "#modal"}
-        %button.btn.btn-secondary{"data-dismiss" => "modal", :type => "button"} Close
+      .col-md-3
+        = f.input :question_type_id,
+          collection: question_type_subset([:dropdown, :string, :number, :stars, :label, :box]) ,
+          :as => :radio_buttons , :wrapper_html=>{:size=>'60'}, :label => false
+      .col-md-3
+        = f.input :question_type_id,
+          collection: question_type_subset([:date, :datetime, :time, :slider, :group_default ]) ,
+          :as => :radio_buttons , :wrapper_html=>{:size=>'60'}, :label => false
+      .col-md-3
+        = f.input :question_type_id,
+          collection: question_type_subset([:file, :grid_one, :grid_any, :grid_dropdown, :group_inline, :repeater]) ,
+          :as => :radio_buttons , :wrapper_html=>{:size=>'60'}, :label => false
+    %br/
+    #answer_choice
+      = render 'picks', :f => f
+    #number_questions
+    #report_code{:style => "display:none"}
+      %br/
+      = f.input :report_code, :label=>'Report Code', :label_html=>{:style=>'width:10em;'},:hint=>'Use this code to uniquely identify application data driven questions for reporting.'
+      %br/
+    %br/
+  .buttons
+    = f.button :submit, 'Save Changes'
+    = link_to "Cancel", surveyor_gui.edit_surveyform_url(@survey)

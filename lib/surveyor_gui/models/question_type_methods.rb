@@ -51,7 +51,7 @@ module SurveyorGui
 
       def _build_stars(question, args)
       end
-      
+
       def _build_dropdown(question, args)
         _process_answers_textbox(question, args)
       end
@@ -300,7 +300,7 @@ module SurveyorGui
           #id               #text                                             group?    pick   type     type        class
           [:pick_one,       "Multiple Choice (only one answer)"               , false,  :one,  "default", nil,      :all],
           [:pick_any,       "Multiple Choice (multiple answers)"              , false,  :any,  "default", nil,      :all],
-          [:box,            "Text Box (for extended text, like notes, etc.)"  , false,  :none, "default", nil,      :text],
+          [:box,            "Text Box (for notes, etc.)"                      , false,  :none, "default", nil,      :text],
           [:dropdown,       "Dropdown List"                                   , false,  :one,  :dropdown, nil,      :all],
           [:string,         "Text"                                            , false,  :none, "default", nil,      :string],
           [:number,         "Number"                                          , false,  :none, "default", nil,      :float],
@@ -334,8 +334,8 @@ module SurveyorGui
           [:label,          "Label"                                           , true,  :none, :label,    :inline,  :all],
           [:file,           "File Upload"                                     , true,  :none, "default", :inline,  :blob],
           [:string,         "Text"                                            , true,  :none, :default,  :grid,    :all],
-          
-          
+
+
           [:pick_one,       "Multiple Choice (only one answer)"               , true,   :one,  "default",:default,  :all],
           [:pick_any,       "Multiple Choice (multiple answers)"              , true,   :any,  "default",:default,  :all],
           [:box,            "Text Box (for extended text, like notes, etc.)"  , true,  :none, "default", :default,  :text],
@@ -350,7 +350,7 @@ module SurveyorGui
           [:stars,          "1-5 Stars"                                       , true,  :one,  :stars,    :default,  :all],
           [:label,          "Label"                                           , true,  :none, :label,    :default,  :all],
           [:file,           "File Upload"                                     , true,  :none, "default", :default,  :blob],
-          
+
           [:pick_one,       "Multiple Choice (only one answer)"               , true,   :one,  "default",:repeater,  :all],
           [:pick_any,       "Multiple Choice (multiple answers)"              , true,   :any,  "default",:repeater,  :all],
           [:box,            "Text Box (for extended text, like notes, etc.)"  , true,  :none, "default", :repeater,  :text],
@@ -365,7 +365,7 @@ module SurveyorGui
           [:stars,          "1-5 Stars"                                       , true,  :one,  :stars,    :repeater,  :all],
           [:label,          "Label"                                           , true,  :none, :label,    :repeater,  :all],
           [:file,           "File Upload"                                     , true,  :none, "default", :repeater,  :blob],
-          
+
           [:string,         "Text"                                            , true,  :none, :default,  :grid,    :all],
           #surveyor seems to have an inline option that doesn't actually render inline yet.  Recognize it
           #but don't treat it differently.  See question 16 and 17 in kitchen_sink_survey.rb.

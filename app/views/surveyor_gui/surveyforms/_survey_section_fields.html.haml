@@ -26,7 +26,7 @@
             - if !@survey_locked && (s.object.modifiable?)
 
               .question_buttons_top
-                %button#add_question.cut{"data-url" => surveyor_gui.new_question_url(survey_section_id: s.object.id), :type => "button"} Add Question
+                = link_to "Add Question", surveyor_gui.new_question_url(survey_section_id: s.object.id), class: "btn btn-primary"
 
                 - if session[:cut_question]
                   %button#paste_question{"data-paste_question_surveyform_url" => surveyor_gui.paste_question_surveyform_url(id: f.object.id, survey_section_id:  s.object.id), :type => "button"} Paste Question
