@@ -14,10 +14,10 @@
               %a.btn.btn-primary#edit_section_title{"data-url" => "#{surveyor_gui.edit_survey_section_url(s.object.id)}", :href => "javascript: void(0)"} Edit Section Title
 
               - if session[:cut_section]
-                %button#paste_section{"data-paste_section_surveyform_url" => surveyor_gui.paste_section_surveyform_url(survey_section_id: s.object.id, position: 'over'), :type => "button"} Paste Section
+                %button.btn.btn-primary#paste_section{"data-paste_section_surveyform_url" => surveyor_gui.paste_section_surveyform_url(survey_section_id: s.object.id, position: 'over'), :type => "button"} Paste Section
               - else
-                %button#cut_section{"data-cut_section_surveyform_url" => surveyor_gui.cut_section_surveyform_url(id: f.object.id, survey_section_id: s.object.id), "data-section_already_cut" => session[:cut_section], "data-survey_section_id" => s.object.id, :type => "button"} Cut Section
-              %button#delete_section{"data-survey_section_id" => s.object.id, "data-survey_section_url" => surveyor_gui.survey_section_url(s.object.id), :type => "button"} Delete Section
+                %button.btn.btn-primary#cut_section{"data-cut_section_surveyform_url" => surveyor_gui.cut_section_surveyform_url(id: f.object.id, survey_section_id: s.object.id), "data-section_already_cut" => session[:cut_section], "data-survey_section_id" => s.object.id, :type => "button"} Cut Section
+              %button.btn.btn-primary#delete_section{"data-survey_section_id" => s.object.id, "data-survey_section_url" => surveyor_gui.survey_section_url(s.object.id), :type => "button"} Delete Section
 
         %fieldset{:style => "background:white"}
           .fields.surveysection
@@ -36,7 +36,7 @@
                 .section_button_bar_bottom_inner
                   %button.btn.btn-primary#add_section{"data-url" => surveyor_gui.new_survey_section_path(survey_id: f.object.id, prev_section_id: s.object.id), :type => "button"} Add Section
                   - if session[:cut_section]
-                    %button#paste_section{"data-paste_section_surveyform_url" => surveyor_gui.paste_section_surveyform_url(:survey_section_id => s.object.id), :type => "button"} Paste Section
+                    %button.btn.btn-primary#paste_section{"data-paste_section_surveyform_url" => surveyor_gui.paste_section_surveyform_url(:survey_section_id => s.object.id), :type => "button"} Paste Section
     - else
       = s.hidden_field :id
       = s.hidden_field :title
