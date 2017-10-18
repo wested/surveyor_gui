@@ -47,6 +47,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'carrierwave'
   s.add_dependency 'colorbox-rails', '~> 0.1.1'
   s.add_dependency 'jquery-form-rails', '~> 1.0.1'
-  s.add_dependency 'deep_cloneable', '~> 2.0.0'  
-  s.add_dependency 'lazy_high_charts' 
+  s.add_dependency 'deep_cloneable', '~> 2.0.0'
+  s.add_dependency 'lazy_high_charts'
+  s.add_dependency 'tinymce-rails'
 end

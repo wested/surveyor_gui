@@ -1,0 +1,24 @@
+editor_selector:
+  - mceEditor
+mode:
+  - textareas
+theme:
+  -modern
+plugins:
+  - preview
+  - lists
+  - charmap
+  - link
+toolbar:
+  - undo | redo | bold | italic | underline | alignleft | aligncenter | alignright | alignjustify | styleselect | formatselect | fontselect | fontsizeselect | bullist | numlist | outdent | indent | link | fontselect |  fontsizeselect | preview
+browser_spellcheck:
+  - true
+contextmenu:
+  - false
+content_css:
+  - /assets/application.css
+fontsize_formats:
+  - 7pt 8pt 10pt 12pt 14pt 18pt 24pt 36pt
+
+target_list:
+  - [ {title: 'New page', value: '_blank'} ]
