@@ -20,6 +20,8 @@ class SurveyorGui::QuestionsController < ApplicationController
     end
     @question.question_type_id = params[:question_type_id] if !params[:question_type_id].blank?
     @question.answers.build(:text => '', :response_class=>"string")
+
+    render partial: "form", layout: false
   end
 
   def edit
@@ -40,8 +42,8 @@ class SurveyorGui::QuestionsController < ApplicationController
 
   def create
     Question.where(:survey_section_id => params[:question][:survey_section_id])
-            .where("display_order >= ?", params[:question][:display_order])
-            .update_all("display_order = display_order+1")
+        .where("display_order >= ?", params[:question][:display_order])
+        .update_all("display_order = display_order+1")
     if !params[:question][:answers_attributes].blank? && !params[:question][:answers_attributes]['0'].blank?
       params[:question][:answers_attributes]['0'][:original_choice] = params[:question][:answers_attributes]['0'][:text]
     end
@@ -49,10 +51,16 @@ class SurveyorGui::QuestionsController < ApplicationController
     if @question.save
       @question.answers.each_with_index {|a, index| a.destroy if index > 0} if @question.pick == 'none'
       #load any page - if it has no flash errors, the colorbox that contains it will be closed immediately after the page loads
-      render :inline => '<div id="cboxQuestionId">'+@question.id.to_s+'</div>', :layout => 'surveyor_gui/surveyor_gui_blank'
+      # render :inline => '<div id="cboxQuestionId">'+@question.id.to_s+'</div>', :layout => 'surveyor_gui/surveyor_gui_blank'
+
+      @question_no = 0
+      @surveyform = @question.survey_section.surveyform
+
+      render partial: "surveyor_gui/surveyforms/form", :layout => :false
+
     else
       @title = "Add Question"
-      render :action => 'new', :layout => 'surveyor_gui/surveyor_gui_blank'
+      render partial: "form", :layout => :false, status: :unprocessable_entity
     end
   end
 
