@@ -21,6 +21,7 @@ module SurveyorGui
     def configurations
       replace_simple_forms_configuration_rb
       add_i18n_enforce_locales
+      template "config/tinymce.yml"
     end
 
     def routes
