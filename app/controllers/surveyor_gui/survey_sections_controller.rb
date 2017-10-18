@@ -10,6 +10,8 @@ class SurveyorGui::SurveySectionsController < ApplicationController
                           .build(:title => 'New Section',
                                  :display_order => prev_section.display_order + 1,
                                  :modifiable => true)
+
+    render partial: "form", layout: false
   end
 
   def edit
@@ -28,9 +30,10 @@ class SurveyorGui::SurveySectionsController < ApplicationController
     @survey_section.display_order = params[:survey_section][:display_order].to_i
     #@survey_section.questions.build(:text=>'New question',:pick=>'none',:display_order=>0,:display_type=>'default').answers.build(:text=>'string', :response_class=>'string', :display_order=>1, :template=>true)
     if @survey_section.save
-      redirect_to :back
+      render partial: "surveyor_gui/surveyforms/survey_section_fields", layout: false
     else
-      render :action => 'new', :layout => 'surveyor_gui/surveyor_gui_blank'
+      @title = "Add Survey Section"
+      render partial: "form", layout: false, status: :unprocessable_entity
     end
   end
 
