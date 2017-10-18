@@ -1,4 +1,4 @@
-
+= tinymce
 = render "surveyor_gui/partials/url_helpers"
 = simple_form_for [surveyor_gui, @question] do |f|
   .questions
@@ -10,8 +10,8 @@
     = f.hidden_field :display_type
     = f.hidden_field :modifiable
     = f.hidden_field :question_group_id
-    = f.label :Question, :input_html=>{:size=>'15'}
-    = f.input :text , :label => false, :input_html=>{:size=>'55', value: adjusted_text}
+
+    = f.input :text , :label => "Question", :input_html=>{:size=>'55', value: adjusted_text, class: "tinymce"}
     %span.fl
       %strong Mandatory?
     = f.input :is_mandatory, :label => false, :wrapper_html=>{:class=>'fl notfirst'}

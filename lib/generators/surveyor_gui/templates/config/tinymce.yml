@@ -1,9 +1,3 @@
-editor_selector:
-  - mceEditor
-mode:
-  - textareas
-theme:
-  -modern
 plugins:
   - preview
   - lists
