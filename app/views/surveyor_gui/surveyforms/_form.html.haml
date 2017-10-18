@@ -38,7 +38,7 @@
       %p
         %button.go_back.btn-sm.btn-primary{:type => "button"} Go Back
     - else
-      %p= f.button :submit, 'Save Changes', class: "btn-sm btn-primary"
+      %p= f.button :submit, 'Save Changes', class: "btn-sm btn-primary", data: { disable_with: "Please wait..." }
 
 :javascript
   function preview_cbox(url, id) {

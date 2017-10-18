@@ -15,5 +15,5 @@
         = f.input :title , :input_html=>{:size=>'35'}
 
       .modal-footer
-        = f.button :submit, 'Save Changes', data: { "ajax-target" => form_target_url, "ajax-handler" => form_handler, "ajax-error-handler" => "modalErrorHandler", "ajax-error-target" => "#modal"}
+        = f.button :submit, 'Save Changes', data: { "ajax-target" => form_target_url, "ajax-handler" => form_handler, "ajax-error-handler" => "modalErrorHandler", "ajax-error-target" => "#modal", disable_with: "Please wait..." }
         %button.btn.btn-secondary{"data-dismiss" => "modal", :type => "button"} Close
