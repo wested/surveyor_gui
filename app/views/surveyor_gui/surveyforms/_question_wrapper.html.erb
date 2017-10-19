@@ -22,19 +22,15 @@
 
                 <span class="question_button_bar">
 
-          <button type="button" id="edit_question"
-                  data-replace_question_url="<%=surveyor_gui.replace_question_surveyform_path(id: f.object.survey_section.survey.id,
-                                                                                              question_id:  f.object.id)%>"
-                  data-edit_question_url="<%=surveyor_gui.edit_question_url(f.object.id)%>"
-                  data-question_id="<%= f.object.id.to_s %>"
-          >Edit Question</button>
 
-          <button type="button" id="cut_question"
-                  data-cut_question_surveyform_url="<%=surveyor_gui.cut_question_surveyform_url(
-                                                           id:           f.object.survey_section.survey.id,
-                                                           question_id:  f.object.id)%>"
-                  data-question_already_cut="<%= session[:cut_question] %>"
-          >Cut Question</button>
+            <%= link_to "Edit Question", surveyor_gui.edit_question_url(f.object), class: "btn btn-primary" %>
+
+                    <button type="button" id="cut_question"
+                            data-cut_question_surveyform_url="<%=surveyor_gui.cut_question_surveyform_url(
+                                                                     id:           f.object.survey_section.survey.id,
+                                                                     question_id:  f.object.id)%>"
+                            data-question_already_cut="<%= session[:cut_question] %>"
+                    >Cut Question</button>
 
           <button type="button" id="delete_question"
                   data-question_url="<%=surveyor_gui.question_url(f.object.id)%>"

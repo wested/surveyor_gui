@@ -10,7 +10,7 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
     @question_group = QuestionGroup.new(
         text: params[:text],
         question_type_id: params[:question_type_id])
-    original_question = Question.find(params[:question_id]) unless params[:question_id].blank? || params[:question_id].to_i < 1
+    original_question = Question.find(question_params[:question_id]) unless question_params[:question_id].blank? || question_params[:question_id].to_i < 1
     if original_question
       @question_group.questions.build(
           display_order: params[:display_order],
@@ -36,21 +36,30 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
   end
 
   def create
-    @question_group = QuestionGroup.new(question_group_params)
-    @survey_section = SurveySection.find(question_group_params[:survey_section_id])
-    @survey = @survey_section.survey
-    @survey_section_id = question_group_params[:survey_section_id]
+    Question.transaction do
 
-    if @question_group.save
-      #@question_group.questions.update_attributes(survey_section_id: question_group_params[])
-      original_question = Question.find(question_group_params[:question_id]) if !question_group_params[:question_id].blank?
-      original_question.destroy if original_question
+      # This is a hack to allow non-group questions to be edited and converted to group questions....
+      if params[:converted_question_id].present?
+        Question.find(params[:converted_question_id]).destroy
+      end
 
-      redirect_to surveyor_gui.edit_surveyform_url(@survey_section.survey)
-    else
-      @title = "Add Question"
-      render "surveyor_gui/questions/new", locals: { question: @question_group }
+      @question_group = QuestionGroup.new(question_group_params)
+      @survey_section = SurveySection.find(question_group_params[:survey_section_id])
+      @survey = @survey_section.survey
+      @survey_section_id = question_group_params[:survey_section_id]
+
+      if @question_group.save
+        #@question_group.questions.update_attributes(survey_section_id: question_group_params[])
+        original_question = Question.find(question_group_params[:question_id]) if !question_group_params[:question_id].blank?
+        original_question.destroy if original_question
+
+        redirect_to surveyor_gui.edit_surveyform_url(@survey_section.survey)
+      else
+        @title = "Add Question"
+        render "surveyor_gui/questions/new", locals: { question: @question_group }
+      end
     end
+
   end
 
   def update
@@ -92,8 +101,15 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
   def question_group_params
     ::PermittedParams.new(params[:question_group]).question_group
   end
+
   def question_params
-    params.permit(:survey_section_id, :id, :text, :question_id, :question_type_id, :display_order, :pick, :display_type)
+
+    # This is a hack to allow non-group questions to be edited and converted to group questions....
+    if params[:action] == "new"
+      params.permit(:survey_section_id, :id, :text, :question_id, :question_type_id, :display_order, :pick, :display_type).except(:question_id)
+    else
+      params.permit(:survey_section_id, :id, :text, :question_id, :question_type_id, :display_order, :pick, :display_type)
+    end
   end
 
 end

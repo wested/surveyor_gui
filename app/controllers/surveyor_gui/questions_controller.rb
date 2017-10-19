@@ -29,7 +29,12 @@ class SurveyorGui::QuestionsController < ApplicationController
   def edit
     @title = "Edit Question"
     @question = Question.includes(:answers).find(params[:id])
+    @survey_section = @question.survey_section
+    @survey = @survey_section.survey
+
     @question.question_type_id = params[:question_type_id] if !params[:question_type_id].blank?
+
+    render "new", locals: { question: @question }
   end
 
   def adjusted_text
@@ -58,7 +63,7 @@ class SurveyorGui::QuestionsController < ApplicationController
       redirect_to surveyor_gui.edit_surveyform_url(@question.survey_section.survey)
 
     else
-      render "new"
+      render "new", locals: { question: @question }
     end
   end
 
@@ -68,9 +73,9 @@ class SurveyorGui::QuestionsController < ApplicationController
     if @question.update_attributes(question_params)
       @question.answers.each_with_index {|a, index| a.destroy if index > 0} if @question.pick == 'none'
       #load any page - if it has no flash errors, the colorbox that contains it will be closed immediately after the page loads
-      render :blank, :layout => 'surveyor_gui/surveyor_gui_blank'
+      redirect_to surveyor_gui.edit_surveyform_url(@question.survey_section.survey)
     else
-      render :action => 'edit', :layout => 'surveyor_gui/surveyor_gui_blank'
+      render "new", locals: { question: @question }
     end
   end
 

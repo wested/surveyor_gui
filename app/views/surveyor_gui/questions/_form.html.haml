@@ -14,6 +14,8 @@
       = f.hidden_field :question_group_id
 
     - if question.is_a? QuestionGroup
+
+      = hidden_field_tag "converted_question_id", params[:question_id]
       = f.hidden_field :question_id
       = f.input :survey_section_id, as: :hidden, input_html: { value: @survey_section_id }
 
