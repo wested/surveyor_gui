@@ -1,24 +1,29 @@
 class SurveyorGui::QuestionGroupsController < ApplicationController
-  layout 'surveyor_gui/surveyor_gui_blank'
+  layout 'surveyor_gui/surveyor_gui_default'
 
   def new
     @title = "Add Question"
     @survey_section_id = question_params[:survey_section_id]
+    @survey_section = SurveySection.find(question_params[:survey_section_id])
+    @survey = @survey_section.survey
+
     @question_group = QuestionGroup.new(
-      text: params[:text], 
-      question_type_id: params[:question_type_id])
-    original_question = Question.find(params[:question_id]) if !params[:question_id].blank?
+        text: params[:text],
+        question_type_id: params[:question_type_id])
+    original_question = Question.find(params[:question_id]) unless params[:question_id].blank? || params[:question_id].to_i < 1
     if original_question
       @question_group.questions.build(
-        display_order: params[:display_order], 
-        id: params[:question_id], 
-        question_type_id: original_question.question_type_id,
-        pick: original_question.pick,
-        display_type: original_question.display_type)
-    else      
+          display_order: params[:display_order],
+          id: params[:question_id],
+          question_type_id: original_question.question_type_id,
+          pick: original_question.pick,
+          display_type: original_question.display_type)
+    else
       @question_group.questions.build(
-        display_order: params[:display_order])
+          display_order: params[:display_order])
     end
+
+    render "surveyor_gui/questions/new", locals: { question: @question_group }
   end
 
 
@@ -32,15 +37,19 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
 
   def create
     @question_group = QuestionGroup.new(question_group_params)
+    @survey_section = SurveySection.find(question_group_params[:survey_section_id])
+    @survey = @survey_section.survey
+    @survey_section_id = question_group_params[:survey_section_id]
+
     if @question_group.save
       #@question_group.questions.update_attributes(survey_section_id: question_group_params[])
       original_question = Question.find(question_group_params[:question_id]) if !question_group_params[:question_id].blank?
       original_question.destroy if original_question
-      render :inline => '<div id="cboxQuestionId">'+@question_group.questions.first.id.to_s+'</div>', :layout => 'surveyor_gui/surveyor_gui_blank'
+
+      redirect_to surveyor_gui.edit_surveyform_url(@survey_section.survey)
     else
       @title = "Add Question"
-      survey_section_id = question_group_params[:survey_section_id]
-      redirect_to :action => 'new', :controller => 'questions', :layout => 'surveyor_gui/surveyor_gui_blank', :survey_section_id => survey_section_id
+      render "surveyor_gui/questions/new", locals: { question: @question_group }
     end
   end
 
@@ -58,7 +67,7 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
         scrubbed_params = question_group_params.to_hash
         scrubbed_params.delete("questions_attributes")
         QuestionGroup.create!(scrubbed_params)
-      end     
+      end
     else
       render :action => 'edit', :layout => 'surveyor_gui/surveyor_gui_blank'
     end
@@ -71,7 +80,7 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
       @question_group = QuestionGroup.find(params[:id])
     end
     if params[:add_row]
-      
+
       @question_group = QuestionGroup.new
       @question_group.questions.build(display_order: params[:display_order])
       render :partial => 'group_inline_field'
@@ -84,7 +93,7 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
     ::PermittedParams.new(params[:question_group]).question_group
   end
   def question_params
-    params.permit(:survey_section_id, :id, :text, :question_id, :question_type_id, :display_order, :pick, :display_type) 
+    params.permit(:survey_section_id, :id, :text, :question_id, :question_type_id, :display_order, :pick, :display_type)
   end
 
 end

@@ -22,6 +22,8 @@ class SurveyorGui::QuestionsController < ApplicationController
     end
     @question.question_type_id = params[:question_type_id] if !params[:question_type_id].blank?
     @question.answers.build(:text => '', :response_class=>"string")
+
+    render "new", locals: { question: @question }
   end
 
   def edit

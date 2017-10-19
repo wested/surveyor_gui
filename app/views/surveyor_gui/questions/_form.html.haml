@@ -1,20 +1,27 @@
 = tinymce
 = render "surveyor_gui/partials/url_helpers"
-= simple_form_for [surveyor_gui, @question] do |f|
+= simple_form_for [surveyor_gui, question] do |f|
   .questions
     = f.error_messages
     = f.hidden_field :id
-    = f.hidden_field :survey_section_id
-    = f.hidden_field :display_order
-    = f.hidden_field :pick
     = f.hidden_field :display_type
-    = f.hidden_field :modifiable
-    = f.hidden_field :question_group_id
+
+    - if question.is_a? Question
+      = f.hidden_field :display_order
+      = f.hidden_field :survey_section_id
+      = f.hidden_field :pick
+      = f.hidden_field :modifiable
+      = f.hidden_field :question_group_id
+
+    - if question.is_a? QuestionGroup
+      = f.hidden_field :question_id
+      = f.input :survey_section_id, as: :hidden, input_html: { value: @survey_section_id }
 
     = f.input :text , :label => "Question", :input_html=>{:size=>'55', value: adjusted_text, class: "tinymce"}
+
     %span.fl
       %strong Mandatory?
-    = f.input :is_mandatory, :label => false, :wrapper_html=>{:class=>'fl notfirst'}
+    = f.input :is_mandatory, :label => false, :as=>:boolean, :wrapper_html=>{:class=>'fl notfirst'}
     %br/
     %br/
     %strong Question Type
@@ -43,12 +50,17 @@
           :as => :radio_buttons , :wrapper_html=>{:size=>'60'}, :label => false
     %br/
     #answer_choice
-      = render 'picks', :f => f
-    #number_questions
-    #report_code{:style => "display:none"}
-      %br/
-      = f.input :report_code, :label=>'Report Code', :label_html=>{:style=>'width:10em;'},:hint=>'Use this code to uniquely identify application data driven questions for reporting.'
-      %br/
+      - if @question.is_a? Question
+        = render 'picks', :f => f
+      - else
+        = render "surveyor_gui/question_groups/group_inline_fields", f: f
+
+    - if @question.is_a? Question
+      #number_questions
+      #report_code{:style => "display:none"}
+        %br/
+        = f.input :report_code, :label=>'Report Code', :label_html=>{:style=>'width:10em;'},:hint=>'Use this code to uniquely identify application data driven questions for reporting.'
+        %br/
     %br/
   .buttons
     = f.button :submit, 'Save Changes', data: { disable_with: "Please wait..." }

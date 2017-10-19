@@ -4,10 +4,14 @@ module SurveyorGui::QuestionsHelper
   end
 
   def adjusted_text
-    if @question.part_of_group?
-      @question.question_group.text
+    if @question.is_a?(Question)
+      if @question.part_of_group?
+        @question.question_group.text
+      else
+        @question.text
+      end
     else
-      @question.text
+      params[:text]
     end
   end
 
@@ -15,7 +19,7 @@ module SurveyorGui::QuestionsHelper
     question_types = QuestionType.all.map{|t|[t.text, t.id]}[0..19].uniq
     ordered_types = []
     args.each do |id|
-     ordered_types << question_types.select{|t| id == t[1]}.flatten
+      ordered_types << question_types.select{|t| id == t[1]}.flatten
     end
     ordered_types
   end

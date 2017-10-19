@@ -1,5 +1,5 @@
 %h1 Add Question
 %h3= "To Section: #{@survey_section.title}"
+= link_to "Back To Survey", surveyor_gui.edit_surveyform_url(@survey)
 
-= render 'form'
-
+= render 'surveyor_gui/questions/form', question: question
