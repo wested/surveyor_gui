@@ -1,0 +1,40 @@
+%hr
+
+= simple_fields_for 'question', @questions do |f|
+
+  .row
+    .col-md-2
+      = f.input :prefix, :label => "Number Prefix"
+    .col-md-2
+      = f.input :suffix, :label => "Number Suffix"
+
+  = f.simple_fields_for :answers, @questions.answers.first do |a|
+    = a.hidden_field :text
+%br/
+%span{:style => "font-weight:normal;"}
+  Hint: affects how the number will be shown.
+  %br/
+  E.g. the number 60 could be shown as follows:
+  %br/
+  %br/
+  %table.table{style: 'max-width: 40%'}
+    %tr
+      %td
+        %strong Number Prefix
+      %td
+        %strong  Number Suffix
+      %td
+        %strong  Shown as
+    %tr
+      %td $
+      %td USD
+      %td $60 USD
+    %tr
+      %td
+      %td Months
+      %td 60 Months
+    %tr
+      %td
+      %td Inches
+      %td 60 Inches
+%br/

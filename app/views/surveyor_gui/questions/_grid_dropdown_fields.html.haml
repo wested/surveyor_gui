@@ -1,0 +1,33 @@
+%hr
+
+= simple_fields_for 'question', @questions do |f|
+  = f.input :dropdown_column_count, :collection =>  10.times.map{|i| [(i+1).to_s + " column".pluralize(i+1), i+1]},  :as => :select, :label => "Number of columns:", :include_blank => false
+
+  = f.simple_fields_for :question_group, @question_group do |qg|
+    = qg.hidden_field :id
+    %br/
+    Columns:
+    %span.grid_textbox_hint Columns: enter the choices for each column option on a separate line under "Column Choices"
+    %br/
+    .grid_dropdown_columns
+      = qg.simple_fields_for :columns do |c|
+        = render "grid_dropdown_columns", c: c
+  .rows
+    = f.input :grid_rows_textbox, :as => :text, :wrapper_html => {:class=>'answers_collection'}, :label => "Rows: <span class='grid_textbox_hint'>add each row as a new line</span>".html_safe
+  %hr/
+
+  .row
+    .col-md-4
+      = f.input :other, label: "Add user determined choice?", as: :boolean, wrapper_html: { class: "horizontal-checkbox" }
+      = f.input :other_text,                             |
+        placeholder: "Other",
+        label: "Custom text for <i>other</i>".html_safe,
+        hint: "if chosen will display input box",
+        as: :string
+    .col-md-4
+      = f.input :comments, label: "At the bottom of questions, add input box?", as: :boolean, wrapper_html: { class: "horizontal-checkbox" }
+      = f.input :comments_text,              |
+        label: "Custom label for input box", |
+        hint: "box for notes/comments",      |
+        placeholder: "Comments",             |
+        as: :string                          |

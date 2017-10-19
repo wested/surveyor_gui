@@ -1,0 +1,12 @@
+%hr
+
+= simple_fields_for 'question', @questions do |f|
+
+  .row
+    .col-md-6
+      = f.input :grid_columns_textbox, :as => :text, :wrapper_html => {:class=>'answers_collection'}, :label => "Columns: <span class='grid_textbox_hint'>add each column as a new line</span>".html_safe
+
+    .col-md-6
+      = f.input :grid_rows_textbox, :as => :text, :wrapper_html => {:class=>'answers_collection'}, :label => "Rows: <span class='grid_textbox_hint'>add each row as a new line</span>".html_safe
+
+  = render "answer_options", f: f
