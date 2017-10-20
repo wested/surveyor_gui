@@ -56,7 +56,7 @@
                       data-question_id="<%= f.object.id.to_s %>"
               >Edit Logic</button>
 
-            <% else -%>
+            <% elsif f.object.survey_section.survey.questions.count > 1 -%>
                 <button type="button" id="add_logic" class="btn btn-primary"
                         data-replace_question_url="<%=surveyor_gui.replace_question_surveyform_path(
                                                           id:           f.object.survey_section.survey.id,

@@ -4,8 +4,9 @@ module SurveyorGui
       def self.included(base)
         base.extend Surveyor::Models::SurveyMethods
         base.send :attr_accessible, :title, :access_code, :template,
-                        :survey_sections_attributes if defined? ActiveModel::MassAssignmentSecurity
+                  :survey_sections_attributes if defined? ActiveModel::MassAssignmentSecurity
         base.send :has_many, :survey_sections, :dependent => :destroy
+        base.send :has_many, :questions, through: :survey_sections
         base.send :accepts_nested_attributes_for, :survey_sections, :allow_destroy => true
 
         base.send :validate, :no_responses
