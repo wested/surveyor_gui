@@ -9,6 +9,8 @@ class SurveyorGui::DependencysController < ApplicationController
     else
       @question.build_dependency(:rule=>'A')
     end
+
+    render 'new', layout: false
   end
 
   def edit
@@ -72,7 +74,7 @@ class SurveyorGui::DependencysController < ApplicationController
     render :partial => 'dependency_condition_fields'
   end
 
-  def get_answers    
+  def get_answers
     options=""
     question_id               = params[:question_id]
     question                  = Question.find(question_id)
@@ -82,13 +84,13 @@ class SurveyorGui::DependencysController < ApplicationController
     if question && question.answers
       question.answers.where('column_id = ? OR column_id IS NULL',column_id.to_i).each_with_index do |a, index|
         options += '<option ' + _get_selected_answer(index, dependency_condition, a, column_id) +
-         'value="' + a.id.to_s + '"' +
-         '>'+a.text.to_s+"</option>"
+            'value="' + a.id.to_s + '"' +
+            '>'+a.text.to_s+"</option>"
       end
     end
     render :inline=>options
   end
-  
+
   def get_columns
     options=""
     question_id               = params[:question_id]
@@ -98,9 +100,9 @@ class SurveyorGui::DependencysController < ApplicationController
     if question && question.question_group
       question.question_group.columns.each_with_index do |c, index|
         options += '<option ' +
-         _get_selected_column(index, dependency_condition, c) +
-         'value="' + c.id.to_s + '"' +
-         '>'+c.text.to_s+"</option>"
+            _get_selected_column(index, dependency_condition, c) +
+            'value="' + c.id.to_s + '"' +
+            '>'+c.text.to_s+"</option>"
       end
     end
     render :inline=>options
@@ -115,7 +117,7 @@ class SurveyorGui::DependencysController < ApplicationController
     render :inline=>response
   end
 
-private
+  private
 
   def prep_variables
     @question = Question.includes(:dependency).find(params[:id]) unless @question
@@ -132,9 +134,9 @@ private
 
   def _get_all_questions_in_survey(question)
     PossibleControllingQuestion.unscoped
-      .joins(:survey_section)
-      .where('survey_id = ?', question.survey_section.survey_id)
-      .order('survey_sections.display_order','survey_sections.id','questions.display_order')
+        .joins(:survey_section)
+        .where('survey_id = ?', question.survey_section.survey_id)
+        .order('survey_sections.display_order','survey_sections.id','questions.display_order')
   end
 
   def _get_question_collection(all_questions, dependent_question)
@@ -143,12 +145,12 @@ private
 
   def get_operators
     return [
-      ['equal to (=)','=='],
-      ['not equal to','!='],
-      ['less than (<)','<'],
-      ['less than or equal to (<=)','<='],
-      ['greater than or equal to (>=)','>='],
-      ['greater than','>']
+        ['equal to (=)','=='],
+        ['not equal to','!='],
+        ['less than (<)','<'],
+        ['less than or equal to (<=)','<='],
+        ['greater than or equal to (>=)','>='],
+        ['greater than','>']
     ]
   end
 
@@ -158,8 +160,8 @@ private
 
   def question_group_params
     ::PermittedParams.new(params[:question_group]).question_group
-  end  
-  
+  end
+
   def _default_column_id(question)
     if question.part_of_group?
       columns = question.question_group.columns
@@ -168,31 +170,31 @@ private
       ""
     end
   end
-  
+
   def _get_selected_answer(index, dependency_condition, a, column_id)
-    if _matches_dependency_condition(dependency_condition, a, column_id) 
-      'selected="selected" ' 
-    else 
+    if _matches_dependency_condition(dependency_condition, a, column_id)
+      'selected="selected" '
+    else
       ''
-    end  
+    end
   end
-  
+
   def _get_selected_column(index, dependency_condition, column)
-    if _matches_dependency_condition_column(dependency_condition, column) 
+    if _matches_dependency_condition_column(dependency_condition, column)
       'selected="selected"'
     else
       ''
     end
   end
-  
+
   def _matches_dependency_condition (dependency_condition, a, column_id)
-    if dependency_condition.nil?  
+    if dependency_condition.nil?
       false
     else
       (dependency_condition.answer_id == a.id && (column_id.blank? || dependency_condition.column_id == column_id.to_i ))
     end
   end
-  
+
   def _matches_dependency_condition_column(dependency_condition, column)
     if dependency_condition.nil?
       false
@@ -200,7 +202,7 @@ private
       dependency_condition.column_id == column.id
     end
   end
-  
+
 end
 
 class QuestionCollection
@@ -245,7 +247,7 @@ class QuestionCollection
     _add_to_collection_if_eligible(question)
     if question.is_numbered?
       _increment_question_number
-    end 
+    end
     return self
   end
 
