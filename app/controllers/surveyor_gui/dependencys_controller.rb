@@ -3,7 +3,7 @@ class SurveyorGui::DependencysController < ApplicationController
 
   def new
     prep_variables
-    @title = "Add Logic for "+@this_question
+    @title = "Add Logic to Question"
     if @question.part_of_group?
       @question.question_group.build_dependency(:rule=>'A')
     else
@@ -39,10 +39,13 @@ class SurveyorGui::DependencysController < ApplicationController
     end
     if update_object.update_attributes(update_params)
       update_object.dependency.destroy if update_object.dependency.dependency_conditions.blank?
-      render :blank, :layout => 'surveyor_gui/surveyor_gui_blank'
+
+      @question_no = 0
+      render partial: "surveyor_gui/surveyforms/question_section" , :layout=> false
+
     else
       prep_variables
-      render :action => 'edit', :layout => 'surveyor_gui/surveyor_gui_blank'
+      render :action => 'edit', :layout => false, status: :unprocessable_entity
     end
   end
 

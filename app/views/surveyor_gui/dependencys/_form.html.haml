@@ -1,15 +1,26 @@
-.shadebox
-  %h1= @title
-  - if @question.part_of_group?
-    = simple_form_for @question.question_group, :url => dependencys_path+'/'+@question.id.to_s do |g|
-      = g.error_messages
-      .dependency_editor
-        = render "dependency", f: g
-  - else
-    = simple_form_for @question, :url => dependencys_path+'/'+@question.id.to_s do |q|
-      = q.error_messages
-      = q.hidden_field :survey_section_id
-      .dependency_editor
-        = render "dependency", f: q
-  - 24.times.each do
-    %br/
+.modal-dialog{:role => "document"}
+  .modal-content
+    .modal-header
+      %h5#exampleModalLongTitle.modal-title= @title
+      %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+        %span{"aria-hidden" => "true"} ×
+
+
+    - if @question.part_of_group?
+      = simple_form_for @question.question_group, :url => dependencys_path+'/'+@question.id.to_s do |g|
+        .modal-body
+          = g.error_messages
+          .dependency_editor
+            = render "dependency", f: g
+        .modal-footer
+          = g.button :submit,  'Save Changes',  :id=>'dependency_submit'
+    - else
+      = simple_form_for @question, :url => dependencys_path+'/'+@question.id.to_s do |q|
+        .modal-body
+          = q.error_messages
+          = q.hidden_field :survey_section_id
+          .dependency_editor
+            = render "dependency", f: q
+        .modal-footer
+          = q.button :submit,  'Save Changes',  data: { "ajax-target" => dependency_form_target_url, "ajax-handler" => 'logicAddHandler', "ajax-error-handler" => "modalErrorHandler", "ajax-error-target" => "#modal", disable_with: "Please wait..." }
+          %button.btn.btn-secondary{"data-dismiss" => "modal", :type => "button"} Close

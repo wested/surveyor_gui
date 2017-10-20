@@ -1,6 +1,6 @@
 module SurveyorGui::SurveySectionsHelper
 
-  def form_target_url
+  def section_form_target_url
     if params[:action] == 'edit'
       "#sectionTitle#{@survey_section.id}"
     else
