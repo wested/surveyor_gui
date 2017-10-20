@@ -24,7 +24,7 @@ module SurveyorGui
         attr_accessor :rules
 
         def initialize(dependency_condition)
-          if dependency_condition.dependency
+          if dependency_condition.dependency.try(:rule)
             @rules = dependency_condition.dependency.rule.split(' ')
           else
             @rules = []
