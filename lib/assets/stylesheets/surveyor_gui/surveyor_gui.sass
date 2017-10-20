@@ -241,8 +241,6 @@ body
               :width auto
               :margin 1em 0 0
               :float left
-            span.radio input, span.checkbox input
-              margin-left: 0
 
         div.question_group.default
           div.slider
@@ -338,6 +336,7 @@ body
       .question_group_element
         span.radio , span.checkbox
           :float none
+
     span.radio , span.checkbox
       :display block
       :float none
@@ -345,8 +344,9 @@ body
       :width 30em
 
       input.radio_buttons, input.check_boxes
-        :margin-right 1em
-        :vertical-align -3px
+        margin-right: 1em
+        vertical-align: -3px
+        margin-left: 0
 
       label
         :margin 0
