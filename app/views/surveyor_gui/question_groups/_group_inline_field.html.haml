@@ -3,11 +3,11 @@
     = qg.simple_fields_for :questions do |q|
       = div_for(q.object, class: "group_inline_question row") do
         .col-md-6
-          .handle
+          %span.handle
             %span.ui-icon.ui-icon-arrowthick-2-n-s
           = q.hidden_field :survey_section_id, value: @survey_section_id
           = q.hidden_field :id
-          = q.input :text, label: false, as: :string, wrapper_html:{class: "question"}
+          = q.input :text, label: false, wrapper_html:{class: "question"}, input_html: { class: "tinymce" }
         .col-md-2
           = q.input :question_type_id, label: false, collection: QuestionType.all.map{|t|[t.text, t.id]}[0..13].uniq.select{|c| [:box,:number,:date,:string,:dropdown,:pick_one,:pick_any, :slider, :stars, :file].include? c[1]}, wrapper_html:{class: "question"}
         .col-md-3

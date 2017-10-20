@@ -2,7 +2,7 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
   layout 'surveyor_gui/surveyor_gui_default'
 
   def new
-    @title = "Add Question"
+    @title = "Add Question Group"
     @survey_section_id = question_params[:survey_section_id]
     @survey_section = SurveySection.find(question_params[:survey_section_id])
     @survey = @survey_section.survey
@@ -42,7 +42,8 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
     Question.transaction do
 
       # This is a hack to allow non-group questions to be edited and converted to group questions....
-      if params[:converted_question_id].present?
+      # Need to convert to int because the UI is passing in an undefined :(
+      if params[:converted_question_id].to_i.present? && params[:converted_question_id].to_i > 0
         Question.find(params[:converted_question_id]).destroy
       end
 
@@ -58,7 +59,7 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
 
         redirect_to surveyor_gui.edit_surveyform_url(@survey_section.survey)
       else
-        @title = "Add Question"
+        @title = "Add Question Group"
         render "surveyor_gui/questions/new", locals: { question: @question_group }
       end
     end
@@ -66,10 +67,14 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
   end
 
   def update
-    @title = "Update Question"
+    @title = "Update Question Group"
     @question_group = QuestionGroup.includes(:questions).find(params[:id])
+    @survey_section = SurveySection.find(question_group_params[:survey_section_id])
+
     if @question_group.update_attributes(question_group_params)
-      render :blank, :layout => 'surveyor_gui/surveyor_gui_blank'
+
+      redirect_to surveyor_gui.edit_surveyform_url(@survey_section.survey)
+
       #If a nested question is destroyed, the Question model performs a cascade delete
       #on the parent QuestionGroup (stuck with this behaviour as it is a Surveyor default).
       #Need to check for this and restore question group.
@@ -81,7 +86,11 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
         QuestionGroup.create!(scrubbed_params)
       end
     else
-      render :action => 'edit', :layout => 'surveyor_gui/surveyor_gui_blank'
+      @survey_section = SurveySection.find(question_group_params[:survey_section_id])
+      @survey = @survey_section.survey
+      @survey_section_id = question_group_params[:survey_section_id]
+
+      render "surveyor_gui/questions/new", locals: { question: @question_group }
     end
   end
 
