@@ -1,0 +1,23 @@
+%hr
+
+= simple_fields_for :question_group, @question_group do |qg|
+  = qg.hidden_field :id
+  = qg.hidden_field :display_type, value: "inline"
+  .group_inline
+    .group_inline_header.row
+      .col-md-6
+        %span.handle
+        %span
+          Sub Question
+      .col-md-2
+        %span
+          Question Type
+      .col-md-3
+        %span
+          Possible Answers
+      .col-md-1
+    = render "group_inline_field", qg: qg
+    .add_question
+      %span
+      %span
+        Add Question #{image_tag("addicon.png", class:"add_group_inline_question")}
