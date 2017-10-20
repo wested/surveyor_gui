@@ -29,7 +29,7 @@
                 = link_to "Add Question", surveyor_gui.new_question_url(survey_section_id: s.object.id), class: "btn btn-primary"
 
                 - if session[:cut_question]
-                  %button#paste_question{"data-paste_question_surveyform_url" => surveyor_gui.paste_question_surveyform_url(id: f.object.id, survey_section_id:  s.object.id), :type => "button"} Paste Question
+                  %button.btn.btn-primary#paste_question{"data-paste_question_surveyform_url" => surveyor_gui.paste_question_surveyform_url(id: f.object.id, survey_section_id:  s.object.id), :type => "button"} Paste Question
             .sortable_questions{:id => "sortable_question#{s.object.id.to_s}"}
               = s.simple_fields_for :questions do |q|
                 = render_questions_and_groups_helper q, s

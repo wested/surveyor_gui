@@ -25,14 +25,14 @@
 
             <%= link_to "Edit Question", surveyor_gui.edit_question_url(f.object), class: "btn btn-primary" %>
 
-                    <button type="button" id="cut_question"
+                    <button type="button" id="cut_question" class="btn btn-primary"
                             data-cut_question_surveyform_url="<%=surveyor_gui.cut_question_surveyform_url(
                                                                      id:           f.object.survey_section.survey.id,
                                                                      question_id:  f.object.id)%>"
                             data-question_already_cut="<%= session[:cut_question] %>"
                     >Cut Question</button>
 
-          <button type="button" id="delete_question"
+          <button type="button" id="delete_question" class="btn btn-primary"
                   data-question_url="<%=surveyor_gui.question_url(f.object.id)%>"
                   data-replace_form_surveyform_url="<%= surveyor_gui.replace_form_surveyform_url(
                                                             id:                 f.object.survey_section.survey.id,
@@ -43,21 +43,21 @@
 
             <% if f.object.dependent? -%>
 
-              <button type="button" id="delete_logic"
+              <button type="button" id="delete_logic" class="btn btn-primary"
                       data-replace_question_url="<%=surveyor_gui.replace_question_surveyform_path(:question_id => f.object.id)%>"
                       data-dependency_url="<%= surveyor_gui.dependency_url(f.object.id) %>"
                       data-question_id="<%= f.object.id.to_s %>"
               >Delete Logic</button>
 
 
-              <button type="button" id="edit_logic"
+              <button type="button" id="edit_logic" class="btn btn-primary"
                       data-replace_question_url="<%=surveyor_gui.replace_question_surveyform_path(:question_id => f.object.id)%>"
                       data-edit_dependency_url="<%= surveyor_gui.edit_dependency_url(f.object.id) %>"
                       data-question_id="<%= f.object.id.to_s %>"
               >Edit Logic</button>
 
             <% else -%>
-                <button type="button" id="add_logic"
+                <button type="button" id="add_logic" class="btn btn-primary"
                         data-replace_question_url="<%=surveyor_gui.replace_question_surveyform_path(
                                                           id:           f.object.survey_section.survey.id,
                                                           question_id:  f.object.id)%>"
@@ -70,11 +70,11 @@
         </span>
 
             <% end %>
-            <br />
-            <br />
-            <%= render "question_name_and_number", question_type: f.object.question_type, text: f.object.text %>
-            <br />
-            <%= render "question_field", f: f %>
+
+            <div class="questions">
+                <%= render "question_name_and_number", question_type: f.object.question_type, text: f.object.text %>
+                <%= render "question_field", f: f %>
+            </div>
         </div>
     </fieldset>
 
