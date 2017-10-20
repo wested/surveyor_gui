@@ -19,7 +19,7 @@
       = f.hidden_field :question_id
       = f.input :survey_section_id, as: :hidden, input_html: { value: @survey_section_id }
 
-    = f.input :text , :label => "Question", :input_html=>{:size=>'55', value: adjusted_text, class: "tinymce"}
+    = f.input :text , :label => "Question", :input_html=>{:size=>'55', value: adjusted_text(question), class: "tinymce"}
 
     %span.fl
       %strong Mandatory?

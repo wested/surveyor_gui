@@ -37,15 +37,15 @@ class SurveyorGui::QuestionsController < ApplicationController
     render "new", locals: { question: @question }
   end
 
-  def adjusted_text
-    if @question.part_of_group?
-      @question.question_group.text
-    else
-      @question.text
-    end
-  end
-
-  helper_method :adjusted_text
+  # def adjusted_text
+  #   if @question.part_of_group?
+  #     @question.question_group.text
+  #   else
+  #     @question.text
+  #   end
+  # end
+  #
+  # helper_method :adjusted_text
 
   def create
     Question.where(:survey_section_id => params[:question][:survey_section_id])
@@ -69,9 +69,10 @@ class SurveyorGui::QuestionsController < ApplicationController
 
   def update
     @title = "Update Question"
-    @question = Question.includes(:answers).find(params[:id])
+    @question = Question.includes(:answers).find(question_params[:id])
     if @question.update_attributes(question_params)
       @question.answers.each_with_index {|a, index| a.destroy if index > 0} if @question.pick == 'none'
+
       #load any page - if it has no flash errors, the colorbox that contains it will be closed immediately after the page loads
       redirect_to surveyor_gui.edit_surveyform_url(@question.survey_section.survey)
     else

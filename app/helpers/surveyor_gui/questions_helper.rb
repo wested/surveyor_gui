@@ -3,15 +3,15 @@ module SurveyorGui::QuestionsHelper
     f.hidden_field(:_destroy) + link_to(image_tag("delete.png",:border => 0, :margin=>'-1em'), "#", onclick: "remove_fields(this, \"#{dom_to_hide}\");")
   end
 
-  def adjusted_text
-    if @question.is_a?(Question)
-      if @question.part_of_group?
-        @question.question_group.text
+  def adjusted_text(question)
+    if question.is_a?(Question)
+      if question.part_of_group?
+        question.question_group.text
       else
-        @question.text
+        question.text
       end
     else
-      params[:text]
+      question.new_record? ? params[:text] : question.text
     end
   end
 

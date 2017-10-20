@@ -31,8 +31,11 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
     @title = "Edit Question Group"
     @question_group = QuestionGroup.includes(:questions).find(params[:id])
     @question_group.question_type_id = params[:question_type_id]
-    @survey_section_id = question_params[:survey_section_id]
-    p "edit survey sect id #{@survey_section_id}"
+    @survey_section_id = params[:survey_section_id]
+    @survey_section = SurveySection.find(params[:survey_section_id])
+    @survey = @survey_section.survey
+
+    render "surveyor_gui/questions/new", locals: { question: @question_group }
   end
 
   def create
