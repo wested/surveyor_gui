@@ -13,7 +13,8 @@
           .dependency_editor
             = render "dependency", f: g
         .modal-footer
-          = g.button :submit,  'Save Changes',  :id=>'dependency_submit'
+          = q.button :submit,  'Save Changes',  data: { "ajax-target" => dependency_form_target_url, "ajax-handler" => 'logicAddHandler', "ajax-error-handler" => "modalErrorHandler", "ajax-error-target" => "#modal", disable_with: "Please wait..." }
+          %button.btn.btn-secondary{"data-dismiss" => "modal", :type => "button"} Close
     - else
       = simple_form_for @question, :url => dependencys_path+'/'+@question.id.to_s do |q|
         .modal-body

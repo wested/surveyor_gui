@@ -68,8 +68,8 @@
             <% end %>
 
             <div class="questions">
-                <%= render "question_name_and_number", question_type: f.object.question_type, text: f.object.text %>
-                <%= render "question_field", f: f %>
+                <%= render "surveyor_gui/surveyforms/question_name_and_number", question_type: f.object.question_type, text: f.object.text %>
+                <%= render "surveyor_gui/surveyforms/question_field", f: f %>
             </div>
         </div>
     </fieldset>
