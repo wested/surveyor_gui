@@ -18,10 +18,9 @@
             .column_id
               = render "column", c: c, d: d
         .row
-          .col-md-offset-1
           .col-md-4
             = c.input :operator, :collection => @operators, :label=>"Condition", :include_blank => false
-          .col-md-6.answer_field
+          .col-md-7.answer_field
             %label Answer
             .dependency_text
               = c.input :string_value, :label=>false, :size=>8
