@@ -49,9 +49,9 @@ module SurveyorGui
     def render_one_group(qg)
       qg.simple_fields_for :questions, @current_group.questions do |f|
         if f.object.is_comment != true
-          render "question_group_fields", f: f
+          render "surveyor_gui/surveyforms/question_group_fields", f: f
         elsif f.object.is_comment == true
-          "</div>".html_safe+(render "question_field", f: f)+"<div>".html_safe
+          "</div>".html_safe+(render "surveyor_gui/surveyforms/question_field", f: f)+"<div>".html_safe
         end
       end
     end

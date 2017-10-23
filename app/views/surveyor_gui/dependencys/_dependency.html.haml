@@ -3,7 +3,9 @@
   = d.hidden_field :question_group_id
   = d.hidden_field :rule
   %div
-    Show the question, "#{@this_question}", when the following conditions are true:
+    Show the question,
+    %h3= @this_question.html_safe
+    when the following conditions are true:
     %br/
     %br/
     %table
