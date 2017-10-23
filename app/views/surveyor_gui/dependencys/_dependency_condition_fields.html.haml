@@ -1,30 +1,39 @@
 = simple_fields_for @question_or_group do |f|
   = f.simple_fields_for :dependency do |d|
     = d.simple_fields_for :dependency_conditions do |c|
-      %tr{:style => "display:block;"}
-        %td{:colspan => "3", :talign => "center"}
-          = c.input :join_operator, :label=> false, :collection => [['And','and'],['Or','or']], :include_blank => false
-      %tr
-        = c.hidden_field :rule_key
-        = c.hidden_field :id
-        %td
-          = c.input :question_id, :collection => @controlling_questions, :label=>false, :include_blank => false, :input_html => {:style=>"max-width:38em;"}
-          .column_id
-            = render "column", c: c, d: d
-        %td
-          = c.input :operator, :collection => @operators, :label=>false, :include_blank => false
-        %td.answer_field
-          .dependency_text
-            = c.input :string_value, :label=>false, :size=>8
-          .dependency_text_box
-            = c.input :text_value, :label=>false, :size=>8
-          .dependency_float
-            = c.input :float_value, :label=>false, :size=>8
-          .dependency_date
-            = c.input :datetime_value, :label=>false, :size=>8
-          .dependency_star
-            = c.input :integer_value, label: false, :collection => [[nil,1],[nil,2],[nil,3],[nil,4],[nil,5]], :as => :radio_buttons, :input_html=>{:class=>'star'}
-          .dependency_pick_multiple_choice
-            = c.input :answer_id, :collection => Answer.where('question_id=?',c.object.question_id).map{|a| [a.text,a.id]}, :label=>false, :include_blank => false, :input_html => {:style=>"max-width:18em;"}
-        %td
-          = link_to_remove_tbody "remove", c
+      .question-row
+        .row{:style => "display:block;"}
+          .col-md-12
+            %hr
+            = c.input :join_operator, :label=> false, :collection => [['And','and'],['Or','or']], :include_blank => false
+
+            = c.hidden_field :rule_key
+            = c.hidden_field :id
+            %hr
+        .row
+          .col-md-12
+            %div
+              %label Question
+            = c.input :question_id, :collection => @controlling_questions, :label=>false, :include_blank => false, :input_html => {:style=>"max-width:38em;"}
+            .column_id
+              = render "column", c: c, d: d
+        .row
+          .col-md-offset-1
+          .col-md-4
+            = c.input :operator, :collection => @operators, :label=>"Condition", :include_blank => false
+          .col-md-6.answer_field
+            %label Answer
+            .dependency_text
+              = c.input :string_value, :label=>false, :size=>8
+            .dependency_text_box
+              = c.input :text_value, :label=>false, :size=>8
+            .dependency_float
+              = c.input :float_value, :label=>false, :size=>8
+            .dependency_date
+              = c.input :datetime_value, :label=>false, :size=>8
+            .dependency_star
+              = c.input :integer_value, label: false, :collection => [[nil,1],[nil,2],[nil,3],[nil,4],[nil,5]], :as => :radio_buttons, :input_html=>{:class=>'star'}
+            .dependency_pick_multiple_choice
+              = c.input :answer_id, :collection => Answer.where('question_id=?',c.object.question_id).map{|a| [a.text,a.id]}, :label=>false, :include_blank => false, :input_html => {:style=>"max-width:18em;"}
+          .col-md-1
+            = link_to_remove_tbody "remove", c
