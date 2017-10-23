@@ -6,23 +6,24 @@ module SurveyorGui
         base.send :attr_accessor, :is_mandatory, :survey_section_id
         base.send :attr_writer, :question_id
         base.send :attr_accessible, :questions_attributes if
-                  defined? ActiveModel::MassAssignmentSecurity
+            defined? ActiveModel::MassAssignmentSecurity
         base.send :accepts_nested_attributes_for, :questions, :allow_destroy => true
         base.send :has_many, :columns
+        base.send :has_one, :dependency, dependent: :destroy
         base.send :accepts_nested_attributes_for, :columns,  :allow_destroy => true
         base.send :accepts_nested_attributes_for, :dependency, :reject_if => lambda { |d| d[:rule].blank?}, :allow_destroy => true
       end
 
       def question_type_id
-        if !@question_type_id 
+        if !@question_type_id
           @question_type = case display_type
-          when "inline"
-            :group_inline
-          when "default"
-            :group_default
-          when "repeater"
-            :repeater
-          end
+                             when "inline"
+                               :group_inline
+                             when "default"
+                               :group_default
+                             when "repeater"
+                               :repeater
+                           end
         else
           @question_type_id
         end
@@ -30,13 +31,13 @@ module SurveyorGui
 
       def question_type_id=(question_type_id)
         case question_type_id
-        when "group_default"
-          write_attribute(:display_type, "default")
-        when "group_inline"
-          write_attribute(:display_type, "inline")
-        when "repeater"
-          write_attribute(:display_type, "repeater")
-        end      
+          when "group_default"
+            write_attribute(:display_type, "default")
+          when "group_inline"
+            write_attribute(:display_type, "inline")
+          when "repeater"
+            write_attribute(:display_type, "repeater")
+        end
         @question_type_id = question_type_id
       end
 
@@ -48,7 +49,7 @@ module SurveyorGui
       def question_id
         self.questions.first.id if self.questions.first
       end
-      
+
       #def controlling_questions in QuestionAndGroupSharedMethods
     end
   end
