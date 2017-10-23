@@ -14,7 +14,7 @@ module SurveyorGui
                   :hide_label, :dummy_blob, :dynamically_generate, :answers_textbox, :dropdown_column_count,
                   :grid_columns_textbox, :grid_rows_textbox, :omit_text, :omit, :other, :other_text, :is_comment, :comments, :comments_text,
                   :dynamic_source, :modifiable, :report_code, :question_group_attributes if
-                  defined? ActiveModel::MassAssignmentSecurity
+            defined? ActiveModel::MassAssignmentSecurity
         base.send :accepts_nested_attributes_for, :answers, :reject_if => lambda { |a| a[:text].blank?}, :allow_destroy => true
         base.send :belongs_to, :survey_section
         base.send :has_many, :responses
@@ -60,6 +60,17 @@ module SurveyorGui
         self.api_id ||= Surveyor::Common.generate_api_id
       end
 
+      # when deleting a group_question it deletes the first group question which results in deleting the group_question
+      # and related questions via a dependent destroy.  so when looking up dependent questions need to do this hack....
+      # TODO should fix this....
+      def dependent_questions
+        if self.part_of_group?
+          DependencyCondition.where(question_id: self.question_group.questions.map(&:id))
+        else
+          DependencyCondition.where(question_id: self.id)
+        end
+      end
+
       #prevent a question from being modified if responses have been submitted for the survey. Protects data integrity.
       def no_responses
         #below is code to fix a bizarre bug. When triggered by the "cut" function, for some reason survey_id is erased. Have not found reason yet. Temporary fix.
@@ -79,76 +90,76 @@ module SurveyorGui
       def dynamically_generate
         'false'
       end
-      
+
       def question_type_id
         QuestionType.categorize_question(self)
       end
 
-#      #generates descriptions for different types of questions, including those that use widgets
+      #      #generates descriptions for different types of questions, including those that use widgets
       def question_type
         @question_type = QuestionType.find(question_type_id)
       end
-#
+      #
 
       #setter for question type.  Sets both pick and display_type
       def question_type_id=(type)
         case type
-        when "grid_one"
-          write_attribute(:pick, "one")
-          prep_picks
-          write_attribute(:display_type, "default")
-          _update_group_id
-        when "pick_one"
-          write_attribute(:pick, "one")
-          prep_picks
-          write_attribute(:display_type, "default")
-          _remove_group
-        when "slider"
-          write_attribute(:pick, "one")
-          prep_picks
-          write_attribute(:display_type, "slider")
-        when "stars"
-          write_attribute(:pick, "one")
-          write_attribute(:display_type, "stars")
-          prep_picks
-        when "dropdown"
-          write_attribute(:pick, "one")
-          write_attribute(:display_type, "dropdown")
-          prep_picks
-        when "pick_any"
-          write_attribute(:pick, "any")
-          prep_picks
-          write_attribute(:display_type, "default")
-          _remove_group
-        when "grid_any"
-          write_attribute(:pick, "any")
-          prep_picks
-          write_attribute(:display_type, "default")
-          _update_group_id
-        when "grid_dropdown"
-          write_attribute(:pick, "one")
-          prep_picks
-          write_attribute(:display_type, "dropdown")
-          _update_group_id
-        when "group_inline"
-          _update_group_id
-        when 'label'
-          write_attribute(:pick, "none")
-          write_attribute(:display_type, "label")
-        when 'box'
-          prep_not_picks('text')
-        when 'number'
-          prep_not_picks('float')
-        when 'date'
-          prep_not_picks('date')
-        when 'time'
-          prep_not_picks('time')
-        when 'datetime'
-          prep_not_picks('datetime')          
-        when 'file'
-          prep_not_picks('blob')
-        when 'string'
-          prep_not_picks('string')
+          when "grid_one"
+            write_attribute(:pick, "one")
+            prep_picks
+            write_attribute(:display_type, "default")
+            _update_group_id
+          when "pick_one"
+            write_attribute(:pick, "one")
+            prep_picks
+            write_attribute(:display_type, "default")
+            _remove_group
+          when "slider"
+            write_attribute(:pick, "one")
+            prep_picks
+            write_attribute(:display_type, "slider")
+          when "stars"
+            write_attribute(:pick, "one")
+            write_attribute(:display_type, "stars")
+            prep_picks
+          when "dropdown"
+            write_attribute(:pick, "one")
+            write_attribute(:display_type, "dropdown")
+            prep_picks
+          when "pick_any"
+            write_attribute(:pick, "any")
+            prep_picks
+            write_attribute(:display_type, "default")
+            _remove_group
+          when "grid_any"
+            write_attribute(:pick, "any")
+            prep_picks
+            write_attribute(:display_type, "default")
+            _update_group_id
+          when "grid_dropdown"
+            write_attribute(:pick, "one")
+            prep_picks
+            write_attribute(:display_type, "dropdown")
+            _update_group_id
+          when "group_inline"
+            _update_group_id
+          when 'label'
+            write_attribute(:pick, "none")
+            write_attribute(:display_type, "label")
+          when 'box'
+            prep_not_picks('text')
+          when 'number'
+            prep_not_picks('float')
+          when 'date'
+            prep_not_picks('date')
+          when 'time'
+            prep_not_picks('time')
+          when 'datetime'
+            prep_not_picks('datetime')
+          when 'file'
+            prep_not_picks('blob')
+          when 'string'
+            prep_not_picks('string')
         end
         @question_type_id = type
       end
@@ -252,18 +263,18 @@ module SurveyorGui
 
       def is_numbered?
         case display_type
-        when 'label'
-          false
-        else
-          if part_of_group?
-            if question_group.questions.last.id == self.id
-              true
-            else
-              false
-            end
+          when 'label'
+            false
           else
-            true
-          end
+            if part_of_group?
+              if question_group.questions.last.id == self.id
+                true
+              else
+                false
+              end
+            else
+              true
+            end
         end
       end
 
@@ -283,7 +294,7 @@ module SurveyorGui
       def answers_textbox
         self.answers.where('is_exclusive != ? and is_comment != ? and response_class != ?',true,true,"string").order('display_order asc').collect(&:text).join("\n")
       end
-      
+
       def answers_textbox=(textbox)
         #change updated_at as a hack to force dirty record for change on answers_textbox
         write_attribute(:updated_at, Time.now)
@@ -366,16 +377,16 @@ module SurveyorGui
       def build_complex_questions
         if (@answers_textbox && self.pick!="none") || @grid_columns_textbox || @grid_rows_textbox
           self.question_type.build_complex_question_structure(
-            self,
-            answers_textbox:      @answers_textbox,
-            omit_text:            @omit_text,
-            is_exclusive:         @omit=="1",
-            other_text:           @other_text,
-            other:                @other=="1",
-            comments_text:        @comments_text,
-            comments:             @comments=="1",
-            grid_columns_textbox: @grid_columns_textbox,
-            grid_rows_textbox:    @grid_rows_textbox)
+              self,
+              answers_textbox:      @answers_textbox,
+              omit_text:            @omit_text,
+              is_exclusive:         @omit=="1",
+              other_text:           @other_text,
+              other:                @other=="1",
+              comments_text:        @comments_text,
+              comments:             @comments=="1",
+              grid_columns_textbox: @grid_columns_textbox,
+              grid_rows_textbox:    @grid_rows_textbox)
         end
       end
 
@@ -391,8 +402,8 @@ module SurveyorGui
         if new_record?
           if Question.where('survey_section_id = ? and display_order = ?',survey_section_id, display_order).size > 0
             Question.where(:survey_section_id => survey_section_id)
-                  .where("display_order >= ?", display_order)
-                  .update_all("display_order = display_order+1")
+                .where("display_order >= ?", display_order)
+                .update_all("display_order = display_order+1")
           end
         end
       end
@@ -405,7 +416,7 @@ module SurveyorGui
 
       def _update_group_id
         @question_group = @question_group || self.question_group ||
-          QuestionGroup.create!(text: @text, display_type: :grid)
+            QuestionGroup.create!(text: @text, display_type: :grid)
         self.question_group_id = @question_group.id
       end
 

@@ -2,6 +2,7 @@ class SurveyorGui::QuestionsController < ApplicationController
   # layout 'surveyor_gui/surveyor_gui_blank'
 
   layout 'surveyor_gui/surveyor_gui_default'
+  include ActionView::Helpers::SanitizeHelper
 
   def new
     @title = "Add Question"
@@ -83,11 +84,11 @@ class SurveyorGui::QuestionsController < ApplicationController
   def destroy
     question = Question.find(params[:id])
     if !question.survey_section.survey.template && question.survey_section.survey.response_sets.count > 0
-      flash[:error]="Reponses have already been collected for this survey, therefore it cannot be modified. Please create a new survey instead."
+      flash[:error]="Responses have already been collected for this survey, therefore it cannot be modified. Please create a new survey instead."
       return false
     end
-    if !question.dependency_conditions.blank?
-      render :text=>"The following questions have logic that depend on this question: \n\n"+question.dependency_conditions.map{|d| " - "+d.dependency.question.text}.join('\n')+"\n\nPlease delete logic before deleting this question.".html_safe
+    if question.dependent_questions.any?
+      render :text=> dependent_delete_failure_message(question)
       return
     end
     if question.part_of_group?
@@ -195,5 +196,15 @@ class SurveyorGui::QuestionsController < ApplicationController
     else
       prev_question.display_order + 1
     end
+  end
+
+  def dependent_delete_failure_message(question)
+
+    questions = question.dependent_questions.map do |d|
+      question = d.dependency.question||d.dependency.question_group
+      " - #{strip_tags(question.text)}"
+    end.join('\n')
+
+    "The following questions have logic that depend on this question: \n\n"+ questions +"\n\nPlease delete logic before deleting this question.".html_safe
   end
 end
