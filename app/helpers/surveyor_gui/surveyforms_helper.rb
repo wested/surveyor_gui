@@ -87,6 +87,14 @@ module SurveyorGui
       end
     end
 
+    def question_group_edit_url_based_on_question_type(question)
+      if [:group_inline, :group_default, :repeater].include?(question.question_group.question_type_id)
+        surveyor_gui.edit_question_group_url(question.question_group.id, survey_section_id: question.survey_section.id)
+      else
+        surveyor_gui.edit_question_url(question.id, survey_section_id: question.survey_section.id)
+      end
+    end
+
     private
     def _render_initial_group(q, ss)
       if @current_group.nil?
