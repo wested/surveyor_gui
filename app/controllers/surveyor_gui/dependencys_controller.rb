@@ -15,7 +15,7 @@ class SurveyorGui::DependencysController < ApplicationController
 
   def edit
     prep_variables
-    @title = "Edit Logic for Question "+@this_question
+    @title = "Edit Logic for Question"
 
     render 'edit', layout: false
   end
@@ -47,6 +47,7 @@ class SurveyorGui::DependencysController < ApplicationController
 
     else
       prep_variables
+      @title = "Edit Logic for Question"
       render :action => 'edit', :layout => false, status: :unprocessable_entity
     end
   end
@@ -259,7 +260,7 @@ class QuestionCollection
   private
 
   def _get_description(question)
-    @question_number.to_s + ') ' + (question.part_of_group? ? question.question_group.text + ": " : "") +question.text
+    ActionController::Base.helpers.strip_tags(@question_number.to_s + ') ' + (question.part_of_group? ? question.question_group.text + ": " : "") + question.text).truncate(600)
   end
 
   def _add_to_collection(question)

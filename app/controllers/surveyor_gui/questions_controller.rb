@@ -2,7 +2,6 @@ class SurveyorGui::QuestionsController < ApplicationController
   # layout 'surveyor_gui/surveyor_gui_blank'
 
   layout 'surveyor_gui/surveyor_gui_default'
-  include ActionView::Helpers::SanitizeHelper
 
   def new
     @title = "Add Question"
@@ -202,7 +201,7 @@ class SurveyorGui::QuestionsController < ApplicationController
 
     questions = question.dependent_questions.map do |d|
       question = d.dependency.question||d.dependency.question_group
-      " - #{strip_tags(question.text)}"
+      " - #{ActionController::Base.helpers.strip_tags(question.text)}"
     end.join('\n')
 
     "The following questions have logic that depend on this question: \n\n"+ questions +"\n\nPlease delete logic before deleting this question.".html_safe
