@@ -69,7 +69,7 @@ module SurveyorGui
 
     def row_label_if_question_group(question)
       if question.part_of_group?
-        "<span class=\"row_name\">#{question.text}: </span>".html_safe
+        "<span class=\"row_name\">#{question.text}</span>".html_safe
       end
     end
 
