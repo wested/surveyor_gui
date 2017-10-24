@@ -105,17 +105,17 @@
 
   <% when :number -%>
     <!-- Prefix -->
-    <span class="fl prefix">
+    <span class="prefix">
       <% if f.object.answers.first.text.include?('|') %>
         <%= f.object.answers.first.text.split('|')[0] %>&nbsp;
       <% end %>
     </span>
 
     <!-- Number -->
-    <%= f.input :dummy_answer, :as=>:string, :label=>false, :input_html=>{:size=>"10"}, :wrapper_html=>{:class=>'fl notfirst number'} %>
+    <%= f.input :dummy_answer, :as=>:string, :label=>false, :input_html=>{:size=>"10"}, :wrapper_html=>{:class=>'notfirst number'} %>
 
     <!-- Suffix -->
-    <span class="suffix fl">
+    <span class="suffix">
       &nbsp;
       <%= f.object.answers.first.text.split('|')[1] %>
     </span>

@@ -209,8 +209,8 @@ body
           margin-left: 4.5em
 
 
-        span.comments_text
-          :margin-left 3.5em
+        span.comments_text .control-group
+          :margin-left 3em
           input
             :margin-left 1em
           label
@@ -244,7 +244,6 @@ body
             span.radio, span.checkbox
               :width auto
               :margin 1em 0 0
-              :float left
 
         div.question_group.default
           div.slider
@@ -323,7 +322,6 @@ body
 
     div.question_dynamically_generate
       span.radio , span.checkbox
-        :float left
         :margin 0
         :width auto
         input
@@ -331,7 +329,7 @@ body
 
     .inner_question
       span.checkbox
-        :float left
+
     .inner_question
       .row_name
         :margin-left 3em
@@ -361,6 +359,8 @@ body
     div.string, span.prefix, span.suffix, select, textarea, .ui-slider, label, div.date_picker, div.file
       :margin-top 1em
 
+    .control-group.number
+      display: inline-block
     .number input.string
       :margin-left 0
 
