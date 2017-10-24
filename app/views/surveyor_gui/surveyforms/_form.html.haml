@@ -34,7 +34,7 @@
     %span{:style => "position:relative; float: right;"}
       Template? 
 
-    .sortable_sections{"data-survey_locked" => @survey_locked}
+    .sections{"data-survey_locked" => @survey_locked, class: ("sortable_sections" unless params[:action] == "show")}
       = render "survey_section_fields", :s => builder , :f => f
 
     - if @survey_locked

@@ -3,8 +3,10 @@
     - if s.object.id
       = div_for(s.object) do
         %h2{:style => "position:relative;"}
-          %span.fl.ui-icon.ui-icon-arrowthick-2-n-s
-          &nbsp
+
+          - unless params[:action] == "show"
+            %span.fl.ui-icon.ui-icon-arrowthick-2-n-s
+            &nbsp
           %span{id: "sectionTitle#{s.object.id}"}= s.object.title
 
           .section_top_button_bar
@@ -30,7 +32,7 @@
 
                 - if session[:cut_question]
                   %button.btn.btn-primary#paste_question{"data-paste_question_surveyform_url" => surveyor_gui.paste_question_surveyform_url(id: f.object.id, survey_section_id:  s.object.id), :type => "button"} Paste Question
-            .sortable_questions{:id => "sortable_question#{s.object.id.to_s}"}
+            %div{:id => "sortable_question#{s.object.id.to_s}", class: ("sortable_questions" unless params[:action] == "show")}
               = s.simple_fields_for :questions do |q|
                 = render_questions_and_groups_helper q, s
             - if !@survey_locked && s.object.modifiable
