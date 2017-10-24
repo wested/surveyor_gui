@@ -49,11 +49,8 @@
                       data-question_id="<%= f.object.id.to_s %>"
               >Delete Logic</button>
 
-
               <button type="button" id="edit_logic" class="btn btn-primary"
-                      data-replace_question_url="<%=surveyor_gui.replace_question_surveyform_path(:question_id => f.object.id)%>"
-                      data-edit_dependency_url="<%= surveyor_gui.edit_dependency_url(f.object.id) %>"
-                      data-question_id="<%= f.object.id.to_s %>"
+                      data-url="<%= surveyor_gui.edit_dependency_url(f.object.id) %>"
               >Edit Logic</button>
 
             <% elsif f.object.survey_section.survey.questions.count > 1 -%>

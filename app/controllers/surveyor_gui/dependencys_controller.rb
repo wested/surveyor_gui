@@ -16,6 +16,8 @@ class SurveyorGui::DependencysController < ApplicationController
   def edit
     prep_variables
     @title = "Edit Logic for Question "+@this_question
+
+    render 'edit', layout: false
   end
 
   def create
@@ -23,12 +25,12 @@ class SurveyorGui::DependencysController < ApplicationController
     if @question.save
       redirect_to :back
     else
+      @title = "Add Logic to Question"
       render :action => 'new', :layout => 'surveyor_gui/surveyor_gui_blank'
     end
   end
 
   def update
-    @title = "Update Question"
     @question = Question.includes(:answers).find(params[:id])
     if @question.part_of_group?
       update_object = @question.question_group

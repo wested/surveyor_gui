@@ -20,7 +20,7 @@
           %span{:style => "float:right;"}
             - if f.object.question_group.dependent?
               %button.btn.btn-primary#delete_logic{"data-dependency_url" => surveyor_gui.dependency_url(f.object.id), "data-question_id" => f.object.id.to_s, "data-replace_question_url" => surveyor_gui.replace_question_surveyform_path(:question_id => f.object.id), :type => "button"} Delete Logic
-              %button.btn.btn-primary#edit_logic{"data-edit_dependency_url" => surveyor_gui.edit_dependency_url(f.object.id), "data-question_id" => f.object.id.to_s, "data-replace_question_url" => surveyor_gui.replace_question_surveyform_path(:question_id => f.object.id), :type => "button"} Edit Logic
+              %button.btn.btn-primary#edit_logic{"data-url" => surveyor_gui.edit_dependency_url(f.object.id), :type => "button"} Edit Logic
             - elsif f.object.survey_section.survey.questions.where("question_group_id != #{f.object.question_group.id} || question_group_id is null").any?
               %button.btn.btn-primary#add_logic{"data-url" => surveyor_gui.new_dependency_url(:id=>f.object.id), :type => "button"} Add Logic
       %br/
