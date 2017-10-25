@@ -422,10 +422,10 @@ module SurveyorGui
       end
 
       def _remove_group
-        if part_of_group?
-          question_group.questions.map{|q| q.destroy if q.id != id}
-          write_attribute(:question_group_id, nil)
-        end
+        # if part_of_group?
+        #   question_group.questions.map{|q| q.destroy if q.id != id}
+        #   write_attribute(:question_group_id, nil)
+        # end
       end
 
       def _preceding_questions_numbered

@@ -1,7 +1,7 @@
 %hr
 
 = simple_fields_for 'question', @questions do |f|
-  = f.input :dropdown_column_count, :collection =>  10.times.map{|i| [(i+1).to_s + " column".pluralize(i+1), i+1]},  :as => :select, :label => "Number of columns:", :include_blank => false
+  = f.input :dropdown_column_count, :collection =>  10.times.map{|i| [(i+1).to_s + " column".pluralize(i+1), i+1]},  :as => :select, :label => "Number of columns:", :include_blank => false, selected: @question_group.columns.count
 
   = f.simple_fields_for :question_group, @question_group do |qg|
     = qg.hidden_field :id
@@ -21,7 +21,7 @@
   .row
     .col-md-4
       = f.input :other, label: "Add user determined choice?", as: :boolean, wrapper_html: { class: "horizontal-checkbox" }
-      = f.input :other_text,                             |
+      = f.input :other_text,
         placeholder: "Other",
         label: "Custom text for <i>other</i>".html_safe,
         hint: "if chosen will display input box",
