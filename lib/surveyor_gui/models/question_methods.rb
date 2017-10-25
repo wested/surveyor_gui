@@ -81,7 +81,7 @@ module SurveyorGui
           #this will be a problem if two people are editing the survey at the same time and do a survey preview - highly unlikely though.
           self.survey_section.survey.response_sets.where('test_data = ?',true).each {|r| r.destroy}
         end
-        if self.id && !survey_section.survey.template && survey_section.survey.response_sets.count>0
+        if self.id && self.survey_section && !survey_section.survey.template && survey_section.survey.response_sets.count>0
           errors.add(:base,"Reponses have already been collected for this survey, therefore it cannot be modified. Please create a new survey instead.")
           return false
         end
@@ -362,8 +362,9 @@ module SurveyorGui
       end
 
       def text=(txt)
+        return if destroyed?
         write_attribute(:text, txt)
-        if part_of_group? && question_group.display_type != "inline"
+        if part_of_group? && (question_group.display_type != "inline" && question_group.display_type != "default")
           question_group.update_attributes(text: txt)
         end
         @text = txt

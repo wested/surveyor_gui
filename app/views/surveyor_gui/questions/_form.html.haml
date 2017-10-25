@@ -15,8 +15,11 @@
     - if question.is_a? QuestionGroup
 
       = hidden_field_tag "converted_question_id", params[:question_id]
-      = f.hidden_field :question_id
+
       = f.input :survey_section_id, as: :hidden, input_html: { value: @survey_section_id }
+
+      - if question.question_type_id == :group_default
+        = f.hidden_field :question_id
 
     = f.input :text , :label => "Question", :input_html=>{:size=>'55', value: adjusted_text(question), class: "tinymce"}
 

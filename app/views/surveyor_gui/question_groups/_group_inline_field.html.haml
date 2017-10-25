@@ -5,7 +5,8 @@
         .col-md-6
           %span.handle
             %span.ui-icon.ui-icon-arrowthick-2-n-s
-          = q.hidden_field :survey_section_id, value: @survey_section_id
+          - unless @question_group.question_type_id == :group_default
+            = q.hidden_field :survey_section_id, value: @survey_section_id
           = q.hidden_field :id
           = q.input :text, label: false, wrapper_html:{class: "question"}, input_html: { class: "tinymce" }
         .col-md-2

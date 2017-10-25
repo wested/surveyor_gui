@@ -69,7 +69,7 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
   def update
     @title = "Update Question Group"
     @question_group = QuestionGroup.includes(:questions).find(params[:id])
-    @survey_section = SurveySection.find(question_group_params[:survey_section_id])
+    @survey_section = @question_group.questions.first.survey_section
 
     if @question_group.update_attributes(question_group_params)
 
@@ -83,7 +83,8 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
       rescue
         scrubbed_params = question_group_params.to_hash
         scrubbed_params.delete("questions_attributes")
-        QuestionGroup.create!(scrubbed_params)
+        new_question_group = QuestionGroup.create!(scrubbed_params)
+        Question.where(question_group_id: @question_group.id).update_all(question_group_id: new_question_group.id)
       end
     else
       @survey_section = SurveySection.find(question_group_params[:survey_section_id])
