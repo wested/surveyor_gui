@@ -51,21 +51,25 @@ SurveyorGui::Engine.routes.draw do
   get '/dependency/render_dependency_conditions_partial', :to => 'dependencys#render_dependency_conditions_partial'
 
   resources :reports,
-    :only=>[
-            'show',
-            'preview',
-            'show_pdf'] do
-      member do
-        get 'show'
-        get 'preview'
-        get 'show_pdf'
-      end
+            :only=>[
+                'show',
+                'preview',
+                'show_pdf'] do
+    member do
+      get 'show'
+      get 'preview'
+      get 'show_pdf'
     end
+  end
   resources :survey, only: ['show'] do
   end
-  resources :responses, only: ['show', 'index', 'preview'] do
+  resources :responses, only: ['show', 'index', 'preview', 'destroy_all'] do
     member do
       get 'preview'
+    end
+
+    collection do
+      delete 'destroy_all'
     end
   end
 end

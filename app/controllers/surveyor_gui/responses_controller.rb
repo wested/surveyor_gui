@@ -8,9 +8,9 @@ class SurveyorGui::ResponsesController < ApplicationController
     @title = "Survey Responses"
     @response_sets = Survey.find_by_id(params[:id]).response_sets
   end
- 
-  def preview 
-    user_id = defined?(current_user) && current_user ? current_user.id : nil 
+
+  def preview
+    user_id = defined?(current_user) && current_user ? current_user.id : nil
     @title = "Show Response"
     @survey = Survey.find(params[:survey_id])
     @response_set = ResponseSet.create(:survey => @survey, :user_id => user_id, :test_data => true)
@@ -21,7 +21,7 @@ class SurveyorGui::ResponsesController < ApplicationController
       flash[:notice] = "Survey/Questionnnaire not found."
       redirect_to :back
     end
-    render :show    
+    render :show
   end
 
   def show
@@ -37,5 +37,13 @@ class SurveyorGui::ResponsesController < ApplicationController
       flash[:error] = "Survey/Questionnnaire not found."
       redirect_to :back
     end
+  end
+
+  def destroy_all
+    survey = Survey.find(params[:survey_id])
+
+    survey.response_sets.destroy_all
+
+    redirect_to :back
   end
 end
