@@ -29,6 +29,7 @@ module SurveyorGui
         base.send :belongs_to, :question_type
 
         base.send :validate, :no_responses
+        base.send :validates_presence_of, :survey_section
         base.send :before_destroy, :no_responses, :no_dependent_questions
         base.send :after_save, :build_complex_questions
         base.send :before_save, :make_room_for_question
@@ -75,7 +76,7 @@ module SurveyorGui
       def no_responses
         #below is code to fix a bizarre bug. When triggered by the "cut" function, for some reason survey_id is erased. Have not found reason yet. Temporary fix.
         if !survey_section && self.id
-          self.reload
+          self.reload unless self.destroyed?
         end
         if self.id && self.survey_section && self.survey_section.survey
           #this will be a problem if two people are editing the survey at the same time and do a survey preview - highly unlikely though.
