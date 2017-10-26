@@ -93,6 +93,19 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
 
       render "surveyor_gui/questions/new", locals: { question: @question_group }
     end
+
+  rescue Exception => e
+    if e.is_a? CannotDeleteException
+      @survey_section = SurveySection.find(question_group_params[:survey_section_id])
+      @survey = @survey_section.survey
+      @survey_section_id = question_group_params[:survey_section_id]
+
+      @question_group.errors.add(:base, e.message)
+
+      render "surveyor_gui/questions/new", locals: { question: @question_group }
+    else
+      raise e
+    end
   end
 
   def render_group_inline_partial

@@ -29,7 +29,7 @@ module SurveyorGui
         base.send :belongs_to, :question_type
 
         base.send :validate, :no_responses
-        base.send :before_destroy, :no_responses
+        base.send :before_destroy, :no_responses, :no_dependent_questions
         base.send :after_save, :build_complex_questions
         base.send :before_save, :make_room_for_question
 
@@ -84,6 +84,13 @@ module SurveyorGui
         if self.id && self.survey_section && !survey_section.survey.template && survey_section.survey.response_sets.count>0
           errors.add(:base,"Reponses have already been collected for this survey, therefore it cannot be modified. Please create a new survey instead.")
           return false
+        end
+      end
+
+      # prevent a question from being deleted if it has dependent questions - ie. there is logic in another question for it
+      def no_dependent_questions
+        if self.dependent_questions.count > 0
+          raise CannotDeleteException.new("There are questions that include this question in logic and therefore cannot be deleted. Please remove this question from any other questions that include it in their logic.")
         end
       end
 
@@ -444,4 +451,7 @@ module SurveyorGui
       end
     end
   end
+end
+
+class CannotDeleteException < Exception
 end
