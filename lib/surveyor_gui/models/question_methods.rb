@@ -372,7 +372,7 @@ module SurveyorGui
       def text=(txt)
         return if destroyed?
         write_attribute(:text, txt)
-        if part_of_group? && (question_group.display_type != "inline" && question_group.display_type != "default")
+        if part_of_group? && ( !%w(inline default repeater).include?(question_group.display_type) )
           question_group.update_attributes(text: txt)
         end
         @text = txt
