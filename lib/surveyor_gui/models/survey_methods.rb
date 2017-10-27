@@ -7,10 +7,12 @@ module SurveyorGui
                   :survey_sections_attributes if defined? ActiveModel::MassAssignmentSecurity
         base.send :has_many, :survey_sections, :dependent => :destroy
         base.send :has_many, :questions, through: :survey_sections
+        base.send :has_many, :question_groups, through: :questions
+
         base.send :accepts_nested_attributes_for, :survey_sections, :allow_destroy => true
 
         base.send :validate, :no_responses
-        base.send :before_destroy, :no_responses, prepend: true
+        base.send :before_destroy, :no_responses, :remove_logic, prepend: true
 
       end
 
@@ -26,6 +28,12 @@ module SurveyorGui
           errors.add(:base,"Responses have already been collected for this survey, therefore it cannot be modified. Please create a new survey instead.")
           return false
         end
+      end
+
+      # first delete all logic from questions since questions with logic can't be deleted
+      def remove_logic
+        Dependency.where(question: questions.unscope(:order).all).destroy_all
+        Dependency.where(question_group: question_groups.unscope(:order).all).destroy_all
       end
 
     end
