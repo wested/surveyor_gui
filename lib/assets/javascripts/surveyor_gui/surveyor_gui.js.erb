@@ -1201,21 +1201,21 @@ function update_datepickers(){
         .datepicker({
             duration: 'fast',
             showOn: 'both',
-            buttonImage: '/../../assets/datepicker.gif',
+            buttonImage: '<%= asset_path('datepicker.gif') %>',
             buttonImageOnly: true
         });
     $("input.datetime_picker")
         .datetimepicker({
             duration: 'fast',
             showOn: 'both',
-            buttonImage: '../../assets/datepicker.gif',
+            buttonImage: '<%= asset_path('datepicker.gif') %>',
             buttonImageOnly: true
         });
     $("input.time_picker")
         .timepicker({
             duration: 'fast',
             showOn: 'both',
-            buttonImage: '../../assets/datepicker.gif',
+            buttonImage: '<%= asset_path('datepicker.gif') %>',
             buttonImageOnly: true
         });
 }
