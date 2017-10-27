@@ -48,23 +48,33 @@ class SurveyorGui::QuestionsController < ApplicationController
   # helper_method :adjusted_text
 
   def create
-    Question.where(:survey_section_id => params[:question][:survey_section_id])
-        .where("display_order >= ?", params[:question][:display_order])
-        .update_all("display_order = display_order+1")
-    if !params[:question][:answers_attributes].blank? && !params[:question][:answers_attributes]['0'].blank?
-      params[:question][:answers_attributes]['0'][:original_choice] = params[:question][:answers_attributes]['0'][:text]
-    end
-    @question = Question.new(question_params)
-    if @question.save
-      @question.answers.each_with_index {|a, index| a.destroy if index > 0} if @question.pick == 'none'
-      #load any page - if it has no flash errors, the colorbox that contains it will be closed immediately after the page loads
-      # render :inline => '<div id="cboxQuestionId">'+@question.id.to_s+'</div>', :layout => 'surveyor_gui/surveyor_gui_blank'
 
-      redirect_to surveyor_gui.edit_surveyform_url(@question.survey_section.survey)
+    Question.transaction do
+      Question.where(:survey_section_id => params[:question][:survey_section_id])
+          .where("display_order >= ?", params[:question][:display_order])
+          .update_all("display_order = display_order+1")
+      if !params[:question][:answers_attributes].blank? && !params[:question][:answers_attributes]['0'].blank?
+        params[:question][:answers_attributes]['0'][:original_choice] = params[:question][:answers_attributes]['0'][:text]
+      end
+      @question = Question.new(question_params)
+      if @question.save
+        @question.answers.each_with_index {|a, index| a.destroy if index > 0} if @question.pick == 'none'
+        #load any page - if it has no flash errors, the colorbox that contains it will be closed immediately after the page loads
+        # render :inline => '<div id="cboxQuestionId">'+@question.id.to_s+'</div>', :layout => 'surveyor_gui/surveyor_gui_blank'
 
-    else
-      render "new", locals: { question: @question }
+        redirect_to surveyor_gui.edit_surveyform_url(@question.survey_section.survey)
+
+      else
+        @title = "Add Question"
+        @survey_section = @question.survey_section
+        @survey = Survey.find(@survey_section.survey_id)
+
+        handle_errors
+
+        render "new", locals: { question: @question }
+      end
     end
+
   end
 
   def update
@@ -76,6 +86,10 @@ class SurveyorGui::QuestionsController < ApplicationController
       #load any page - if it has no flash errors, the colorbox that contains it will be closed immediately after the page loads
       redirect_to surveyor_gui.edit_surveyform_url(@question.survey_section.survey)
     else
+      @survey_section = @question.survey_section
+      @survey = Survey.find(@survey_section.survey_id)
+
+      handle_errors
       render "new", locals: { question: @question }
     end
   end
@@ -186,6 +200,13 @@ class SurveyorGui::QuestionsController < ApplicationController
   private
   def question_params
     ::PermittedParams.new(params[:question]).question
+  end
+
+  def handle_errors
+    if @question.part_of_group?
+      @question.errors.clear
+      @question.errors.add(:base, "Please be sure you have filled in all required fields.")
+    end
   end
 
   def _get_prev_display_order(prev_question)
