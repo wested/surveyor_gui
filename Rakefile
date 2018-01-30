@@ -29,6 +29,8 @@ namespace :gui_testbed do
       gem_file_contents = File.read('Gemfile')
       gem_file_contents.sub!(/^(gem 'rails'.*)$/, %Q{ \\1\nplugin_root = File.expand_path('../..', __FILE__)\ngem 'surveyor_gui', :path => plugin_root\ngem 'therubyracer'\ngem 'surveyor', github: 'NUBIC/surveyor'})
 
+      gem_file_contents.gsub!("gem 'byebug'", "gem 'byebug', '~> 8.2'") # latest version of byebug doesn't support Ruby 2.1.2
+
       File.open('Gemfile', 'w'){|f| f.write(gem_file_contents) }
 
       # not sure why turbolinks gives test problems, anyway better to avoid it?

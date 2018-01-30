@@ -113,10 +113,13 @@ module SurveyFormsCreationHelpers
 
     def title_the_first_section(title="Accommodations")
       #And I click "Edit Section Title"
-      click_button "Edit Section Title"
+      click_link "Edit Section Title"
+
+      page.save_screenshot(File.join(Rails.root, "tmp", "modal.png"), :full => true)
+      find(".modal")
       #Then I see a window pop-up
-      expect(page).to have_css('iframe')
-      within_frame 0 do
+      expect(page).to have_css('.modal form')
+      within ".modal form" do
       #And I enter a title
         fill_in "Title", with: title
       #And I save the title
