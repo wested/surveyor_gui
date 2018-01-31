@@ -18,11 +18,12 @@ describe "surveyor_gui/questions/edit.html.erb" do
   before do
     @routes = SurveyorGui::Engine.routes
     assign(:question, question)
-  end    
+    assign(:survey, question.survey_section.survey)
+  end
   
   it "renders a form" do
-    render 
-    expect(response).to have_selector("form")
+    render template: "surveyor_gui/questions/edit.html.erb", locals: { question: question }
+    expect(rendered).to have_selector("form")
   end
 
   it "will post a new question on submit" do

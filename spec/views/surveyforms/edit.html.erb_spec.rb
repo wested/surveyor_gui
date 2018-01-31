@@ -87,40 +87,40 @@ describe "surveyor_gui/surveyforms/edit.html.erb" do
   
   it "renders a form" do
     render
-    expect(response).to have_selector("form")
+    expect(rendered).to have_selector("form")
   end
 
   it "shows text questions" do
     render
-    expect(response).to match(/1\) What is your favorite color?/)
+    expect(rendered).to match(/1 \).*What is your favorite color?/m)
   end
   
   it "shows multiple choice questions" do
     render
-    expect(response).to have_selector("input[type='radio'][value='Standard']")
-    expect(response).to have_selector("input[type='radio'][value='Double']")
-    expect(response).to have_selector("input[type='radio'][value='Deluxe']")
+    expect(rendered).to have_selector("input[type='radio'][value='Standard']")
+    expect(rendered).to have_selector("input[type='radio'][value='Double']")
+    expect(rendered).to have_selector("input[type='radio'][value='Deluxe']")
   end
   
   it "shows grid questions" do
     render
-    expect(response).to match (/Rate the meals/)
-    expect(response).to match(/3\) Rate the meals\..*Good.*Bad.*Ugly.*(?<!\d\)\s)Breakfast.*(?<!\d\)\s)Lunch.*(?<!\d\)\s)Dinner.*/m)
+    expect(rendered).to match (/Rate the meals/)
+    expect(rendered).to match(/3 \).*Rate the meals.*Good.*Bad.*Ugly.*(?<!\d\)\s)Breakfast.*(?<!\d\)\s)Lunch.*(?<!\d\)\s)Dinner/m)
   end
 
   it "shows grid dropdowns" do
     render    
-    expect(response).to match(/5\) Pick your favorite sport.*Spring.*Summer.*Fall.*Winter.*(?<!\d\)\s)TV.*(?<!\d\)\s)Arena/m)
+    expect(rendered).to match(/5 \).*Pick your favorite sport.*Spring.*Summer.*Fall.*Winter.*(?<!\d\)\s)TV.*(?<!\d\)\s)Arena/m)
   end
   
   it "maintains correct question numbering after grid questions" do
     render
-    expect(response).to match(/4\) What brand of ketchup do they use?/)
+    expect(rendered).to match(/4 \).*What brand of ketchup do they use?/m)
   end
   
   it "shows a prefix and suffix for number questions" do
     render
-    expect(response).to match(/How much do you spend on Cheese Doodles?/)
+    expect(rendered).to match(/How much do you spend on Cheese Doodles?/)
   end
   
 end
