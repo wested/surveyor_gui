@@ -11,7 +11,7 @@ module SurveyorGui
 
         base.send :accepts_nested_attributes_for, :survey_sections, :allow_destroy => true
 
-        base.send :validate, :no_responses
+        # base.send :validate, :no_responses
 
         # Giving the admin to ability to delete surveys with responses because test surveys get created and then can't be deleted
         # base.send :before_destroy, :no_responses, :remove_logic, prepend: true
@@ -23,15 +23,15 @@ module SurveyorGui
 
       #don't let a survey be deleted or changed if responses have been submitted
       #to ensure data integrity
-      def no_responses
-        if self.id
-          #this will be a problem if two people are editing the survey at the same time and do a survey preview - highly unlikely though.
-          self.response_sets.where('test_data = ?',true).each {|r| r.destroy}
-        end
-        if !template && response_sets.count>0
-          errors.add(:base,"Responses have already been collected for this survey, therefore it cannot be modified. Please create a new survey instead.")
-          return false
-        end
+      # def no_responses
+      #   if self.id
+      #     #this will be a problem if two people are editing the survey at the same time and do a survey preview - highly unlikely though.
+      #     self.response_sets.where('test_data = ?',true).each {|r| r.destroy}
+      #   end
+      #   if !template && response_sets.count>0
+      #     errors.add(:base,"Responses have already been collected for this survey, therefore it cannot be modified. Please create a new survey instead.")
+      #     return false
+      #   end
       end
 
       # first delete all logic from questions since questions with logic can't be deleted

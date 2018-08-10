@@ -28,9 +28,10 @@ module SurveyorGui
         base.send :mount_uploader, :dummy_blob, BlobUploader
         base.send :belongs_to, :question_type
 
-        base.send :validate, :no_responses
+        # base.send :validate, :no_responses
         base.send :validates_presence_of, :survey_section
-        base.send :before_destroy, :no_responses, :no_dependent_questions
+        # base.send :before_destroy, :no_responses, :no_dependent_questions
+        base.send :before_destroy, :no_dependent_questions
         base.send :after_save, :build_complex_questions
         base.send :before_save, :make_room_for_question
 
@@ -73,20 +74,20 @@ module SurveyorGui
       end
 
       #prevent a question from being modified if responses have been submitted for the survey. Protects data integrity.
-      def no_responses
-        #below is code to fix a bizarre bug. When triggered by the "cut" function, for some reason survey_id is erased. Have not found reason yet. Temporary fix.
-        if !survey_section && self.id
-          self.reload unless self.destroyed?
-        end
-        if self.id && self.survey_section && self.survey_section.survey
-          #this will be a problem if two people are editing the survey at the same time and do a survey preview - highly unlikely though.
-          self.survey_section.survey.response_sets.where('test_data = ?',true).each {|r| r.destroy}
-        end
-        if self.id && self.survey_section && !survey_section.survey.template && survey_section.survey.response_sets.count>0
-          errors.add(:base,"Reponses have already been collected for this survey, therefore it cannot be modified. Please create a new survey instead.")
-          return false
-        end
-      end
+      # def no_responses
+      #   #below is code to fix a bizarre bug. When triggered by the "cut" function, for some reason survey_id is erased. Have not found reason yet. Temporary fix.
+      #   if !survey_section && self.id
+      #     self.reload unless self.destroyed?
+      #   end
+      #   if self.id && self.survey_section && self.survey_section.survey
+      #     #this will be a problem if two people are editing the survey at the same time and do a survey preview - highly unlikely though.
+      #     self.survey_section.survey.response_sets.where('test_data = ?',true).each {|r| r.destroy}
+      #   end
+      #   if self.id && self.survey_section && !survey_section.survey.template && survey_section.survey.response_sets.count>0
+      #     errors.add(:base,"Reponses have already been collected for this survey, therefore it cannot be modified. Please create a new survey instead.")
+      #     return false
+      #   end
+      # end
 
       # prevent a question from being deleted if it has dependent questions - ie. there is logic in another question for it
       def no_dependent_questions
