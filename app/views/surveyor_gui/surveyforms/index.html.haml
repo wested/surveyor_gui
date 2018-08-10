@@ -32,7 +32,7 @@
         %td= survey.title
         %td= survey.survey_version
         %td= survey.response_sets.count
-        %td= survey.response.count
+        %td= survey.responses.count
         %td
           = link_to "Show", survey, class: "btn btn-sm btn-primary"
           = link_to "Edit", edit_surveyform_path(survey), class: "btn btn-sm btn-primary"
