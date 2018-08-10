@@ -12,7 +12,11 @@ module SurveyorGui
         base.send :accepts_nested_attributes_for, :survey_sections, :allow_destroy => true
 
         base.send :validate, :no_responses
-        base.send :before_destroy, :no_responses, :remove_logic, prepend: true
+
+        # Giving the admin to ability to delete surveys with responses because test surveys get created and then can't be deleted
+        # base.send :before_destroy, :no_responses, :remove_logic, prepend: true
+
+        base.send :before_destroy, :remove_logic, prepend: true
 
       end
 
