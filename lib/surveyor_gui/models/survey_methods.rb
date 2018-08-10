@@ -32,7 +32,7 @@ module SurveyorGui
       #     errors.add(:base,"Responses have already been collected for this survey, therefore it cannot be modified. Please create a new survey instead.")
       #     return false
       #   end
-      end
+      # end
 
       # first delete all logic from questions since questions with logic can't be deleted
       def remove_logic
