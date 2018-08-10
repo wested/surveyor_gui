@@ -54,10 +54,10 @@ class SurveyorGui::SurveySectionsController < ApplicationController
 
   def destroy
     @survey_section = SurveySection.find(params[:id])
-    if !@survey_section.survey.template && @survey_section.survey.response_sets.count > 0
-      render :text => "Reponses have already been collected for this survey, therefore it cannot be modified. Please create a new survey instead."
-      return false
-    end
+    # if !@survey_section.survey.template && @survey_section.survey.response_sets.count > 0
+    #   render :text => "Reponses have already been collected for this survey, therefore it cannot be modified. Please create a new survey instead."
+    #   return false
+    # end
     if !@survey_section.modifiable
       render :text => "This section cannot be removed."
       return false

@@ -96,10 +96,10 @@ class SurveyorGui::QuestionsController < ApplicationController
 
   def destroy
     question = Question.find(params[:id])
-    if !question.survey_section.survey.template && question.survey_section.survey.response_sets.count > 0
-      flash[:error]="Responses have already been collected for this survey, therefore it cannot be modified. Please create a new survey instead."
-      return false
-    end
+    # if !question.survey_section.survey.template && question.survey_section.survey.response_sets.count > 0
+    #   flash[:error]="Responses have already been collected for this survey, therefore it cannot be modified. Please create a new survey instead."
+    #   return false
+    # end
     if question.dependent_questions.any?
       render :text=> dependent_delete_failure_message(question)
       return
