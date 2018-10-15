@@ -26,6 +26,10 @@ module SurveyorGui
         @id == :grid_one || @id == :grid_any
       end
 
+      def grid_one?
+        @id == :grid_one
+      end
+
       def build_complex_question_structure(question, args)
         #looks at id and calls the appropriate methods, eg.
         #if question_type.id is pick_one, calls _build_pick_one
