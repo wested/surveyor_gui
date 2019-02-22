@@ -52,5 +52,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'jquery-form-rails', '~> 1.0.1'
   s.add_dependency 'deep_cloneable', '~> 2.0.0'
   s.add_dependency 'lazy_high_charts'
-  s.add_dependency 'tinymce-rails'
+
+  # TODO The editor fails when upgrading to the new 5.0 version.  So will need to be fixed when upgrading the whole project
+  s.add_dependency 'tinymce-rails', '= 4.8.3'
 end
