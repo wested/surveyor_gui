@@ -22,7 +22,6 @@
                   :input_html => generate_pick_none_input_html(r.to_formatted_s, a.default_value_for(@render_context, I18n.locale), a.css_class, a.response_class, disabled, a.input_mask, a.input_mask_placeholder)
     - elsif a.response_class=='blob'
       = ff.input :answer_id, :as => :quiet, :input_html => {:class => a.css_class, :value => a.id}
-      = ff.input :blob, :as => :quiet
       = ff.input :blob, :as => :file, :label => false, :input_html => {"data-object-class"=>ff.object.class.name, "data-object-id"=>ff.object.id, "data-response_set_id" => @response_set.id, :required=>q.mandatory?}
       .filename_with_link{:data=>{'image-path'=>'#{image_path("delete.png")}'}}
         - if !ff.object.blob_identifier.blank?
