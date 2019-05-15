@@ -17,9 +17,8 @@ module SurveyFormsCreationHelpers
     def add_question(&block)
       #make sure prior jquery was completed
       expect(page).not_to have_css('div.jquery_add_question_started, div.jquery_add_section_started')
-      fix_node_error do
-        all('.add-question').last.click
-      end
+
+      all('.add-question').last.click
 
       find('form')
       expect(find('h1')).to have_content("Add Question")

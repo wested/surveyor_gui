@@ -7,7 +7,8 @@ describe Question do
   context "when creating" do
     it "is invalid without #text" do
       question.text = nil
-      expect(question).to have(1).error_on :text
+      question.valid?
+      expect(question.errors[:text].size).to eq(1)
     end
     it "#is_mandantory == false by default" do
       expect(question.mandatory?).to be_falsey

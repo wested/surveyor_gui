@@ -35,7 +35,8 @@ describe ResponseSet do
     it 'is invalid when conflicting' do
       rs2.access_code = 'one'
       expect(rs2).not_to be_valid
-      expect(rs2).to have(1).errors_on(:access_code)
+      rs2.valid?
+      expect(rs2.errors[:access_code].size).to eq(1)
     end
   end
 

@@ -16,14 +16,16 @@ describe ValidationCondition do
 
   it "should be invalid without an operator" do
     @validation_condition.operator = nil
-    expect(@validation_condition).to have(2).errors_on(:operator)
+    @validation_condition.valid?
+    expect(@validation_condition.errors[:operator].size).to eq(2)
   end
 
   it "should be invalid without a rule_key" do
     expect(@validation_condition).to be_valid
     @validation_condition.rule_key = nil
     expect(@validation_condition).not_to be_valid
-    expect(@validation_condition).to have(1).errors_on(:rule_key)
+    @validation_condition.valid?
+    expect(@validation_condition.errors[:rule_key].size).to eq(1)
   end
 
   it "should have unique rule_key within the context of a validation" do
@@ -32,16 +34,19 @@ describe ValidationCondition do
    @validation_condition.rule_key = "2" #rule key uniquness is scoped by validation_id
    @validation_condition.validation_id = 2
    expect(@validation_condition).not_to be_valid
-   expect(@validation_condition).to have(1).errors_on(:rule_key)
+   @validation_condition.valid?
+   expect(@validation_condition.errors[:rule_key].size).to eq(1)
   end
 
   it "should have an operator in Surveyor::Common::OPERATORS" do
     Surveyor::Common::OPERATORS.each do |o|
       @validation_condition.operator = o
-      expect(@validation_condition).to have(0).errors_on(:operator)
+      @validation_condition.valid?
+      expect(@validation_condition.errors[:operator].size).to eq(0)
     end
     @validation_condition.operator = "#"
-    expect(@validation_condition).to have(1).error_on(:operator)
+    @validation_condition.valid?
+    expect(@validation_condition.errors[:operator].size).to eq(1)
   end
 end
 

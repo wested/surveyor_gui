@@ -12,7 +12,8 @@ describe Response, "when saving a response" do
 
   it "should be invalid without a question" do
     @response.question_id = nil
-    expect(@response).to have(1).error_on(:question_id)
+    @response.valid?
+    expect(@response.errors[:question_id].size).to eq(1)
   end
 
   it "should be correct if the question has no correct_answer_id" do

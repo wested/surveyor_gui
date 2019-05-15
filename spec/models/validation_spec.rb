@@ -11,9 +11,12 @@ describe Validation do
 
   it "should be invalid without a rule" do
     @validation.rule = nil
-    expect(@validation).to have(2).errors_on(:rule)
+    @validation.valid?
+    expect(@validation.errors[:rule].size).to eq(2)
+
     @validation.rule = " "
-    expect(@validation).to have(1).errors_on(:rule)
+    @validation.valid?
+    expect(@validation.errors[:rule].size).to eq(1)
   end
 
   # this causes issues with building and saving
@@ -24,11 +27,16 @@ describe Validation do
 
   it "should be invalid unless rule composed of only references and operators" do
     @validation.rule = "foo"
-    expect(@validation).to have(1).error_on(:rule)
+    @validation.valid?
+    expect(@validation.errors[:rule].size).to eq(1)
+
     @validation.rule = "1 to 2"
-    expect(@validation).to have(1).error_on(:rule)
+    @validation.valid?
+    expect(@validation.errors[:rule].size).to eq(1)
+
     @validation.rule = "a and b"
-    expect(@validation).to have(1).error_on(:rule)
+    @validation.valid?
+    expect(@validation.errors[:rule].size).to eq(1)
   end
 end
 describe Validation, "reporting its status" do

@@ -7,7 +7,8 @@ describe Survey do
   context "when creating" do
     it "is invalid without #title" do
       survey.title = nil
-      expect(survey).to have(1).error_on :title
+      survey.valid?
+      expect(survey.errors[:title].size).to eq(1)
     end
     it "adjust #survey_version" do
       original = Survey.new(:title => "Foo")
@@ -29,7 +30,8 @@ describe Survey do
       expect(imposter.save).to be_truthy
       imposter.survey_version = 0
       expect(imposter.save).to be_falsey
-      expect(imposter).to have(1).error_on(:survey_version)
+      imposter.valid?
+      expect(imposter.errors[:survey_version].size).to eq(1)
     end
     it "doesn't adjust #title when" do
       original = FactoryGirl.create(:survey, :title => "Foo")

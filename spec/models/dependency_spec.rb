@@ -11,21 +11,26 @@ describe Dependency do
 
   it "should be invalid without a rule" do
     @dependency.rule = nil
-    expect(@dependency).to have(2).errors_on(:rule)
+    @dependency.valid?
+    expect(@dependency.errors[:rule].size).to eq(2)
+
     @dependency.rule = " "
-    expect(@dependency).to have(1).errors_on(:rule)
+    @dependency.valid?
+    expect(@dependency.errors[:rule].size).to eq(1)
   end
 
   it "should be invalid without a question_id" do
     @dependency.question_id = nil
-    expect(@dependency).to have(1).error_on(:question_id)
+    @dependency.valid?
+    expect(@dependency.errors[:question_id].size).to eq(1)
 
     @dependency.question_group_id = 1
     expect(@dependency).to be_valid
 
     expect(@dependency.question_id).to be_nil
     @dependency.question_group_id = nil
-    expect(@dependency).to have(1).error_on(:question_group_id)
+    @dependency.valid?
+    expect(@dependency.errors[:question_group_id].size).to eq(1)
   end
 
   it "should alias question_id as dependent_question_id" do
@@ -37,11 +42,16 @@ describe Dependency do
 
   it "should be invalid unless rule composed of only references and operators" do
     @dependency.rule = "foo"
-    expect(@dependency).to have(1).error_on(:rule)
+    @dependency.valid?
+    expect(@dependency.errors[:rule].size).to eq(1)
+
     @dependency.rule = "1 to 2"
-    expect(@dependency).to have(1).error_on(:rule)
+    @dependency.valid?
+    expect(@dependency.errors[:rule].size).to eq(1)
+
     @dependency.rule = "a and b"
-    expect(@dependency).to have(1).error_on(:rule)
+    @dependency.valid?
+    expect(@dependency.errors[:rule].size).to eq(1)
   end
 end
 
@@ -52,10 +62,10 @@ describe Dependency, "when evaluating dependency conditions of a question in a r
     @dep2 = Dependency.new(:rule => "A and B", :question_id => 1)
     @dep3 = Dependency.new(:rule => "A or B", :question_id => 1)
     @dep4 = Dependency.new(:rule => "!(A and B) and C", :question_id => 1)
-    
-    @dep_c = mock_model(DependencyCondition, :id => 1, :rule_key => "A", :to_hash => {:A => true})
-    @dep_c2 = mock_model(DependencyCondition, :id => 2, :rule_key => "B", :to_hash => {:B => false})
-    @dep_c3 = mock_model(DependencyCondition, :id => 3, :rule_key => "C", :to_hash => {:C => true})
+
+    @dep_c = double(DependencyCondition, :id => 1, :rule_key => "A", :to_hash => {:A => true})
+    @dep_c2 = double(DependencyCondition, :id => 2, :rule_key => "B", :to_hash => {:B => false})
+    @dep_c3 = double(DependencyCondition, :id => 3, :rule_key => "C", :to_hash => {:C => true})
 
     allow(@dep).to receive(:dependency_conditions).and_return([@dep_c])
     allow(@dep2).to receive(:dependency_conditions).and_return([@dep_c, @dep_c2])

@@ -7,7 +7,8 @@ describe SurveySection do
   context "when creating" do
     it "is invalid without #title" do
       survey_section.title = nil
-      expect(survey_section).to have(1).error_on(:title)
+      survey_section.valid?
+      expect(survey_section.errors[:title].size).to eq(1)
     end
   end
 

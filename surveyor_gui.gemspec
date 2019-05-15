@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'sass-rails','~> 4.0.2'
   s.add_development_dependency 'coffee-rails'
   s.add_development_dependency 'uglifier', '>= 1.0.3'
-  s.add_development_dependency('rspec-rails', '= 2.99')
+  s.add_development_dependency('rspec-rails', '~> 3.0')
   s.add_development_dependency('capybara', '~> 2.3')
   s.add_development_dependency('launchy', '~> 2.4.2')
   s.add_development_dependency('poltergeist')

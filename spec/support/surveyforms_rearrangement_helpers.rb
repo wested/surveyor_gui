@@ -134,7 +134,7 @@ end
 
 shared_context "question_cut_and_paste" do
   include CutAndPaste
-  def initialize
+  def initialize(foo)
     @scenario = construct_scenario
     @item_name = "Question"
   end
@@ -151,7 +151,7 @@ end
 
 shared_context "section_cut_and_paste" do
   include CutAndPaste
-  def initialize
+  def initialize(foo)
     @item_name = "Section"
     @scenario = construct_scenario
   end
