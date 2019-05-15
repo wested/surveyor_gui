@@ -7,7 +7,7 @@ rescue LoadError => e
 end
 
 require 'rspec/rails'
-require 'rspec/autorun'
+#require 'rspec/autorun'
 
 require 'capybara/rails'
 require 'capybara/rspec'
@@ -43,8 +43,6 @@ RSpec.configure do |config|
   config.include SurveyorAPIHelpers
   config.include SurveyorUIHelpers
   config.include WaitForAjax
-
-  config.treat_symbols_as_metadata_keys_with_true_values = true
 
   # == Mock Framework
   #
