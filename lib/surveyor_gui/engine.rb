@@ -2,6 +2,7 @@ require 'rails'
 require 'surveyor_gui'
 require 'haml' # required for view resolution
 require 'tinymce-rails' # required for view resolution
+require 'bootstrap-sass' # required for view resolution
 
 module SurveyorGui
   class Engine < Rails::Engine

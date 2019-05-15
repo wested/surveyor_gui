@@ -2,6 +2,7 @@ require 'spec_helper'
 
 include SurveyFormsCreationHelpers::CreateSurvey
 include SurveyFormsCreationHelpers::BuildASurvey
+include GeneralPurposeHelpers
 
 feature "Bug fix #41", %q{
   As a user
@@ -22,7 +23,7 @@ feature "Bug fix #41", %q{
 
       #Then I can start entering more details, like sections
       expect(page).to have_button "Add Section"
-    
+
       #Given I've added a new question
       add_question do
 
@@ -30,7 +31,7 @@ feature "Bug fix #41", %q{
         select_question_type "Multiple Choice (only one answer)"
 
       #And I frame the question
-        fill_in "question_text", with: "Was it snowing?"
+        tinymce_fill_in "question_text", with: "Was it snowing?"
 
       #And I make it mandatory
         check "question_is_mandatory"
@@ -46,7 +47,7 @@ feature "Bug fix #41", %q{
       end
 
       #Then I can see the question in my survey
-      expect(first_question).to have_content("1) Was it snowing?")
+      expect(first_question).to have_content("1 ) Was it snowing?")
 
       #Then I add another question
       add_question do
@@ -55,7 +56,7 @@ feature "Bug fix #41", %q{
         select_question_type "Text"
 
       #And I frame the question
-        fill_in "question_text", with: "Did you take the T?"
+        tinymce_fill_in "question_text", with: "Did you take the T?"
 
       #And I save the question
         click_button "Save Changes"
@@ -71,9 +72,8 @@ feature "Bug fix #41", %q{
         click_button "Add Logic"
       end
       #Then I see a window pop-up
-      expect(page).to have_css('iframe')
-      within_frame 0 do
-        #And it has logic, which defaults to checking the first question for the answer "yes"
+      #And it has logic, which defaults to checking the first question for the answer "yes"
+      within ".modal" do
         expect(page).to have_content("conditions")
         expect(page).to have_css("option", text: 'Was it snowing?')
         expect(page).to have_css("option", text: 'equal to')
@@ -88,7 +88,7 @@ feature "Bug fix #41", %q{
         select_question_type "Text"
 
       #And I frame the question
-        fill_in "question_text", with: "Was the T running?"
+        tinymce_fill_in "question_text", with: "Was the T running?"
 
       #And I make it mandatory
         check "question_is_mandatory"
@@ -107,8 +107,7 @@ feature "Bug fix #41", %q{
         click_button "Add Logic"
       end
       #Then I see a window pop-up
-      expect(page).to have_css('iframe')
-      within_frame 0 do
+      within ".modal" do
         #And it has logic, which defaults to checking the first question for the answer "yes"
         expect(page).to have_content("conditions")
         expect(page).to have_css("option", text: 'Was it snowing?')
@@ -135,7 +134,7 @@ feature "Bug fix #41", %q{
       #Then I am prevented from continuing and told of mandatory question
       expect(page).to have_content("You must complete all required fields")
 
-      expect(page).to have_content("question 1) Was it snowing?")
+      expect(page).to have_content("Was it snowing?")
 
       #And I don't see the other questions yet
       expect(page).to_not have_content("Did you take the T?")
@@ -149,7 +148,7 @@ feature "Bug fix #41", %q{
 
       #Then I see a question, 'Did you take the T?'
       expect(page).to have_content("Did you take the T?")
-      
+
       #When I click finish
       click_button "Click here to finish"
 
@@ -171,11 +170,15 @@ feature "Bug fix #41", %q{
       click_button "Click here to finish"
 
       #Then I am prevented from continuing and told of mandatory question
+      # DAH!! this intermittently fails!!
+      wait_for_ajax
       expect(page).to have_content("You must complete all required fields")
 
-      expect(page).to have_content("question 2) Was the T running?")
+      expect(page).to have_content("Was the T running?")
 
+      # DAH!! this intermittently fails!!
       #Then I fill in an answer to the mandatory question
+      find("r_3_string_value")
       fill_in "r_3_string_value", with: "It was"
 
       #When I click finish

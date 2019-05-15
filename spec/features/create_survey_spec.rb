@@ -3,6 +3,7 @@ require 'spec_helper'
 #from spec/support/surveyforms_helpers.rb
 include SurveyFormsCreationHelpers::CreateSurvey
 include SurveyFormsCreationHelpers::BuildASurvey
+include GeneralPurposeHelpers
 
 feature "User creates a new survey using a browser",  %q{
   As a user
@@ -38,7 +39,7 @@ feature "User creates a new survey using a browser",  %q{
       expect(page).to have_button "Add Section"
 
       #And questions
-      expect(page).to have_button "Add Question"
+      expect(page).to have_link "Add Question"
     end
   end
 
@@ -50,15 +51,14 @@ feature "User creates a new survey using a browser",  %q{
     scenario "User gives the section a title", :js=>true do
       #Given I've started a new survey
       #When I click the "Edit Section Title" button
-      click_button "Edit Section Title"
+      click_link "Edit Section Title"
 
       #Then I see a window pop-up
-      expect(page).to have_css('iframe')
-      within_frame 0 do
+      within ".modal" do
 
       #And I see a new form for "Edit Survey Section"
         find('form')
-        expect(find('h1')).to have_content("Edit Survey Section")
+        expect(find('h5')).to have_content("Edit Survey Section")
 
       #And I enter a title
         fill_in "Title", with: "Accommodations"
@@ -76,30 +76,27 @@ feature "User creates a new survey using a browser",  %q{
     scenario "User adds a text question", :js=>true do
       #Given I've started a new survey
       #When I click the "Add Question" button
-      click_button "Add Question"
+      click_link "Add Question"
 
       #Then I see a window pop-up
-      expect(page).to have_css('iframe')
-      within_frame 0 do
-
       #And I see a new form for "Add Question"
-        find('form')
-        expect(find('h1')).to have_content("Add Question")
+      find('form')
+      expect(find('h1')).to have_content("Add Question")
 
       #And I frame the question
-        fill_in "question_text", with: "Where did you stay?"
+      tinymce_fill_in "question_text", with: "Where did you stay?"
 
       #And I select the "text" question type
-        select_question_type "Text"
+      select_question_type "Text"
 
       #And I save the question
-        click_button "Save Changes"
+      click_button "Save Changes"
 
       #Then the window goes away
-      end
+
 
       #And I can see the question in my survey
-      expect(first_question).to have_content("1) Where did you stay?")
+      expect(first_question).to have_content("Where did you stay?")
       expect(page).to have_css("input[type='text']")
     end
 
@@ -115,11 +112,11 @@ feature "User creates a new survey using a browser",  %q{
           select_question_type "Number"
 
         #And I frame the question
-          fill_in "question_text", with: "How many days did you stay?"
+          tinymce_fill_in "question_text", with: "How many days did you stay?"
 
-        #And I add the suffix, "Stayed"      
+        #And I add the suffix, "Stayed"
           fill_in "question_prefix", with: "Stayed"
-          
+
         #And I add the suffix, "days"
           fill_in "question_suffix", with: "days at hotel"
 
@@ -130,7 +127,7 @@ feature "User creates a new survey using a browser",  %q{
         end
 
         #And I can see the question in my survey
-        expect(first_question).to have_content("1) How many days did you stay?")
+        expect(first_question).to have_content("How many days did you stay?")
         expect(page).to have_css("input[type='text']")
         expect(page).to have_content(/Stayed.*days at hotel/)
       end
@@ -144,7 +141,7 @@ feature "User creates a new survey using a browser",  %q{
           select_question_type "Multiple Choice (only one answer)"
 
         #And I frame the question
-          fill_in "question_text", with: "What type of room did you get?"
+          tinymce_fill_in "question_text", with: "What type of room did you get?"
 
         #And I add some choices"
           fill_in "question_answers_textbox", with: """Deluxe King
@@ -158,7 +155,7 @@ feature "User creates a new survey using a browser",  %q{
         end
 
         #And I can see the question in my survey
-        expect(first_question).to have_content("1) What type of room did you get?")
+        expect(first_question).to have_content("What type of room did you get?")
         expect(page).to have_css("input[type='radio'][value='Deluxe King']")
         expect(page).to have_css("input[type='radio'][value='Standard Queen']")
         expect(page).to have_css("input[type='radio'][value='Standard Double']")
@@ -173,7 +170,7 @@ feature "User creates a new survey using a browser",  %q{
           select_question_type "Multiple Choice (multiple answers)"
 
         #And I frame the question
-          fill_in "question_text", with: "What did you order from the minibar?"
+          tinymce_fill_in "question_text", with: "What did you order from the minibar?"
 
         #And I add some choices"
           fill_in "question_answers_textbox", with: """Bottled Water
@@ -187,7 +184,7 @@ feature "User creates a new survey using a browser",  %q{
         end
 
         #And I can see the question in my survey
-        expect(first_question).to have_content("1) What did you order from the minibar?")
+        expect(first_question).to have_content("What did you order from the minibar?")
         expect(page).to have_css("input[type='checkbox'][value='Bottled Water']")
         expect(page).to have_css("input[type='checkbox'][value='Kit Kats']")
         expect(page).to have_css("input[type='checkbox'][value='Scotch']")
@@ -202,7 +199,7 @@ feature "User creates a new survey using a browser",  %q{
           select_question_type "Dropdown List"
 
         #And I frame the question
-          fill_in "question_text", with: "1) What neighborhood were you in?"
+          tinymce_fill_in "question_text", with: "1) What neighborhood were you in?"
 
         #And I add some choices"
           fill_in "question_answers_textbox", with: """ Financial District
@@ -231,7 +228,7 @@ feature "User creates a new survey using a browser",  %q{
           select_question_type "Date"
 
         #And I frame the question
-          fill_in "question_text", with: "When did you checkout?"
+          tinymce_fill_in "question_text", with: "When did you checkout?"
 
         #And I save the question
           click_button "Save Changes"
@@ -240,7 +237,7 @@ feature "User creates a new survey using a browser",  %q{
         end
 
         #And I can see the question in my survey
-        expect(first_question).to have_content("1) When did you checkout?")
+        expect(first_question).to have_content("When did you checkout?")
         expect(page).to have_css("div.ui-datepicker",:visible=>false)
 
         #Then I click on the question
@@ -258,7 +255,7 @@ feature "User creates a new survey using a browser",  %q{
           select_question_type "Label"
 
         #And I frame the question
-          fill_in "question_text", with: "You don't need to answer the following questions if you are not comfortable."
+          tinymce_fill_in "question_text", with: "You do not need to answer the following questions if you are not comfortable."
 
         #And I save the question
           click_button "Save Changes"
@@ -267,7 +264,7 @@ feature "User creates a new survey using a browser",  %q{
         end
 
         #And I can see the label in my survey and it has no question number
-        expect(page).to have_content(/(?<!1\)\s)You don't need to answer the following questions if you are not comfortable./)
+        expect(page).to have_content(/(?<!1\)\s)You do not need to answer the following questions if you are not comfortable./)
       end
 
       scenario "User adds a text box question", :js=>true do
@@ -275,10 +272,10 @@ feature "User creates a new survey using a browser",  %q{
         add_question do
 
         #Then I select the "Text Box" question type
-          select_question_type "Text Box (for extended text, like notes, etc.)"
+          select_question_type "Text Box (for notes, etc.)"
 
         #And I frame the question
-          fill_in "question_text", with: "What did you think of the staff?"
+          tinymce_fill_in "question_text", with: "What did you think of the staff?"
 
         #And I save the question
           click_button "Save Changes"
@@ -287,7 +284,7 @@ feature "User creates a new survey using a browser",  %q{
         end
 
         #And I can see the question in my survey
-        expect(first_question).to have_content("1) What did you think of the staff?")
+        expect(first_question).to have_content("What did you think of the staff?")
         expect(page).to have_css("textarea")
       end
 
@@ -299,13 +296,13 @@ feature "User creates a new survey using a browser",  %q{
           select_question_type "Slider"
 
         #And I frame the question
-          fill_in "question_text", with: "What did you think of the food?"
+          tinymce_fill_in "question_text", with: "What did you think of the food?"
 
         #And I add some choices"
           fill_in "question_answers_textbox", with: """Sucked!
                                                      Meh
                                                      Good
-                                                     Wicked good!"""       
+                                                     Wicked good!"""
 
 
         #And I save the question
@@ -315,7 +312,7 @@ feature "User creates a new survey using a browser",  %q{
         end
 
         #And I can see the slider in my survey
-        expect(first_question).to have_content("1) What did you think of the food?")
+        expect(first_question).to have_content("What did you think of the food?")
         expect(page).to have_css(".ui-slider")
 
         #And I can see the text for both ends of the slider (but not the middle)
@@ -333,7 +330,7 @@ feature "User creates a new survey using a browser",  %q{
           select_question_type "Star"
 
         #And I frame the question
-          fill_in "question_text", with: "How would you rate your stay?"
+          tinymce_fill_in "question_text", with: "How would you rate your stay?"
 
         #And I save the question
           click_button "Save Changes"
@@ -342,7 +339,7 @@ feature "User creates a new survey using a browser",  %q{
         end
 
         #And I can see the question in my survey
-        expect(first_question).to have_content("1) How would you rate your stay?")
+        expect(first_question).to have_content("How would you rate your stay?")
 
         #And I see stars!
         expect(page).to have_css('div.star-rating a')
@@ -356,7 +353,7 @@ feature "User creates a new survey using a browser",  %q{
           select_question_type "File Upload"
 
         #And I frame the question
-          fill_in "question_text", with: "Please upload a copy of your bill."
+          tinymce_fill_in "question_text", with: "Please upload a copy of your bill."
 
         #And I save the question
           click_button "Save Changes"
@@ -365,18 +362,18 @@ feature "User creates a new survey using a browser",  %q{
         end
 
         #And I can see the question in my survey
-        expect(first_question).to have_content("1) Please upload a copy of your bill.")
+        expect(first_question).to have_content("Please upload a copy of your bill.")
 
         #And I can browse my files
         expect(page).to have_css("input[type='file']")
       end
-      
+
       scenario "User adds a grid - pick one question", :js=>true do
         #Given I've added a new question
         add_question do
-        
+
         #And I frame the question
-          fill_in "question_text", with: "Rate the service:"
+          tinymce_fill_in "question_text", with: "Rate the service:"
 
         #Then I select the "Star" question type
           select_question_type "Grid (pick one)"
@@ -384,7 +381,7 @@ feature "User creates a new survey using a browser",  %q{
         #And I add columns to the grid
           expect(page).to have_css("#question_grid_columns_textbox")
           fill_in "question_grid_columns_textbox", with: "Poor\nOk\nGood\nOutstanding"
-          
+
         #And I add columns to the grid
           fill_in "question_grid_rows_textbox", with: "Front Desk\nConcierge\nRoom Service\nValet"
 
@@ -395,11 +392,11 @@ feature "User creates a new survey using a browser",  %q{
         end
 
         #And I can see the question in my survey
-        expect(first_question).to have_content("1) Rate the service:")
+        expect(first_question).to have_content("Rate the service:")
 
         #And I see a nice grid of radio buttons
-        expect(page).to have_content(/1\) Rate the service.*Poor.*Ok.*Good.*Outstanding.*(?<!\d\)\s)Front Desk.*(?<!\d\)\s)Concierge.*(?<!\d\)\s)Room Service.*(?<!\d\)\s)Valet/m)
-        
+        expect(page).to have_content(/Rate the service.*Poor.*Ok.*Good.*Outstanding.*(?<!\d\)\s)Front Desk.*(?<!\d\)\s)Concierge.*(?<!\d\)\s)Room Service.*(?<!\d\)\s)Valet/m)
+
         expect(page).to have_css("input[type='radio'][value='Poor']")
         expect(page).to have_css("input[type='radio'][value='Ok']")
         expect(page).to have_css("input[type='radio'][value='Good']")

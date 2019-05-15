@@ -3,6 +3,7 @@ require 'spec_helper'
 #from spec/support/surveyforms_helpers.rb
 include SurveyFormsCreationHelpers::CreateSurvey
 include SurveyFormsCreationHelpers::BuildASurvey
+include GeneralPurposeHelpers
 
 feature "Survey Creator rearranges survey",  %q{
   As a Survey Creator
@@ -69,22 +70,8 @@ feature "Survey Creator rearranges survey",  %q{
     scenario "Survey Creator cuts and pastes questions and sections" do
       #Given that my survey has questions in the wrong sections
       #and sections in the wrong order:
-      puts """
-        started with this survey:
-          Accommodations:
-            Describe your day at Fenway Park.
-          Entertainment:
-            Describe your room.
-          Food:                                """
-      expect(page).to have_content(Regexp.new(
-        """
-        Accommodations.*
-          Describe your day at Fenway Park\..*
-        Entertainment.*
-          Describe your room\..*
-        Food
-        """.gsub(/\n\s*/,"").strip
-        ))
+      page.save_screenshot(File.join(Rails.root, "tmp", "cut_paste_section.png"), :full => true)
+      expect(page).to have_content(/Accommodations.*Describe your day at Fenway Park.*Food.*Entertainment.*Describe your room/)
 
       #When I move questions to the appropriate sections
       cut_question("Describe your day at Fenway Park.")
@@ -97,22 +84,7 @@ feature "Survey Creator rearranges survey",  %q{
       paste_section("under", "Food")
 
       #Then the survey is organized correctly:
-      puts """
-        ended with this survey:
-          Entertainment:
-            Describe your day at Fenway Park.
-          Food:
-          Accommodations:
-            Describe your room.                   """
-      expect(page).to have_content(Regexp.new(
-        """
-        Entertainment.*
-          Describe your day at Fenway Park\..*
-        Food.*
-        Accommodations.*
-          Describe your room\.
-        """.gsub(/\n\s*/,"").strip
-        ))
+      expect(page).to have_content(/Food.*Accommodations.*Describe your room.*Entertainment.*Describe your day at Fenway Park/)
     end
   end
 end

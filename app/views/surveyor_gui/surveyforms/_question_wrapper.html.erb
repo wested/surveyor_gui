@@ -78,7 +78,7 @@
 
         <div class="question_buttons_bottom">
 
-            <%= link_to "Add Question", surveyor_gui.new_question_url(survey_section_id: f.object.survey_section.id, prev_question_id: f.object.id), class: "cut btn btn-primary"  %>
+            <%= link_to "Add Question", surveyor_gui.new_question_url(survey_section_id: f.object.survey_section.id, prev_question_id: f.object.id), class: "cut btn btn-primary add-question"  %>
 
             <% if session[:cut_question] -%>
 

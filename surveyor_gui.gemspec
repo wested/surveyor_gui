@@ -24,18 +24,19 @@ Gem::Specification.new do |s|
   s.add_dependency 'dynamic_form', '~> 1.1.4'
   #s.add_dependency 'jquery-ui-rails'
   s.add_dependency 'jquery-ui-sass-rails'
+  s.add_dependency 'bootstrap-sass', '~> 3.3'
 
-  s.add_development_dependency "sqlite3"
+  s.add_development_dependency "sqlite3", '~> 1.3.0'
 
   s.add_development_dependency('rake', '< 11.0')
   s.add_development_dependency 'sass-rails','~> 4.0.2'
   s.add_development_dependency 'coffee-rails'
   s.add_development_dependency 'uglifier', '>= 1.0.3'
   s.add_development_dependency('rspec-rails', '~> 2.14.2')
-  s.add_development_dependency('capybara', '~> 2.2.1')
+  s.add_development_dependency('capybara', '~> 2.3')
   s.add_development_dependency('launchy', '~> 2.4.2')
   s.add_development_dependency('poltergeist')
-  s.add_development_dependency('capybara-webkit')
+  s.add_development_dependency('capybara-webkit', "= 1.15.1")
   s.add_development_dependency('json_spec', '~> 1.1.1')
   s.add_development_dependency('factory_girl', '~> 4.4.0')
   s.add_development_dependency('database_cleaner', '~> 1.2.0')
@@ -43,7 +44,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency('phantomjs', '~> 2.1')
   s.add_development_dependency('cliver', '~> 0.3')
 
-  s.add_dependency 'surveyor', '~> 1.4.1.pre'
+  # s.add_dependency 'surveyor', '~> 1.4.1.pre'
   s.add_dependency 'will_paginate', '~> 3.0.5'
 
   s.add_dependency 'simple_form', '~> 3.0.2'

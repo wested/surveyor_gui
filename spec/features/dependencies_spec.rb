@@ -16,14 +16,14 @@ feature "User creates a dependency using browser", %q{
   let!(:question2) {FactoryGirl.create(:question, survey_section: survey_section, text: "Who was your concierge?")}
   let!(:answer2) {FactoryGirl.create(:answer, question: question2)}
   before :each do
-    question1.pick = "one" 
+    question1.pick = "one"
     question1.save!
     question1.reload
   end
 
   scenario "user creates a dependency", js: true do
     #Given I have a survey with two questions
-    visit surveyor_gui.surveyforms_path 
+    visit surveyor_gui.surveyforms_path
     expect(page).to have_content("Hotel ratings")
     within "tr", text: "Hotel ratings" do
       click_link "Edit"
@@ -35,8 +35,7 @@ feature "User creates a dependency using browser", %q{
       click_button "Add Logic"
     end
     #Then I see a window pop-up
-    expect(page).to have_css('iframe')
-    within_frame 0 do
+    within ".modal" do
       #And it has logic, which defaults to checking the first question for the answer "yes"
       expect(page).to have_content("conditions")
       expect(page).to have_css("option", text: 'Rate the service')
@@ -51,7 +50,7 @@ feature "User creates a dependency using browser", %q{
     within "li", text: "Hotel ratings" do
       #And I take the newly created survey
       click_button "Take it"
-    end 
+    end
     expect(page).to have_content("Hotel ratings")
     expect(page).to have_content("Rate the service")
     expect(page).to have_css('input[type="radio"][value="'+answer1.id.to_s+'"]')

@@ -56,7 +56,7 @@ describe ResponseSet do
   end
 
   describe '#update_from_ui_hash' do
-    let(:ui_hash) { {} }
+    let(:ui_hash) { HashWithIndifferentAccess.new }
     let(:api_id)  { 'ABCDEF-1234-567890' }
 
     let(:question_id) { 42 }
