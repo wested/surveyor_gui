@@ -101,7 +101,7 @@ describe Answer do
       answer.text = "rails.png"
       answer.display_type = :image
       expect(answer.text_for).to match(/<img.*alt="Rails".*\/>/)
-      expect(answer.text_for).to match(/<img.*src="\/(images|assets)\/rails\.png".*\/>/)
+      expect(answer.text_for).to match(/<img.*src="\/(images|assets)\/rails-.*\.png".*\/>/)
     end
     it "#text_for with #display_type == hidden_label" do
       answer.text = "Red"

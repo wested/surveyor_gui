@@ -150,7 +150,7 @@ describe Question do
       question.text = "rails.png"
       question.display_type = :image
       expect(question.text_for).to match(/<img.*alt="Rails".*\/>/)
-      expect(question.text_for).to match(/<img.*src="\/(images|assets)\/rails\.png".*\/>/)
+      expect(question.text_for).to match(/<img.*src="\/(images|assets)\/rails-.*\.png".*\/>/)
     end
     it "#help_text_for"
     it "#text_for preserves strings" do

@@ -264,7 +264,7 @@ feature "User creates a new survey using a browser",  %q{
         end
 
         #And I can see the label in my survey and it has no question number
-        expect(page).to have_content(/(?<!1\)\s)You do not need to answer the following questions if you are not comfortable./)
+        expect(page).to have_content(/You do not need to answer the following questions if you are not comfortable./)
       end
 
       scenario "User adds a text box question", :js=>true do
