@@ -33,6 +33,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'coffee-rails'
   s.add_development_dependency 'uglifier', '>= 1.0.3'
   s.add_development_dependency('rspec-rails', '~> 3.0')
+
+  # tests fail with capybara 3...lots of custom rspec shenanigans that result in many failing tests...failing rspec
+  # customizations will need to be addressed before upgrading :(
   s.add_development_dependency('capybara', '~> 2.3')
   s.add_development_dependency('launchy', '~> 2.4.2')
   s.add_development_dependency('poltergeist')
