@@ -13,28 +13,28 @@ describe Surveyor::Parser do
     ENV["FILE"]="surveys/kitchen_sink_survey.rb"
     @rake["surveyor"].invoke
 
-    Survey.count.should == 1
-    SurveySection.count.should == 2
-    Question.count.should == 51
-    Answer.count.should == 252
-    Dependency.count.should == 8
-    DependencyCondition.count.should == 12
-    QuestionGroup.count.should == 6
+    expect(Survey.count).to eq(1)
+    expect(SurveySection.count).to eq(2)
+    expect(Question.count).to eq(51)
+    expect(Answer.count).to eq(252)
+    expect(Dependency.count).to eq(8)
+    expect(DependencyCondition.count).to eq(12)
+    expect(QuestionGroup.count).to eq(6)
 
     Survey.all.map(&:destroy)
   end
   it "should return properly parse a UTF8 survey" do
-    pending "failing - not clear why - await update of surveyor"
+    skip "failing - not clear why - await update of surveyor"
     ENV["FILE"]="../spec/fixtures/chinese_survey.rb"
     @rake["surveyor"].invoke
 
-    Survey.count.should == 1
-    SurveySection.count.should == 1
-    Question.count.should == 3
-    Answer.count.should == 15
-    Dependency.count.should == 0
-    DependencyCondition.count.should == 0
-    QuestionGroup.count.should == 1
+    expect(Survey.count).to eq(1)
+    expect(SurveySection.count).to eq(1)
+    expect(Question.count).to eq(3)
+    expect(Answer.count).to eq(15)
+    expect(Dependency.count).to eq(0)
+    expect(DependencyCondition.count).to eq(0)
+    expect(QuestionGroup.count).to eq(1)
 
     Survey.all.map(&:destroy)
   end

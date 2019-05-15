@@ -92,7 +92,7 @@ describe "ui interactions" do
       expect(response_set.for("hair_appointment", "datetime").first.datetime_value).to eq(Time.zone.parse("2014-06-08 17:00:00"))
     end
     it "radio button with date" do
-      pending "better selectors"
+      skip "better selectors"
       # Issue 207 - Create separate fields for date and time
       response_set = start_survey('Everything')
       expect(page).to have_content("What is your birth date?")
@@ -105,7 +105,7 @@ describe "ui interactions" do
       expect(response_set.for("birth_date", "date").first.date_value).to eq("2000-01-01")
     end
     it "checkbox with date" do
-      pending "better selectors"
+      skip "better selectors"
       # Issue 207 - Create separate fields for date and time
       response_set = start_survey('Everything')
       expect(page).to have_content("What is your birth date?")
@@ -132,7 +132,7 @@ describe "ui interactions" do
       expect(response_set.count).to eq(1)
     end
     it "repeater, repeater with a dropdown" do
-      pending "investigate failure later"
+      skip "investigate failure later"
       response_set = start_survey('Everything')
       click_button "Groups"
       expect(page).to have_content("Tell us about your family")
@@ -414,7 +414,7 @@ describe "ui interactions" do
     include_context "favorites"
     include_context "favorites-ish"
     it "takes current survey" do
-      pending "only show one form for multiple versions"
+      skip "only show one form for multiple versions"
       response_set = start_survey('Favorites')
       expect(page).to have_content("What is your favorite color?")
       expect(page).to have_content("redish")
@@ -425,7 +425,7 @@ describe "ui interactions" do
       expect(response_set.count).to eq(1)
     end
     it "takes previous survey" do
-      pending "only show one form for multiple versions"
+      skip "only show one form for multiple versions"
       response_set = start_survey('Favorites', version: '0')
       expect(page).to have_content("What is your favorite color?")
       expect(page).to have_content("red")

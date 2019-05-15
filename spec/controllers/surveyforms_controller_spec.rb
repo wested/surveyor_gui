@@ -37,7 +37,7 @@ describe SurveyorGui::SurveyformsController do
 
       it "set the title to 'manage surveys'" do
         do_get()
-        assigns(:title).should eq("Manage Surveys")
+        expect(assigns(:title)).to eq("Manage Surveys")
       end
 
       it "should not populate an array of templates" do
@@ -60,7 +60,7 @@ describe SurveyorGui::SurveyformsController do
 
       it "set the title to 'manage templates'" do
         do_get(:template=>"true")
-        assigns(:title).should eq("Manage Templates")
+        expect(assigns(:title)).to eq("Manage Templates")
       end
 
       it "should populate an array of templates" do
@@ -240,7 +240,7 @@ describe SurveyorGui::SurveyformsController do
       it "successfully destroys the survey" do
         do_delete
         expect(response).to redirect_to(surveyforms_path)
-        expect(Survey.exists?(survey_with_no_responses.id)).to be_false
+        expect(Survey.exists?(survey_with_no_responses.id)).to be_falsey
       end
     end
 
@@ -252,7 +252,7 @@ describe SurveyorGui::SurveyformsController do
       it "fails to delete the survey" do
         do_delete
         expect(response).to redirect_to(surveyforms_path)
-        expect(Survey.exists?(survey_with_responses.id)).to be_true
+        expect(Survey.exists?(survey_with_responses.id)).to be_truthy
       end
 
       it "displays a flash message warning responses were collected" do

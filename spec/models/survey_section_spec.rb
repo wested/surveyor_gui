@@ -7,7 +7,7 @@ describe SurveySection do
   context "when creating" do
     it "is invalid without #title" do
       survey_section.title = nil
-      survey_section.should have(1).error_on(:title)
+      expect(survey_section).to have(1).error_on(:title)
     end
   end
 
@@ -18,15 +18,15 @@ describe SurveySection do
     before do
       [question_1, question_2, question_3].each{|q| survey_section.questions << q }
     end
-    it{ survey_section.should have(3).questions}
+    it{ expect(survey_section.questions.size).to eq(3)}
     it "gets questions in order" do
-      survey_section.questions.order("display_order asc").should == [question_2, question_3, question_1]
-      survey_section.questions.order("display_order asc").map(&:display_order).should == [1,2,3]
+      expect(survey_section.questions.order("display_order asc")).to eq([question_2, question_3, question_1])
+      expect(survey_section.questions.order("display_order asc").map(&:display_order)).to eq([1,2,3])
     end
     it "deletes child questions when deleted" do
       question_ids = survey_section.questions.map(&:id)
       survey_section.destroy
-      question_ids.each{|id| Question.find_by_id(id).should be_nil}
+      question_ids.each{|id| expect(Question.find_by_id(id)).to be_nil}
     end
   end
 
@@ -48,11 +48,11 @@ describe SurveySection do
       survey.translations << survey_translation
     end
     it "returns its own translation" do
-      YAML.load(survey_translation.translation).should_not be_nil
-      survey_section.translation(:es)[:title].should == "Uno"
+      expect(YAML.load(survey_translation.translation)).not_to be_nil
+      expect(survey_section.translation(:es)[:title]).to eq("Uno")
     end
     it "returns its own default values" do
-      survey_section.translation(:de).should == {"title" => survey_section.title, "description" => survey_section.description}
+      expect(survey_section.translation(:de)).to eq({"title" => survey_section.title, "description" => survey_section.description})
     end
   end
 end
