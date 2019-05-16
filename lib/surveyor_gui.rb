@@ -4,8 +4,8 @@ module SurveyorGui
   autoload :VERSION, 'surveyor_gui/version'
 end
 require 'jquery-rails'
+require 'jquery-ui-rails'
 require 'sass-rails'
-require 'jquery-ui-sass-rails'
 
 require 'will_paginate'
 require 'simple_form'
@@ -15,3 +15,4 @@ require 'carrierwave'
 require 'dynamic_form'
 require 'lazy_high_charts'
 require 'enumerable_extenders'
+require 'bootstrap-sass'

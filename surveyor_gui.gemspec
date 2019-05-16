@@ -22,8 +22,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rails', '~> 4.2'
   s.add_dependency 'dynamic_form', '~> 1.1.4'
-  #s.add_dependency 'jquery-ui-rails'
-  s.add_dependency 'jquery-ui-sass-rails'
+  s.add_dependency 'jquery-rails'
+  s.add_dependency 'jquery-ui-rails'
   s.add_dependency 'bootstrap-sass', '~> 3.3'
 
   s.add_development_dependency "sqlite3", '~> 1.3.0'
@@ -51,7 +51,7 @@ Gem::Specification.new do |s|
   # s.add_dependency 'surveyor', '~> 1.4.1.pre'
   s.add_dependency 'will_paginate', '~> 3.0.5'
 
-  s.add_dependency 'simple_form', '~> 3.0.2'
+  s.add_dependency 'simple_form', '~> 3.5'
   s.add_dependency 'carrierwave'
   s.add_dependency 'colorbox-rails', '~> 0.1.1'
   s.add_dependency 'jquery-form-rails', '~> 1.0.1'
