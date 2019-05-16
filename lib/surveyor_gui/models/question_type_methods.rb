@@ -181,7 +181,7 @@ module SurveyorGui
         #can't seem to override it and everytime a question is deleted, the whole group goes with it.
         #which makes it impossible to delete a question from a grid.
         begin
-          QuestionGroup.find(question.question_group)
+          QuestionGroup.find(question.question_group.id)
         rescue
           QuestionGroup.create!(question.question_group.attributes)
         end

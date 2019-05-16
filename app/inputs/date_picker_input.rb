@@ -1,6 +1,6 @@
 class DatePickerInput < SimpleForm::Inputs::Base
-  def input
-    @builder.text_field(attribute_name,input_html_options)
+  def input(wrapper_options)
+    @builder.text_field(attribute_name, merge_wrapper_options(input_html_options, wrapper_options))
   end
 end
 
