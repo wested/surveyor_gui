@@ -75,7 +75,7 @@ module SurveyorControllerCustomMethods
         if @response_set
           render :json => @response_set.reload.all_dependencies(question_ids_for_dependencies)
         else
-          render :text => "No response set #{params[:response_set_code]}",
+          render plain: "No response set #{params[:response_set_code]}",
             :status => 404
         end
       end

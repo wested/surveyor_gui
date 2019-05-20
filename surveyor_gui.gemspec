@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.executables = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency 'rails', '~> 5.0.0'
+  s.add_dependency 'rails', '~> 5.2'
   s.add_dependency 'dynamic_form', '~> 1.1.4'
   s.add_dependency 'jquery-rails'
   s.add_dependency 'jquery-ui-rails'
@@ -41,7 +41,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency('capybara-webkit', "= 1.15.1")
   s.add_development_dependency('json_spec', '~> 1.1.1')
   s.add_development_dependency('factory_girl', '~> 4.4.0')
-  s.add_development_dependency('database_cleaner', '~> 1.2.0')
+  s.add_development_dependency('database_cleaner')
   s.add_development_dependency('rspec-retry', "= 0.4.4")
   s.add_development_dependency('phantomjs', '~> 2.1')
   s.add_development_dependency('cliver', '~> 0.3')
@@ -49,9 +49,9 @@ Gem::Specification.new do |s|
 
   # s.add_dependency 'surveyor', '~> 1.4.1.pre'
 
-  s.add_dependency 'will_paginate', '~> 3.0.5'
+  s.add_dependency 'will_paginate'
 
-  s.add_dependency 'simple_form', '~> 3.5'
+  s.add_dependency 'simple_form'
   s.add_dependency 'carrierwave'
   s.add_dependency 'colorbox-rails', '~> 0.1.1'
   s.add_dependency 'jquery-form-rails', '~> 1.0.1'

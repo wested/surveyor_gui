@@ -90,7 +90,7 @@ describe SurveyorGui::SurveyformsController do
 
     it "renders new" do
       do_get
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to render_template('new')
     end
 
@@ -163,7 +163,7 @@ describe SurveyorGui::SurveyformsController do
 
       it "renders edit" do
         do_get
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to render_template('edit')
       end
     end
@@ -176,7 +176,7 @@ describe SurveyorGui::SurveyformsController do
 
       it "still lets you see the edit page" do
         do_get
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(response).to render_template('edit')
       end
       it "warns that responses have been collected" do
@@ -228,7 +228,7 @@ describe SurveyorGui::SurveyformsController do
 
     it "shows survey" do
       do_get
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to render_template('show')
     end
   end
@@ -279,7 +279,7 @@ describe SurveyorGui::SurveyformsController do
 
     it "renders new" do
       do_get
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to render_template('new')
     end
 
@@ -292,7 +292,7 @@ describe SurveyorGui::SurveyformsController do
     end
     it "inserts a survey section" do
       do_get
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to render_template('_survey_section_fields')
     end
   end
@@ -311,7 +311,7 @@ describe SurveyorGui::SurveyformsController do
 
     it "renders survey_section partial" do
       do_get
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to render_template('_survey_section_fields')
     end
 
@@ -324,7 +324,7 @@ describe SurveyorGui::SurveyformsController do
     end
     it "inserts a question" do
       do_get
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to render_template('new')
     end
   end
@@ -337,7 +337,7 @@ describe SurveyorGui::SurveyformsController do
     end
     it "cuts a question" do
       do_get
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 

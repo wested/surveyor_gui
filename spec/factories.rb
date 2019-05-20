@@ -11,6 +11,7 @@ FactoryGirl.define do
     s.description     "A simple survey for testing"
     s.access_code     { FactoryGirl.generate :unique_survey_access_code }
     s.survey_version  0
+    s.template        false
   end
 
   factory :surveyform do |s|
@@ -18,6 +19,7 @@ FactoryGirl.define do
     s.description     "A simple survey for testing"
     s.access_code     { FactoryGirl.generate :unique_survey_access_code }
     s.survey_version  0
+    s.template        false
   end
 
   factory :template, parent: :surveyform do |s|
@@ -172,7 +174,7 @@ FactoryGirl.define do
     v.response_other    {}
     v.regexp            {}
   end
-  
+
   factory :column do |c|
     c.association       :question_group
     c.text              {}

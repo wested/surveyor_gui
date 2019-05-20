@@ -8,13 +8,13 @@ describe SurveyorHelper do
       q3 = FactoryGirl.create(:question) do |question|
         FactoryGirl.create(:dependency, :question=>question)
       end
-      q4 = FactoryGirl.create(:question, :display_type => "image", :text => "something.jpg")
+      q4 = FactoryGirl.create(:question, :display_type => "image", :text => "rails.png")
       q5 = FactoryGirl.create(:question, :question_group => FactoryGirl.create(:question_group))
       expect(helper.q_text(q1)).to eq("<span class='qnum'>1) </span>#{q1.text}")
       expect(helper.q_text(q2)).to eq(q2.text)
       expect(helper.q_text(q3)).to eq(q3.text)
-      expect(helper.q_text(q4)).to match(/<img.*alt="Something".*\/>/)
-      expect(helper.q_text(q4)).to match(/<img.*src="\/(images|assets)\/something\.jpg".*\/>/)
+      expect(helper.q_text(q4)).to match(/<img.*alt="Rails".*\/>/)
+      expect(helper.q_text(q4)).to match(/<img.*src="\/(images|assets)\/rails-.*\.png".*\/>/)
       expect(helper.q_text(q5)).to eq(q5.text)
     end
   end
