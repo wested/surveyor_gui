@@ -11,7 +11,7 @@ module SurveyFormsCreationHelpers
     end
 
     def first_question
-      find('#question_1')
+      find('.questions', match: :first)
     end
 
     def add_question(&block)

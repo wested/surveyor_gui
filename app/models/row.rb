@@ -1,3 +1,3 @@
-class Row < ActiveRecord::Base
+class Row < ApplicationRecord
   include SurveyorGui::Models::RowMethods
 end

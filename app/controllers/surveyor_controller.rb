@@ -11,7 +11,7 @@ module SurveyorControllerCustomMethods
     super
   end
   def update
-    question_ids_for_dependencies = (params[:r] || []).map{|k,v| v["question_id"] }.compact.uniq
+    question_ids_for_dependencies = (params[:r].try(:values) || []).map{|v| v["question_id"] }.compact.uniq
     saved = load_and_update_response_set_with_retries
 
     if saved && params[:finish] && !@response_set.mandatory_questions_complete?

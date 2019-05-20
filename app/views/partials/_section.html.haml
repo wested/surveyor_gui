@@ -1,4 +1,4 @@
-= div_for @section, :class => @section.custom_class do
+= content_tag(:div,  @section, class: "#{@section.class.name.underscore} #{@section.custom_class}", id: "#{@section.class.name.underscore}_#{@section.try(:id)}") do
   %span.title= @section.translation(I18n.locale)[:title]
   - qs ||= []
   - (questions = @section.questions).each_with_index do |q, i|

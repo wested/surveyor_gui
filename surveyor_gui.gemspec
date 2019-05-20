@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.executables = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency 'rails', '~> 4.2'
+  s.add_dependency 'rails', '~> 5.0.0'
   s.add_dependency 'dynamic_form', '~> 1.1.4'
   s.add_dependency 'jquery-rails'
   s.add_dependency 'jquery-ui-rails'
@@ -28,9 +28,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "sqlite3", '~> 1.3.0'
 
-  s.add_development_dependency('rake', '< 11.0')
   s.add_development_dependency 'sass-rails'
-  s.add_development_dependency 'coffee-rails'
   s.add_development_dependency 'uglifier', '>= 1.0.3'
   s.add_development_dependency('rspec-rails', '~> 3.0')
 
@@ -47,15 +45,17 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rspec-retry', "= 0.4.4")
   s.add_development_dependency('phantomjs', '~> 2.1')
   s.add_development_dependency('cliver', '~> 0.3')
+  s.add_development_dependency('rails-controller-testing')
 
   # s.add_dependency 'surveyor', '~> 1.4.1.pre'
+
   s.add_dependency 'will_paginate', '~> 3.0.5'
 
   s.add_dependency 'simple_form', '~> 3.5'
   s.add_dependency 'carrierwave'
   s.add_dependency 'colorbox-rails', '~> 0.1.1'
   s.add_dependency 'jquery-form-rails', '~> 1.0.1'
-  s.add_dependency 'deep_cloneable', '~> 2.0.0'
+  s.add_dependency 'deep_cloneable'
   s.add_dependency 'lazy_high_charts'
 
   # TODO The editor fails when upgrading to the new 5.0 version.  So will need to be fixed when upgrading the whole project

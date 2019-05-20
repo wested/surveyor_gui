@@ -18,6 +18,7 @@ require 'json_spec'
 require 'database_cleaner'
 require 'rspec/retry'
 require 'rack/utils'
+require 'rails-controller-testing'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.

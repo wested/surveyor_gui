@@ -1,3 +1,3 @@
-class Column < ActiveRecord::Base
+class Column < ApplicationRecord
   include SurveyorGui::Models::ColumnMethods
 end

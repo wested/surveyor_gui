@@ -47,7 +47,8 @@ feature "Bug fix #41", %q{
       end
 
       #Then I can see the question in my survey
-      expect(first_question).to have_content("1 ) Was it snowing?")
+      expect(first_question).to have_content("Was it snowing?")
+      page.save_screenshot(File.join(Rails.root, "tmp", "snowing.png"), :full => true)
 
       #Then I add another question
       add_question do
@@ -77,11 +78,13 @@ feature "Bug fix #41", %q{
         expect(page).to have_content("conditions")
         expect(page).to have_css("option", text: 'Was it snowing?')
         expect(page).to have_css("option", text: 'equal to')
+        page.save_screenshot(File.join(Rails.root, "tmp", "logic.png"), :full => true)
         select('No', from: 'question_dependency_attributes_dependency_conditions_attributes_0_answer_id')
         click_button "Save Changes"
       end
 
       #Then I add another question
+      wait_for_ajax
       add_question do
 
       #Then I select the "Text" question type

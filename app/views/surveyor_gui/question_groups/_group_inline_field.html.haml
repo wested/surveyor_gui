@@ -1,7 +1,7 @@
 = simple_fields_for :question_group, @question_group do |qg|
   .sortable_group_questions{:id => "sortable_question#{@survey_section_id.to_s}"}
     = qg.simple_fields_for :questions do |q|
-      = div_for(q.object, class: "group_inline_question row") do
+      = content_tag(:div, q.object, class: "question group_inline_question row", id: "question_#{q.object.try(:id)}") do
         .col-md-6
           %span.handle
             %span.ui-icon.ui-icon-arrowthick-2-n-s

@@ -1,5 +1,5 @@
 <% @question_no = @question_no + 1 if f.object.id && f.object.question_type_id != :label -%>
-<%= div_for(f.object) do %>
+<%= content_tag(:div, f.object, class: f.object.class.name.underscore, id: "#{f.object.class.name.underscore}_#{f.object.try(:id)}") do %>
     <fieldset class="
     fields
     questions

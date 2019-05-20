@@ -253,6 +253,8 @@ module SurveyorGui
 
     private
     def surveyforms_params
+      return {} unless params[:surveyform].present?
+
       PermittedParams.new(params[:surveyform]).survey
     end
 

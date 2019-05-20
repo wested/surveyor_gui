@@ -1,7 +1,7 @@
 = simple_fields_for 'surveyform', @surveyform || @survey_section.survey do |f|
   = f.simple_fields_for :survey_sections, @survey_section do |s|
     - if s.object.id
-      = div_for(s.object) do
+      = content_tag(:div, s.object, class: s.object.class.name.underscore, id: "#{s.object.class.name.underscore}_#{s.object.try(:id)}") do
         %h2{:style => "position:relative;"}
 
           - unless params[:action] == "show"
