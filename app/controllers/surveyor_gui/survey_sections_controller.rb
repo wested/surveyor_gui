@@ -59,15 +59,15 @@ class SurveyorGui::SurveySectionsController < ApplicationController
     #   return false
     # end
     if !@survey_section.modifiable
-      render :text => "This section cannot be removed."
+      render :plain => "This section cannot be removed."
       return false
     end
     if !@survey_section.questions.map{|q| q.dependency_conditions}.flatten.blank?
-      render :text => "The following questions have logic that depend on questions in this section: \n\n"+@survey_section.questions.map{|q| q.dependency_conditions.map{|d| " - "+d.dependency.question.text}}.flatten.join('\n')+"\n\nPlease delete logic before deleting this section.".html_safe
+      render :plain => "The following questions have logic that depend on questions in this section: \n\n"+@survey_section.questions.map{|q| q.dependency_conditions.map{|d| " - "+d.dependency.question.text}}.flatten.join('\n')+"\n\nPlease delete logic before deleting this section.".html_safe
       return
     end
     @survey_section.destroy
-    render :text => ""
+    head :ok
   end
 
   def sort
@@ -79,7 +79,7 @@ class SurveyorGui::SurveySectionsController < ApplicationController
     end
     puts satts
     survey.update_attributes!(satts)
-    render :nothing => true
+    head :ok
   end
 
   private
