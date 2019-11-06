@@ -101,16 +101,16 @@ class SurveyorGui::QuestionsController < ApplicationController
     #   return false
     # end
     if question.dependent_questions.any?
-      render :text=> dependent_delete_failure_message(question)
+      render :plain=> dependent_delete_failure_message(question)
       return
     end
     if question.part_of_group?
       question.question_group.questions.each{|q| q.destroy}
-      render :text=>''
+      render :plain=>''
       return
     end
     question.destroy
-    render :text=>''
+    render :plain=>''
   end
 
   def sort
