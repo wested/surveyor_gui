@@ -44,6 +44,6 @@ class SurveyorGui::ResponsesController < ApplicationController
 
     survey.response_sets.destroy_all
 
-    redirect_to :back
+    redirect_back(fallback_location: surveyor_gui.surveyforms_path)
   end
 end
