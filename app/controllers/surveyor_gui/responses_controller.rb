@@ -19,7 +19,7 @@ class SurveyorGui::ResponsesController < ApplicationController
     @response_sets = [@response_set]
     if (!@survey)
       flash[:notice] = "Survey/Questionnnaire not found."
-      redirect_to :back
+      redirect_back(fallback_location: surveyor_gui.surveyforms_path)
     end
     render :show
   end
@@ -32,10 +32,10 @@ class SurveyorGui::ResponsesController < ApplicationController
     @response_sets = [@response_set]
     if (!@response_set)
       flash[:error] = "Response not found"
-      redirect_to :back
+      redirect_back(fallback_location: surveyor_gui.surveyforms_path)
     elsif (!@survey)
       flash[:error] = "Survey/Questionnnaire not found."
-      redirect_to :back
+      redirect_back(fallback_location: surveyor_gui.surveyforms_path)
     end
   end
 

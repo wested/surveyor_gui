@@ -124,7 +124,7 @@ class SurveyorGui::QuestionsController < ApplicationController
     if q=Question.find(params[:id])
       q.update_attribute(:survey_section_id,nil)
     end
-    redirect_to :back
+    redirect_back(fallback_location: surveyor_gui.surveyforms_path)
   end
 
   def render_answer_fields_partial

@@ -9,7 +9,7 @@ class SurveyorGui::ReportsController < ApplicationController
   layout 'surveyor_gui/surveyor_gui_default'
 
   def preview
-    response_qty = 5 
+    response_qty = 5
     user_ids = response_qty.times.map{|i| -1*i}
     @title = "Preview Report for "+response_qty.to_s+" randomized responses"
     @survey = Survey.find(params[:survey_id])
@@ -21,29 +21,29 @@ class SurveyorGui::ReportsController < ApplicationController
     @responses = Response.joins(:response_set, :answer).where('user_id in (?) and survey_id = ? and test_data = ? and answers.is_comment = ?',user_ids,params[:survey_id],true, false)
     if (!@survey)
       flash[:notice] = "Survey/Questionnnaire not found."
-      redirect_to :back
+      redirect_back(fallback_location: surveyor_gui.surveyform_path(@survey))
     end
     generate_report(params[:survey_id], true)
-    render :show    
+    render :show
   end
 
   def show
     @survey = Survey.find(params[:id])
     @response_sets = ResponseSet.where(survey_id: @survey.id, test_data: false)
-    @responses = Response.joins(:response_set, :answer).where('survey_id = ? and test_data = ? and answers.is_comment=?',@survey.id,false, false)  
+    @responses = Response.joins(:response_set, :answer).where('survey_id = ? and test_data = ? and answers.is_comment=?',@survey.id,false, false)
     @title = "Show report for #{@survey.title}"
     if @responses.count > 0
       generate_report(@survey.id, false)
     else
       flash[:error] = "No responses have been collected for this survey"
-      redirect_to surveyforms_path 
+      redirect_to surveyforms_path
     end
   end
 
   def generate_report(survey_id, test)
     questions = Question.joins(:survey_section).where('survey_sections.survey_id = ? and is_comment = ?', survey_id, false)
 # multiple_choice_responses = Response.joins(:response_set, :answer).where('survey_id = ? and test_data = ?',survey_id,test).group('responses.question_id','answers.id','answers.text').select('responses.question_id, answers.id, answers.text as text, count(*) as answer_count').order('responses.question_id','answers.id')
- 
+
 # multiple_choice_responses = Answer.unscoped.joins(:question=>:survey_section).includes(:responses=>:response_set).where('survey_sections.survey_id=? and (response_sets.test_data=? or response_sets.test_data is null)',survey_id,test).group('answers.question_id','answers.id','answers.text').select('answers.question_id, answers.id, answers.text as text, count(*) as answer_count').order('answers.question_id','answers.id')
 
 # multiple_choice_responses = Answer.unscoped.find(:all,
@@ -63,7 +63,7 @@ LEFT OUTER JOIN response_sets ON response_sets.id = responses.response_set_id").
     single_choice_responses = Response.joins(:response_set).where('survey_id = ? and test_data = ?',survey_id,test).select('responses.question_id, responses.answer_id,
 responses.float_value,
 responses.integer_value,
-responses.datetime_value, 
+responses.datetime_value,
 responses.string_value')
     @chart = {}
     colors = ['#4572A7', '#AA4643', '#89A54E', '#80699B', '#3D96AE', '#DB843D', '#92A8CD', '#A47D7C', '#B5CA92']
@@ -113,7 +113,7 @@ responses.string_value')
       )
     end
   end
-  
+
   def generate_bar_chart(q, responses, colors)
     bararray = []
     responses.where(:question_id => q.id).each_with_index do |a, index|
@@ -158,7 +158,7 @@ responses.string_value')
             style: {
               fontWeight: 'bold',
               fontSize: '12px'
-            }         
+            }
           }
         },
         :pointPadding=>true,
@@ -174,15 +174,15 @@ responses.string_value')
         responses.where(:question_id => question.id).each_with_index do |a, answer_index|
           bararray[answer_index]= {:y=> a.answer_count.to_i}
         end
-        f.series( 
+        f.series(
           name: question.text,
           data: bararray,
           color: colors[question_index].to_s
         )
       end
     end
-  end 
- 
+  end
+
   def generate_grid_dropdown_bar_chart(q, responses, colors)
     @chart[q.id.to_s] = LazyHighCharts::HighChart.new('graph') do |f|
       f.options[:chart][:defaultSeriesType] = 'column'
@@ -200,7 +200,7 @@ responses.string_value')
             style: {
               fontWeight: 'bold',
               fontSize: '12px'
-            }     
+            }
           }
         },
         :pointPadding=>true,
@@ -222,16 +222,16 @@ responses.string_value')
         bararray=[]
         q.question_group.columns.each do |column|
           match = series.select{|s| s[:name]==answer_name && s[:column_id]==column.id}.first
-          bararray << (match ? match[:y] : 0) 
+          bararray << (match ? match[:y] : 0)
         end
-        f.series( 
+        f.series(
           name: answer_name,
           data: bararray,
           color: colors[answer_index].to_s
-        )      
+        )
       end
     end
-  end 
+  end
 
   def generate_histogram_chart(q, responses)
     suffix = q.suffix
@@ -259,10 +259,10 @@ responses.string_value')
     end
   end
 
-  def report_params 
+  def report_params
     @report_params ||= params.permit(:survey_id, :id)
   end
-      
+
 end
 
 class HistogramArray
@@ -315,13 +315,13 @@ class HistogramArray
   def set_step
     @step = ((@max-@min)/@distribution)
   end
-  
+
   def refresh_range
     @lower_bound = @range
     @upper_bound = @range+@step
     @range = @upper_bound
-  end    
-    
+  end
+
   def trunc_range(num)
     return (num*10000000000).to_i/10000000000
   end
@@ -334,6 +334,6 @@ class HistogramArray
       lower_bound = response_formatter.format_stats(@lower_bound)
       upper_bound = response_formatter.format_stats(@upper_bound)
       @x_label = lower_bound+' to '+upper_bound+' '+@label.to_s
-    end 
+    end
   end
 end

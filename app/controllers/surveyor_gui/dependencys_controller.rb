@@ -23,7 +23,7 @@ class SurveyorGui::DependencysController < ApplicationController
   def create
     @question = Question.new(question_params)
     if @question.save
-      redirect_to :back
+      redirect_back(fallback_location: surveyor_gui.surveyforms_path)
     else
       @title = "Add Logic to Question"
       render :action => 'new', :layout => 'surveyor_gui/surveyor_gui_blank'
