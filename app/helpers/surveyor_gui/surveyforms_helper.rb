@@ -143,7 +143,7 @@ module SurveyorGui
           sections:
               {
                   questions: [
-                                 :answers,
+                                 { answers: :column },
                                  {
                                      dependency: {
                                          dependency_conditions: [:question, :answer]
