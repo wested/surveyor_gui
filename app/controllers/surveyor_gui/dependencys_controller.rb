@@ -59,7 +59,7 @@ class SurveyorGui::DependencysController < ApplicationController
     else
       question.dependency.destroy
     end
-    render :nothing=>true
+    head :ok
   end
 
   def render_dependency_conditions_partial
