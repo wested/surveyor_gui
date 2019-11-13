@@ -65,7 +65,9 @@ module SurveyorGui
         def _derive_rule(dac)
           rule = ''
           dac.each_with_index do |(k, v), i|
-            rule += (i==0 ? '' : v["join_operator"] + ' ') + v["rule_key"] + ' '
+            unless v[:_destroy] == '1'
+              rule += (i==0 ? '' : v["join_operator"] + ' ') + v["rule_key"] + ' '
+            end
           end
           rule.rstrip
         end
