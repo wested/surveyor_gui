@@ -28,10 +28,8 @@
     = f.input :is_mandatory, :label => false, :as=>:boolean, :wrapper_html=>{:class=>'fl notfirst'}
 
     -# TODO May want to make this an edit in place so can easily assign to nested/child questions...right now can only assign to parent of a question group and only supporting grid_one.  This is to support the data visualizations.
-    - if question.part_of_group? && question.question_type.grid_one?
-      %br/
-      %label Data Export Identifier
-      = text_field_tag "question[question_group_attributes][data_export_identifier]", question.question_group.data_export_identifier
+    %br/
+    = f.input :data_export_identifier
 
     %br/
     %br/
