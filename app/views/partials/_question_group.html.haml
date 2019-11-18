@@ -6,7 +6,7 @@
       - when :grid
         - if qs.first.question_type_id == :grid_dropdown
           %li
-            %table
+            %table.table-striped
               %col.pre
                 - g.columns.each do |column|
                   %col{:class => cycle("odd", "even")}
@@ -34,7 +34,7 @@
                               = ff.input :answer_id, :as => :select, :collection => q.answers.where('column_id=?',column.id).map{|a| [a.text, a.id]}, :label => false, :response_class => "answer"
         - else
           %li
-            %table
+            %table.table-striped
               %col.pre
               - qs.first.answers.each do |a|
                 %col{:class => cycle("odd", "even")}
