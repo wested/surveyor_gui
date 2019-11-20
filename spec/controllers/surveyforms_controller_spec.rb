@@ -38,17 +38,17 @@ describe SurveyorGui::SurveyformsController do
 
     context "index parameters specify surveys" do
 
-      it "set the title to 'manage surveys'" do
+      it "set the title" do
         do_get()
-        expect(assigns(:title)).to eq("Manage Surveys")
+        expect(assigns(:title)).to eq("Manage All Surveys")
       end
 
-      it "should not populate an array of templates" do
+      it "should include templates" do
         do_get()
-        expect(assigns(:surveyforms)).not_to eq([template])
+        expect(assigns(:surveyforms)).to include(template)
       end
 
-      it "should populate an array of surveys" do
+      it "should include surveys" do
         do_get()
         expect(assigns(:surveyforms)).to include(surveyform)
       end
@@ -61,9 +61,9 @@ describe SurveyorGui::SurveyformsController do
 
     context "index parameters specify survey templates" do
 
-      it "set the title to 'manage templates'" do
+      it "set the title" do
         do_get(:template=>"true")
-        expect(assigns(:title)).to eq("Manage Templates")
+        expect(assigns(:title)).to eq("Manage Templates Only")
       end
 
       it "should populate an array of templates" do
@@ -78,6 +78,29 @@ describe SurveyorGui::SurveyformsController do
 
       it "shows the survey templates" do
         do_get(:template=>"true")
+        expect(response).to render_template('index')
+      end
+    end
+
+    context "index parameters specify NO survey templates" do
+
+      it "set the title" do
+        do_get(:template=>"false")
+        expect(assigns(:title)).to eq("Manage Surveys Only")
+      end
+
+      it "should populate an array of surveys" do
+        do_get(params={:template=>"false"})
+        expect(assigns(:surveyforms)).to include(surveyform)
+      end
+
+      it "should not populate an array of templates" do
+        do_get(params={:template=>"false"})
+        expect(assigns(:surveyforms)).not_to include(template)
+      end
+
+      it "shows the surveys" do
+        do_get(:template=>"false")
         expect(response).to render_template('index')
       end
     end

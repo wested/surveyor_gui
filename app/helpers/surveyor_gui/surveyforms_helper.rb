@@ -121,12 +121,8 @@ module SurveyorGui
     def clone
       cloned_survey = _deep_clone
       _set_api_keys(cloned_survey)
-      if cloned_survey.save!
-        return cloned_survey
-      else
-        raise cloned_survey.errors.messages.map{|m| m}.join(',')
-        return nil
-      end
+
+      cloned_survey
     end
 
     private
@@ -134,8 +130,16 @@ module SurveyorGui
     def _initial_clone
       initial_clone = @survey
       initial_clone.api_id = Surveyor::Common.generate_api_id
-      initial_clone.survey_version = Survey.where(access_code: @survey.access_code).maximum(:survey_version) + 1
-      return initial_clone
+
+      if @as_template
+        initial_clone.survey_version = nil
+        initial_clone.title << " CLONE"
+        initial_clone.access_code = nil
+      else
+        initial_clone.survey_version = Survey.where(access_code: @survey.access_code).maximum(:survey_version) + 1
+      end
+
+      initial_clone
     end
 
     def _deep_clone

@@ -6,15 +6,18 @@ module SurveyorGui
     end
 
     def index
+      context = Surveyform
+      label = "All Surveys"
+
       if params[:template]=='false'
-        template=false
+        context = context.where('template = ?', false)
+        label = "Surveys Only"
       elsif params[:template]=='true'
-        template=true
-      else
-        template=false
+        context = context.where('template = ?', true)
+        label = "Templates Only"
       end
-      @title = "Manage " + (template ? "Templates" : "Surveys")
-      @surveyforms = Surveyform.where('template = ?',template).search(params[:search]).order(:title).paginate(:page => params[:page])
+      @title = "Manage " + label
+      @surveyforms = context.search(params[:search]).order(:title).paginate(:page => params[:page]).all.to_a
     end
 
     def new
@@ -241,7 +244,7 @@ module SurveyorGui
 
     def clone_survey
       @title = "Clone Survey"
-      @surveyform = SurveyCloneFactory.new(params[:id]).clone
+      @surveyform = SurveyCloneFactory.new(params[:id], true).clone
       if @surveyform.save
         flash[:notice] = "Successfully created survey, questionnaire, or form."
         redirect_to edit_surveyform_path(@surveyform)
