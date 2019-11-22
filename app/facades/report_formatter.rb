@@ -28,19 +28,23 @@ class ReportFormatter
     arr =  @responses.where(:question_id => @question.id).map{|r| r.response_value.to_f}
     STAT_FUNCTIONS[stat_function].call(arr)
   end
-  
+
   def format_stats(stat)
     if @question.question_type_id == :number
-      STAT_FORMATS[@question.question_type_id] % stat.to_f 
-    elsif [:date, :datetime, :time].include? @question.question_type_id 
+      STAT_FORMATS[@question.question_type_id] % stat.to_f
+    elsif [:date, :datetime, :time].include? @question.question_type_id
       format_time_stat(stat.to_f)
     else
       stat
     end
-  end  
+  end
 
   def format_time_stat(stat)
-      stat = Time.zone.at(stat)     
+    begin
+      stat = Time.zone.at(stat)
       stat.strftime(STAT_FORMATS[@question.question_type_id])
+    rescue
+      ""
+    end
   end
 end
