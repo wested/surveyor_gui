@@ -24,7 +24,7 @@ feature "User creates a dependency using browser", %q{
   scenario "user creates a dependency", js: true do
     #Given I have a survey with two questions
     visit surveyor_gui.surveyforms_path
-    page.save_screenshot(File.join(Rails.root, "tmp", "hotel.png"), :full => true)
+    # page.save_screenshot(File.join(Rails.root, "tmp", "hotel.png"), :full => true)
     expect(page).to have_content("Hotel ratings")
     within "tr", text: "Hotel ratings" do
       click_link "Edit"
