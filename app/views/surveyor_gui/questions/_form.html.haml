@@ -34,7 +34,7 @@
       - if question.part_of_group?
         = text_field_tag "question[question_group_attributes][data_export_identifier]", question.question_group.data_export_identifier
       - else
-        = f.input :data_export_identifier
+        = f.input :data_export_identifier, label: false
 
     %br/
     %br/
