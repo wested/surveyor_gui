@@ -78,5 +78,5 @@
         %br/
     %br/
   .buttons
-    = f.button :submit, 'Save Changes', data: { disable_with: "Please wait..." }
+    = f.button :submit, 'Save Changes', data: { disable_with: "Please wait..." }, class: "btn btn-primary"
     = link_to "Cancel", surveyor_gui.edit_surveyform_url(@survey)
