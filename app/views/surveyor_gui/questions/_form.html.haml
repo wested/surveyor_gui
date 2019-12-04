@@ -32,6 +32,7 @@
       %br/
       - if question.part_of_group?
         %label Data Export Identifier
+        %br/
         = text_field_tag "question[question_group_attributes][data_export_identifier]", question.question_group.data_export_identifier
       - else
         = f.input :data_export_identifier
