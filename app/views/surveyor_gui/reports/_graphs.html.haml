@@ -7,7 +7,7 @@
     %td
       - if q.display_type=='stars'
         - 10.times.each do |index|
-          %input{name: "star#{q.id.to_s}", type: "radio", class: "star {split:2}", disabled: "disabled", checked: (index+1)==star_average(@responses,q) ? "checked" : nil} 
+          %input{name: "star#{q.id.to_s}", type: "radio", class: "star {split:2}", disabled: "disabled", checked: (index+1)==star_average(@responses,q) ? "checked" : nil}
       - else
         %div{:id => "hi_chart#{q.id}", :style => "height:410px; margin: 0; clear:both; min-width: 800px"}
           = high_chart("hi_chart"+q.id.to_s , @chart[q.id.to_s]) do

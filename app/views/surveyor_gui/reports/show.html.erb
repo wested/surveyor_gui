@@ -1,14 +1,30 @@
 <br />
 <div class="column3">
-  <div class="shadebox round surveyor_gui_report">
-    <div id="Survey">
-      <h1 class="round-top"><%= @title %></h1>
-      <h2><%= @survey.title %></h2>
-      <span>
-          <button class = 'show_data'  >Show Data</button>
-          <button class = 'hide_data'  >Hide Data</button> 
-      </span>     
-      <%= render 'show_report' %>
+    <div class="shadebox round surveyor_gui_report">
+        <div id="Survey">
+            <h1 class="round-top"><%= @title %></h1>
+
+            <%if params[:question_id] %>
+                <p>
+                    <%= link_to "<< Back to Questions", report_path(@survey) %>
+                </p>
+
+                <button class = 'show_data'  >Show Data</button>
+                <button class = 'hide_data'  >Hide Data</button>
+
+                <%= render 'show_report' %>
+            <%else %>
+
+                <h4>Questions</h4>
+                <%@questions.each do |question| %>
+                    <% if ([:pick_one,:pick_any,:dropdown,:number,:date,:datetime,:time,:stars,:slider,:grid_one, :grid_any, :grid_dropdown].include?(question.question_type_id) || question.pick == 'one' || question.pick == 'any') && question.question_group.nil? %>
+                        <p>
+                            <%= link_to question.text,  report_path(@survey, question_id: question.id)%>
+                        </p>
+
+                    <%end %>
+                <%end %>
+            <%end %>
+        </div>
     </div>
-  </div>
 </div>

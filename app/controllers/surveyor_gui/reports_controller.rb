@@ -32,8 +32,18 @@ class SurveyorGui::ReportsController < ApplicationController
     @response_sets = ResponseSet.where(survey_id: @survey.id, test_data: false)
     @responses = Response.joins(:response_set, :answer).where('survey_id = ? and test_data = ? and answers.is_comment=?',@survey.id,false, false)
     @title = "Show report for #{@survey.title}"
-    if @responses.count > 0
+
+    if params[:question_id]
+      @question = Question.joins(:survey_section).where('questions.id = ? AND survey_sections.survey_id = ? and is_comment = ?', params[:question_id], @survey.id, false).first
+    else
+      @questions = Question.joins(:survey_section).where('survey_sections.survey_id = ? and is_comment = ?', @survey.id, false)
+    end
+
+    if @question && @responses.count > 0
       generate_report(@survey.id, false)
+      render "show"
+    elsif @questions  && @responses.count > 0
+      render "show"
     else
       flash[:error] = "No responses have been collected for this survey"
       redirect_to surveyforms_path
@@ -41,47 +51,47 @@ class SurveyorGui::ReportsController < ApplicationController
   end
 
   def generate_report(survey_id, test)
-    questions = Question.joins(:survey_section).where('survey_sections.survey_id = ? and is_comment = ?', survey_id, false)
-# multiple_choice_responses = Response.joins(:response_set, :answer).where('survey_id = ? and test_data = ?',survey_id,test).group('responses.question_id','answers.id','answers.text').select('responses.question_id, answers.id, answers.text as text, count(*) as answer_count').order('responses.question_id','answers.id')
+    # questions = [Question.joins(:survey_section).where('survey_sections.survey_id = ? and is_comment = ?', survey_id, false)]
+    # multiple_choice_responses = Response.joins(:response_set, :answer).where('survey_id = ? and test_data = ?',survey_id,test).group('responses.question_id','answers.id','answers.text').select('responses.question_id, answers.id, answers.text as text, count(*) as answer_count').order('responses.question_id','answers.id')
 
-# multiple_choice_responses = Answer.unscoped.joins(:question=>:survey_section).includes(:responses=>:response_set).where('survey_sections.survey_id=? and (response_sets.test_data=? or response_sets.test_data is null)',survey_id,test).group('answers.question_id','answers.id','answers.text').select('answers.question_id, answers.id, answers.text as text, count(*) as answer_count').order('answers.question_id','answers.id')
+    # multiple_choice_responses = Answer.unscoped.joins(:question=>:survey_section).includes(:responses=>:response_set).where('survey_sections.survey_id=? and (response_sets.test_data=? or response_sets.test_data is null)',survey_id,test).group('answers.question_id','answers.id','answers.text').select('answers.question_id, answers.id, answers.text as text, count(*) as answer_count').order('answers.question_id','answers.id')
 
-# multiple_choice_responses = Answer.unscoped.find(:all,
-# :joins => "LEFT JOIN responses ON responses.answer_id = answers.id",
-# :select => "answers.question_id, answers.id, answers.text as text, count(answers.*) as answer_count",
-# :group => "answers.question_id, answers.id, answers.text",
-# :order => "answers.question_id, answers.id")
+    # multiple_choice_responses = Answer.unscoped.find(:all,
+    # :joins => "LEFT JOIN responses ON responses.answer_id = answers.id",
+    # :select => "answers.question_id, answers.id, answers.text as text, count(answers.*) as answer_count",
+    # :group => "answers.question_id, answers.id, answers.text",
+    # :order => "answers.question_id, answers.id")
 
     multiple_choice_responses = Answer.unscoped.joins("LEFT OUTER JOIN responses ON responses.answer_id = answers.id
 LEFT OUTER JOIN response_sets ON response_sets.id = responses.response_set_id").
-                                                joins(:question=>:survey_section).
-                                                where('survey_sections.survey_id=? and (response_sets.test_data=? or response_sets.test_data is null)',survey_id,test).
-                                                select("answers.question_id, answers.id, answers.text as text, answers.is_comment, count(responses.id) as answer_count").
-                                                group("answers.question_id, answers.id, answers.text, answers.is_comment").
-                                                order("answers.question_id, answers.id")
+        joins(:question=>:survey_section).
+        where('questions.id = ? and survey_sections.survey_id=? and (response_sets.test_data=? or response_sets.test_data is null)',@question.id,survey_id,test).
+        select("answers.question_id, answers.id, answers.text as text, answers.is_comment, count(responses.id) as answer_count").
+        group("answers.question_id, answers.id, answers.text, answers.is_comment").
+        order("answers.question_id, answers.id")
 
-    single_choice_responses = Response.joins(:response_set).where('survey_id = ? and test_data = ?',survey_id,test).select('responses.question_id, responses.answer_id,
+    single_choice_responses = Response.joins(:response_set, :question).where('questions_id=? and survey_id = ? and test_data = ?',@question.id,survey_id,test).select('responses.question_id, responses.answer_id,
 responses.float_value,
 responses.integer_value,
 responses.datetime_value,
 responses.string_value')
     @chart = {}
     colors = ['#4572A7', '#AA4643', '#89A54E', '#80699B', '#3D96AE', '#DB843D', '#92A8CD', '#A47D7C', '#B5CA92']
-    questions.each do |q|
-      if [:grid_one, :grid_any].include? q.question_type_id
-          generate_stacked_bar_chart(q, multiple_choice_responses, colors)
-      elsif q.question_type_id == :grid_dropdown
-        q.question_group.questions.where(is_comment: false).each do |question|
-            generate_grid_dropdown_bar_chart(question, multiple_choice_responses, colors)
-          end
-      elsif q.pick == 'one'
-          generate_pie_chart(q, multiple_choice_responses)
-      elsif q.pick == 'any'
-          generate_bar_chart(q, multiple_choice_responses, colors)
-      elsif [:number,:date,:datetime,:time].include? q.question_type_id
-          generate_histogram_chart(q, single_choice_responses)
+    # questions.each do |q|
+    if [:grid_one, :grid_any].include? @question.question_type_id
+      generate_stacked_bar_chart(@question, multiple_choice_responses, colors)
+    elsif @question.question_type_id == :grid_dropdown
+      @question.question_group.questions.where(is_comment: false).each do |question|
+        generate_grid_dropdown_bar_chart(question, multiple_choice_responses, colors)
       end
+    elsif @question.pick == 'one'
+      generate_pie_chart(@question, multiple_choice_responses)
+    elsif @question.pick == 'any'
+      generate_bar_chart(@question, multiple_choice_responses, colors)
+    elsif [:number,:date,:datetime,:time].include? @question.question_type_id
+      generate_histogram_chart(@question, single_choice_responses)
     end
+    # end
   end
 
   private
@@ -96,20 +106,20 @@ responses.string_value')
       f.options[:chart][:plotBackgroundColor] = nil
       f.options[:title][:text] = q.text
       f.plot_options(:pie=>{
-        :allowPointSelect=>true,
-        :cursor=>"pointer" ,
-        :dataLabels=>{
-          :enabled=>true,
-          :color=>"#000000",
-          :connectorColor=>"#000000"
-        },
-        :enableMouseTracking => false,
-        :shadow => false,
-        :animation => false
+          :allowPointSelect=>true,
+          :cursor=>"pointer" ,
+          :dataLabels=>{
+              :enabled=>true,
+              :color=>"#000000",
+              :connectorColor=>"#000000"
+          },
+          :enableMouseTracking => false,
+          :shadow => false,
+          :animation => false
       })
       f.series( :type => 'pie',
-        :name=> q.text,
-        :data => piearray
+                :name=> q.text,
+                :data => piearray
       )
     end
   end
@@ -127,17 +137,17 @@ responses.string_value')
       f.options[:yAxis][:min] = 0
       f.options[:yAxis][:title] = {:text => 'Count'}
       f.plot_options(
-        :pointPadding=>true,
-        :borderWidth => 0,
-        :enableMouseTracking => false,
-        :shadow => false,
-        :animation => false,
-        :stickyTracking => false
+          :pointPadding=>true,
+          :borderWidth => 0,
+          :enableMouseTracking => false,
+          :shadow => false,
+          :animation => false,
+          :stickyTracking => false
       )
       f.series( :data => bararray,
-        :dataLabels => {
-          :enabled=>true
-          } )
+                :dataLabels => {
+                    :enabled=>true
+                } )
     end
   end
 
@@ -150,23 +160,23 @@ responses.string_value')
       f.options[:yAxis][:min] = 0
       f.options[:yAxis][:title] = {:text => 'Count'}
       f.plot_options(
-        :column => {
-          :stacking => 'normal',
-          dataLabels:  {
-            enabled: true,
-            color: 'black',
-            style: {
-              fontWeight: 'bold',
-              fontSize: '12px'
-            }
-          }
-        },
-        :pointPadding=>true,
-        :borderWidth => 0,
-        :enableMouseTracking => false,
-        :shadow => false,
-        :animation => false,
-        :stickyTracking => false
+          :column => {
+              :stacking => 'normal',
+              dataLabels:  {
+                  enabled: true,
+                  color: 'black',
+                  style: {
+                      fontWeight: 'bold',
+                      fontSize: '12px'
+                  }
+              }
+          },
+          :pointPadding=>true,
+          :borderWidth => 0,
+          :enableMouseTracking => false,
+          :shadow => false,
+          :animation => false,
+          :stickyTracking => false
       )
 
       q.question_group.questions.where(is_comment: false).each_with_index do |question, question_index|
@@ -175,9 +185,9 @@ responses.string_value')
           bararray[answer_index]= {:y=> a.answer_count.to_i}
         end
         f.series(
-          name: question.text,
-          data: bararray,
-          color: colors[question_index].to_s
+            name: question.text,
+            data: bararray,
+            color: colors[question_index].to_s
         )
       end
     end
@@ -192,23 +202,23 @@ responses.string_value')
       f.options[:yAxis][:min] = 0
       f.options[:yAxis][:title] = {:text => 'Count'}
       f.plot_options(
-        :column => {
-          :stacking => 'normal',
-          dataLabels:  {
-            enabled: true,
-            color: 'black',
-            style: {
-              fontWeight: 'bold',
-              fontSize: '12px'
-            }
-          }
-        },
-        :pointPadding=>true,
-        :borderWidth => 0,
-        :enableMouseTracking => false,
-        :shadow => false,
-        :animation => false,
-        :stickyTracking => false
+          :column => {
+              :stacking => 'normal',
+              dataLabels:  {
+                  enabled: true,
+                  color: 'black',
+                  style: {
+                      fontWeight: 'bold',
+                      fontSize: '12px'
+                  }
+              }
+          },
+          :pointPadding=>true,
+          :borderWidth => 0,
+          :enableMouseTracking => false,
+          :shadow => false,
+          :animation => false,
+          :stickyTracking => false
       )
 
       series = []
@@ -225,9 +235,9 @@ responses.string_value')
           bararray << (match ? match[:y] : 0)
         end
         f.series(
-          name: answer_name,
-          data: bararray,
-          color: colors[answer_index].to_s
+            name: answer_name,
+            data: bararray,
+            color: colors[answer_index].to_s
         )
       end
     end
@@ -245,17 +255,17 @@ responses.string_value')
       f.options[:yAxis][:min] = 0
       f.options[:yAxis][:title] = {:text => 'Occurrences'}
       f.plot_options(
-        :pointPadding=>true,
-        :borderWidth => 0,
-        :enableMouseTracking => false,
-        :shadow => false,
-        :animation => false
+          :pointPadding=>true,
+          :borderWidth => 0,
+          :enableMouseTracking => false,
+          :shadow => false,
+          :animation => false
       )
       f.series( :data=> histarray.map{|h| h[:y]},
-        :dataLabels => {
-          :enabled=>true
-          }
-              )
+                :dataLabels => {
+                    :enabled=>true
+                }
+      )
     end
   end
 
@@ -285,8 +295,8 @@ class HistogramArray
         refresh_range
         set_x_label
         @out_arr[index]= {
-          :x => @x_label,
-          :y => @in_arr.select {|v| v.to_f >= @lower_bound && v.to_f < @upper_bound}.count
+            :x => @x_label,
+            :y => @in_arr.select {|v| v.to_f >= @lower_bound && v.to_f < @upper_bound}.count
         }
       end
     end
