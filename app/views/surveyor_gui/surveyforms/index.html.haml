@@ -53,7 +53,7 @@
             = link_to "Clone", clone_survey_surveyform_path(survey), class: "btn btn-sm btn-primary"
           = link_to "Delete", survey, data: { confirm: 'Are you sure you want to delete? ALL responses will be DELETED!!!!' }, :method => :delete, class: "btn btn-sm btn-primary"
           = link_to "Report", report_path(survey), class: "btn btn-link"
-          = link_to "Responses" , responses_path(id: survey), class: "btn btn-link"
+          -#= link_to "Responses" , responses_path(id: survey), class: "btn btn-link"
 
           - if (!Rails.env.production? && survey.response_sets.count > 0) || (Rails.env.production? && survey.response_sets.count < 2)
             = link_to "Delete ALL responses", surveyor_gui.destroy_all_responses_url(survey_id: survey.id), data: { confirm: 'Are you sure?  This will permanently delete ALL responses to this survey!' }, :method => :delete, class: "btn btn-link"
