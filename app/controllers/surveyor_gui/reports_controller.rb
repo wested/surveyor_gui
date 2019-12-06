@@ -70,7 +70,7 @@ LEFT OUTER JOIN response_sets ON response_sets.id = responses.response_set_id").
         group("answers.question_id, answers.id, answers.text, answers.is_comment").
         order("answers.question_id, answers.id")
 
-    single_choice_responses = Response.joins(:response_set, :question).where('questions_id=? and survey_id = ? and test_data = ?',@question.id,survey_id,test).select('responses.question_id, responses.answer_id,
+    single_choice_responses = Response.joins(:response_set, :question).where('question_id=? and survey_id = ? and test_data = ?',@question.id,survey_id,test).select('responses.question_id, responses.answer_id,
 responses.float_value,
 responses.integer_value,
 responses.datetime_value,
