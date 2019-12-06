@@ -5,7 +5,7 @@
 -#- ss.questions.each do |q|
 %div{class: @question.surveyresponse_class(@response_sets)}
   %div{class: @question.repeater? ? "repeater" : "non_repeater"}
-    - if @question.part_of_group?
+    - if @question.part_of_group? && ![:repeater, :inline].include?(@question.question_group.question_type_id)
       - @question_group = @question_group || QuestionGroupTracker.new(@question.question_group.id)
       -#- if @question_group.check_for_new_group(q)
       - if ["default", "inline", "repeater", "grid"].include? @question.question_group.display_type
@@ -19,7 +19,7 @@
             %td &nbsp;
           - if ["default", "inline", "repeater"].include? @question.question_group.display_type
             - if @question.question_group.display_type == "repeater"
-              = render "repeater", question_group: q.question_group
+              = render "repeater", question_group: @question.question_group
             - @question.question_group.questions.each do |group_question|
               %table
                 = render "single_question", q: group_question

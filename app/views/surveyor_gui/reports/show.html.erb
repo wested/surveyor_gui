@@ -43,6 +43,24 @@
                     </div>
 
                 <%end %>
+
+                <h4>Repeater/Inline Questions</h4>
+                <%@repeater_inline.each do |repeater_inline| %>
+
+                    <%repeater_inline.questions.each do |question| %>
+                        <% if ([:pick_one,:pick_any,:dropdown,:number,:date,:datetime,:time,:stars,:slider,:grid_one, :grid_any, :grid_dropdown].include?(question.question_type_id) || question.pick == 'one' || question.pick == 'any') %>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <%= link_to "View Report", report_path(@survey, question_id: question.id), class: "btn btn-primary", style: "float: right;"%>
+                                    <%= question.text.html_safe %>
+                                </div>
+                            </div>
+
+                        <%end %>
+                    <%end %>
+
+                <%end %>
+
             <%end %>
         </div>
     </div>

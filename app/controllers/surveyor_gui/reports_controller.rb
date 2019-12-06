@@ -40,7 +40,8 @@ class SurveyorGui::ReportsController < ApplicationController
       @question = question_group.questions.first
     else
       @questions = Question.joins(:survey_section).where('survey_sections.survey_id = ? and is_comment = ?', @survey.id, false)
-      @question_groups = QuestionGroup.joins(questions: :survey_section).where('survey_sections.survey_id = ? and questions.is_comment = ?', @survey.id, false).uniq
+      @question_groups = QuestionGroup.joins(questions: :survey_section).where("question_groups.display_type not in (?) and survey_sections.survey_id = ? and questions.is_comment = ?", ['repeater', 'inline'], @survey.id, false).uniq
+      @repeater_inline = QuestionGroup.joins(questions: :survey_section).where("question_groups.display_type in (?) and survey_sections.survey_id = ? and questions.is_comment = ?", ['repeater', 'inline'], @survey.id, false).uniq
     end
 
     if @question && @responses.count > 0
