@@ -11,9 +11,15 @@ module SurveyorGui::ReportsHelper
     end
     return display
   end
-  
+
   def star_average(responses,q)
-    (responses.where(:question_id => q.id).where('integer_value > ?',0).collect(&:integer_value).average * 2).round
+    integer_responses = responses.where(:question_id => q.id).where('integer_value > ?',0).collect(&:integer_value)
+
+    if integer_responses.any?
+      (responses.where(:question_id => q.id).where('integer_value > ?',0).collect(&:integer_value).average * 2).round
+    else
+      0
+    end
   end
 
 end

@@ -4,7 +4,7 @@
         <div id="Survey">
             <h1 class="round-top"><%= @title %></h1>
 
-            <%if params[:question_id] %>
+            <%if params[:question_id] || params[:question_group_id] %>
                 <p>
                     <%= link_to "<< Back to Questions", report_path(@survey) %>
                 </p>
@@ -15,14 +15,33 @@
                 <%= render 'show_report' %>
             <%else %>
 
-                <h4>Questions</h4>
+                <p>
+                    <%= link_to "<< Back to Surveys", surveyforms_path %>
+                </p>
+
+                <h4>Single Questions</h4>
                 <%@questions.each do |question| %>
                     <% if ([:pick_one,:pick_any,:dropdown,:number,:date,:datetime,:time,:stars,:slider,:grid_one, :grid_any, :grid_dropdown].include?(question.question_type_id) || question.pick == 'one' || question.pick == 'any') && question.question_group.nil? %>
-                        <p>
-                            <%= link_to question.text,  report_path(@survey, question_id: question.id)%>
-                        </p>
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <%= link_to "View Report", report_path(@survey, question_id: question.id), class: "btn btn-primary", style: "float: right;"%>
+                                <%= question.text.html_safe %>
+                            </div>
+                        </div>
 
                     <%end %>
+                <%end %>
+
+                <h4>Grid Questions</h4>
+                <%@question_groups.each do |question_group| %>
+
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <%= link_to "View Report", report_path(@survey, question_group_id: question_group.id), class: "btn btn-primary", style: "float: right;"%>
+                            <%= question_group.text.html_safe %>
+                        </div>
+                    </div>
+
                 <%end %>
             <%end %>
         </div>

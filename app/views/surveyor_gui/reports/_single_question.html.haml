@@ -1,4 +1,7 @@
-%h3= q.text
+.panel.panel-default
+  .panel-body
+    = q.text.html_safe
+
 - if q.display_type == 'label'
   = render "surveyor_gui/shared/new_line"
 - else

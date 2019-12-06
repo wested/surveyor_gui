@@ -35,8 +35,12 @@ class SurveyorGui::ReportsController < ApplicationController
 
     if params[:question_id]
       @question = Question.joins(:survey_section).where('questions.id = ? AND survey_sections.survey_id = ? and is_comment = ?', params[:question_id], @survey.id, false).first
+    elsif params[:question_group_id]
+      question_group = QuestionGroup.find(params[:question_group_id])
+      @question = question_group.questions.first
     else
       @questions = Question.joins(:survey_section).where('survey_sections.survey_id = ? and is_comment = ?', @survey.id, false)
+      @question_groups = QuestionGroup.joins(questions: :survey_section).where('survey_sections.survey_id = ? and questions.is_comment = ?', @survey.id, false).uniq
     end
 
     if @question && @responses.count > 0
@@ -70,6 +74,14 @@ LEFT OUTER JOIN response_sets ON response_sets.id = responses.response_set_id").
         group("answers.question_id, answers.id, answers.text, answers.is_comment").
         order("answers.question_id, answers.id")
 
+    multiple_choice_responses_grid = Answer.unscoped.joins("LEFT OUTER JOIN responses ON responses.answer_id = answers.id
+LEFT OUTER JOIN response_sets ON response_sets.id = responses.response_set_id").
+        joins(:question=>:survey_section).
+        where('survey_sections.survey_id=? and (response_sets.test_data=? or response_sets.test_data is null)',survey_id,test).
+        select("answers.question_id, answers.id, answers.text as text, answers.is_comment, count(responses.id) as answer_count").
+        group("answers.question_id, answers.id, answers.text, answers.is_comment").
+        order("answers.question_id, answers.id")
+
     single_choice_responses = Response.joins(:response_set, :question).where('question_id=? and survey_id = ? and test_data = ?',@question.id,survey_id,test).select('responses.question_id, responses.answer_id,
 responses.float_value,
 responses.integer_value,
@@ -79,10 +91,10 @@ responses.string_value')
     colors = ['#4572A7', '#AA4643', '#89A54E', '#80699B', '#3D96AE', '#DB843D', '#92A8CD', '#A47D7C', '#B5CA92']
     # questions.each do |q|
     if [:grid_one, :grid_any].include? @question.question_type_id
-      generate_stacked_bar_chart(@question, multiple_choice_responses, colors)
+      generate_stacked_bar_chart(@question, multiple_choice_responses_grid, colors)
     elsif @question.question_type_id == :grid_dropdown
       @question.question_group.questions.where(is_comment: false).each do |question|
-        generate_grid_dropdown_bar_chart(question, multiple_choice_responses, colors)
+        generate_grid_dropdown_bar_chart(question, multiple_choice_responses_grid, colors)
       end
     elsif @question.pick == 'one'
       generate_pie_chart(@question, multiple_choice_responses)
@@ -190,6 +202,8 @@ responses.string_value')
             color: colors[question_index].to_s
         )
       end
+
+      puts "foo"
     end
   end
 

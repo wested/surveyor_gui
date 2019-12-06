@@ -7,26 +7,26 @@
   %div{class: @question.repeater? ? "repeater" : "non_repeater"}
     - if @question.part_of_group?
       - @question_group = @question_group || QuestionGroupTracker.new(@question.question_group.id)
-      - if @question_group.check_for_new_group(q)
-        - if ["default", "inline", "repeater", "grid"].include? @question.question_group.display_type
-          %table
-            %tr
-              %td
-                &nbsp;
-              %td{colspan: 3}
-                = @question.question_group.text
-            %tr
-              %td &nbsp;
-            - if ["default", "inline", "repeater"].include? @question.question_group.display_type
-              - if @question.question_group.display_type == "repeater"
-                = render "repeater", question_group: q.question_group
-              - @question.question_group.questions.each do |group_question|
-                %table
-                  = render "single_question", q: group_question
-            - elsif [:grid_one, :grid_any].include? @question.question_type_id
-              = render "grid", question_group: @question.question_group, question_type: @question.question_type_id
-            - elsif @question.question_type_id == :grid_dropdown
-              = render "grid_dropdown", question_group: @question.question_group
+      -#- if @question_group.check_for_new_group(q)
+      - if ["default", "inline", "repeater", "grid"].include? @question.question_group.display_type
+        %table
+          %tr
+            %td
+              &nbsp;
+            %td{colspan: 3}
+              = @question.question_group.text.html_safe
+          %tr
+            %td &nbsp;
+          - if ["default", "inline", "repeater"].include? @question.question_group.display_type
+            - if @question.question_group.display_type == "repeater"
+              = render "repeater", question_group: q.question_group
+            - @question.question_group.questions.each do |group_question|
+              %table
+                = render "single_question", q: group_question
+          - elsif [:grid_one, :grid_any].include? @question.question_type_id
+            = render "grid", question_group: @question.question_group, question_type: @question.question_type_id
+          - elsif @question.question_type_id == :grid_dropdown
+            = render "grid_dropdown", question_group: @question.question_group
     - else
       %table
         = render "single_question", q: @question

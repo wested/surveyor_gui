@@ -7,14 +7,16 @@
         %td User Id
         %td Response
       - response_formatter = ReportFormatter.new(q, @responses)
-      - @response_sets.each do |response_set| 
+      - @response_sets.each do |response_set|
         - @responses.where(question_id: q.id, response_set_id: response_set).each do |r|
+          - @response_set = response_set
+
           %tr
             %td= r.response_set.report_user_name
             %td.table_number
               = q.prefix
               - if [:number, :date, :datetime, :time].include? q.question_type_id
-                = response_formatter.format_stats(r.response_value.to_f) 
+                = response_formatter.format_stats(r.response_value.to_f)
               - else
                 = r.response_value
                 \&nbsp;
