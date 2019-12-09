@@ -1,4 +1,8 @@
 %h1= @title
+
+.alert.alert-warning
+  Important: When pasting text into the question field, make sure it is from a neutral source, such as a text editor in plain text mode. Do not paste text from MS Word, MS Excel or other source where the text has been formatted.
+
 %h3= "For Section: #{@survey_section.title}"
 = link_to "Back To Survey", surveyor_gui.edit_surveyform_url(@survey)
 
