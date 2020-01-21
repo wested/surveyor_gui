@@ -116,7 +116,7 @@ class SurveyorGui::QuestionsController < ApplicationController
   def sort
     survey = Surveyform.find(params[:survey_id])
     survey.sort_as_per_array(params)
-    render :nothing => true
+    head :ok
   end
 
   def cut_question
