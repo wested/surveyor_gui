@@ -12,7 +12,7 @@ module SurveyorGui
         base.send :scope, :is_not_comment, -> { base.where(is_comment: false) }
         base.send :scope, :is_comment, -> { base.where(is_comment: true) }
 
-        base.send :validates_numericality_of, :weight
+        base.send :validates_numericality_of, :weight, allow_blank: true
       end
 
       def split_or_hidden_text(part = nil)
