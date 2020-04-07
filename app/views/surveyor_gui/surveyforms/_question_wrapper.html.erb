@@ -62,6 +62,12 @@
                 >Add Logic</button>
             <% end %>
 
+            <% if f.object.pick == "any" || f.object.pick == "one" -%>
+                <button type="button" id="scores" class="btn btn-primary"
+                        data-url="<%= surveyor_gui.edit_score_url(:id=>f.object.id) %>"
+                >Add Scores</button>
+            <% end %>
+
           </span>
         </span>
 

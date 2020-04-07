@@ -1,0 +1,19 @@
+.modal-dialog.dependencies{:role => "document"}
+  .modal-content
+    .modal-header
+      %h5#exampleModalLongTitle.modal-title Scoring
+      %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
+        %span{"aria-hidden" => "true"} ×
+
+    - question_or_group = @question.part_of_group? ? @question.question_group : @question
+    = simple_form_for question_or_group, :url => scores_path+'/'+@question.id.to_s do |f|
+      .modal-body
+        = f.error_messages
+        = f.hidden_field :survey_section_id if question_or_group.is_a?(Question)
+        .dependency_editor
+          = f.simple_fields_for :answers do |answer|
+            = answer.input :weight, label: answer.object.text
+
+      .modal-footer
+        = f.button :submit,  'Save Changes',  data: { "ajax-target" => "#question_#{@question.id}", "ajax-handler" => 'logicAddHandler', "ajax-error-handler" => "modalErrorHandler", "ajax-error-target" => "#modal", disable_with: "Please wait..." }
+        %button.btn.btn-secondary{"data-dismiss" => "modal", :type => "button"} Close

@@ -1,0 +1,15 @@
+= f.simple_fields_for :dependency do |d|
+  = d.hidden_field :question_id
+  = d.hidden_field :question_group_id
+  = d.hidden_field :rule
+  %div
+    Show the question,
+    %h3= @this_question.html_safe
+    when the following conditions are true:
+    %br/
+    %br/
+
+    %div#dependency_conditions_partial{"data-dependency_id" => "#{d.object.id.to_s}", "data-question_id" => "#{@question.id.to_s}"}
+    %hr
+    %p.floatdown2.add_condition
+      Add a Condition #{image_tag 'addicon.png', :border => 0}

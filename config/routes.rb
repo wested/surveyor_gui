@@ -50,6 +50,8 @@ SurveyorGui::Engine.routes.draw do
   end
   get '/dependency/render_dependency_conditions_partial', :to => 'dependencys#render_dependency_conditions_partial'
 
+  resources :scores
+
   resources :reports,
             :only=>[
                 'show',
