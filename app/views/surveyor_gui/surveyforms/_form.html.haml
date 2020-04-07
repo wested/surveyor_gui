@@ -26,12 +26,7 @@
       = f.hidden_field :id
       = f.label :title, :required => false,  :style => 'font-size: 150%;'
       = f.input :title, :input_html => { :size => '35', :style=>'margin-top: 0.5%; font-size: 110%; float:left;'}, :required=>false , :label=>false
-      = f.input :template, :disabled=>@survey_locked, :label => false, :input_html=>{:style=>"float:right;"}
-
-    %br/
-
-    %span{:style => "position:relative; float: right;"}
-      Template? 
+      = f.input :template, :disabled=>@survey_locked, :label => "Template?"
 
     .sections{"data-survey_locked" => @survey_locked, class: ("sortable_sections" unless params[:action] == "show")}
       = render "survey_section_fields", :s => builder , :f => f
