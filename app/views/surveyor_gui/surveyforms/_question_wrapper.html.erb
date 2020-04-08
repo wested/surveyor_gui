@@ -62,7 +62,7 @@
                 >Add Logic</button>
             <% end %>
 
-            <% if f.object.pick == "any" || f.object.pick == "one" -%>
+            <% if f.object.pick == "any" || (f.object.pick == "one" && f.object.display_type != "stars") -%>
                 <button type="button" id="scores" class="btn btn-primary"
                         data-url="<%= surveyor_gui.edit_score_url(:id=>f.object.id) %>"
                 >Add Scores</button>

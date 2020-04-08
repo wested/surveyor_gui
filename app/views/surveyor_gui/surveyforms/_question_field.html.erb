@@ -4,6 +4,12 @@
 
 <%= row_label_if_question_group f.object %>
 
+<% if f.object.question_group.present? && (f.object.question_type_id == :dropdown || f.object.question_type_id == :pick_any || f.object.question_type_id == :pick_one || f.object.question_type_id == :slider) -%>
+    <button type="button" id="scores" class="btn btn-primary" style="float:right;"
+            data-url="<%= surveyor_gui.edit_score_url(:id=>f.object.id) %>"
+    >Add Scores</button>
+<% end %>
+
 <% question_type = f.object.question_type_id
    case question_type
      when :slider -%>

@@ -10,13 +10,9 @@ class SurveyorGui::ScoresController < ApplicationController
 
   def update
     @question = Question.includes(:answers).find(params[:id])
-    if @question.part_of_group?
-      update_object = @question.question_group
-      update_params = question_group_params
-    else
-      update_object = @question
-      update_params = question_params
-    end
+    update_object = @question
+    update_params = question_params
+
     if update_object.update_attributes(update_params)
       @question_no = 0
       render partial: "surveyor_gui/surveyforms/question_section" , :layout=> false
@@ -37,75 +33,13 @@ class SurveyorGui::ScoresController < ApplicationController
     head :ok
   end
 
-  def render_dependency_conditions_partial
-    prep_variables
-    @question_or_group = @question.part_of_group? ? @question.question_group : @question
-    @dependency = Dependency.find(params[:dependency_id]) if !params[:dependency_id].blank?
-    if @dependency.nil?
-      @question_or_group.build_dependency(:rule=>'A').dependency_conditions.build()
-    end
-    if @question_or_group.dependency.dependency_conditions.empty?
-      @question_or_group.dependency.dependency_conditions.build()
-    else
-      if params[:add_row]
-        @question_or_group = eval(@question_or_group.class.name).new
-        @question_or_group.build_dependency.dependency_conditions.build()
-      end
-    end
-    render :partial => 'dependency_condition_fields'
-  end
-
-  def get_answers
-    options=""
-    question_id               = params[:question_id]
-    question                  = Question.find(question_id)
-    column_id                 = params[:column_id].blank? ? _default_column_id(question) : params[:column_id]
-    dependency_condition_id   = params[:dependency_condition_id]
-    dependency_condition      = dependency_condition_id.blank? ? nil : DependencyCondition.find(dependency_condition_id)
-    if question && question.answers
-      question.answers.where('column_id = ? OR column_id IS NULL',column_id.to_i).each_with_index do |a, index|
-        options += '<option ' + _get_selected_answer(index, dependency_condition, a, column_id) +
-            'value="' + a.id.to_s + '"' +
-            '>'+a.text.to_s+"</option>"
-      end
-    end
-    render :inline=>options
-  end
-
-  def get_columns
-    options=""
-    question_id               = params[:question_id]
-    dependency_condition_id   = params[:dependency_condition_id]
-    dependency_condition      = dependency_condition_id.blank? ? nil : DependencyCondition.find(dependency_condition_id)
-    question = Question.find(question_id)
-    if question && question.question_group
-      question.question_group.columns.each_with_index do |c, index|
-        options += '<option ' +
-            _get_selected_column(index, dependency_condition, c) +
-            'value="' + c.id.to_s + '"' +
-            '>'+c.text.to_s+"</option>"
-      end
-    end
-    render :inline=>options
-  end
-
-  def get_question_type
-    question_id =  params[:question_id]
-    question = Question.find(question_id)
-    response=question.pick
-    response += ','+question.question_type_id.to_s
-    response += ','+question_id
-    render :inline=>response
-  end
-
   private
 
   def prep_variables
     @question = Question.includes(:dependency).find(params[:id]) unless @question
     controlling_questions = get_controlling_question_collection(@question)
     @controlling_questions = controlling_questions.collection
-    @this_question = @question.part_of_group? ? @question.question_group.text : @question.question_description
-    @operators = get_operators
+    @question_target = @question.part_of_group? ? @question.question_group.questions.to_a.first : @question
   end
 
   def get_controlling_question_collection(dependent_question)
@@ -122,17 +56,6 @@ class SurveyorGui::ScoresController < ApplicationController
 
   def _get_question_collection(all_questions, dependent_question)
     return QuestionCollection.new(dependent_question).add_questions(all_questions)
-  end
-
-  def get_operators
-    return [
-        ['equal to (=)','=='],
-        ['not equal to','!='],
-        ['less than (<)','<'],
-        ['less than or equal to (<=)','<='],
-        ['greater than or equal to (>=)','>='],
-        ['greater than','>']
-    ]
   end
 
   def question_params
