@@ -8,6 +8,7 @@ module SurveyorGui
         base.send :has_many, :survey_sections, :dependent => :destroy
         base.send :has_many, :questions, through: :survey_sections
         base.send :has_many, :question_groups, through: :questions
+        base.send :has_many, :answers, through: :questions
 
         base.send :accepts_nested_attributes_for, :survey_sections, :allow_destroy => true
 

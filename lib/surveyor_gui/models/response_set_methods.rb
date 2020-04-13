@@ -4,6 +4,8 @@ module SurveyorGui
 
       def self.included(base)
         base.send :has_many, :responses, :dependent=>:destroy
+        base.send :has_many, :answers, through: :responses, :source=>"answer"
+
         base.send :attr_accessible, :survey, :responses_attributes, :user_id, :survey_id, :test_data if defined? ActiveModel::MassAssignmentSecurity
       end
 
