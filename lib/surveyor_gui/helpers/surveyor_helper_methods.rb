@@ -19,7 +19,7 @@ module SurveyorGui
       def answer_result_css_class(response, answer_option)
         if answer_option.weight && answer_option.weight > 0
           "correct"
-        elsif response && response.answer_id == answer_option.id && (answer_option.weight.nil? || answer_option.weight < 0)
+        elsif response && response.answer_id == answer_option.id && (answer_option.weight.nil? || answer_option.weight <= 0)
           "incorrect"
         end
       end
