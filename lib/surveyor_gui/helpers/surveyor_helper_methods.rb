@@ -16,12 +16,42 @@ module SurveyorGui
       end
 
       # Scoring
-      def answer_result_css_class(response, answer_option)
-        if answer_option.weight && answer_option.weight > 0
-          "correct"
-        elsif response && response.answer_id == answer_option.id && (answer_option.weight.nil? || answer_option.weight <= 0)
-          "incorrect"
+      def answer_result_css_class(response, answer_option, question_type)
+        if response
+          if question_type == "any"
+
+            if user_answer_matches(response, answer_option) && question_incorrect_option(answer_option)
+              "incorrect"
+            elsif !user_answer_matches(response, answer_option) && question_correct_option(answer_option)
+              "missed"
+            elsif user_answer_matches(response, answer_option) && question_correct_option(answer_option)
+              "correct"
+            end
+
+          else
+
+            if question_correct_option(answer_option)
+              "correct"
+            elsif user_answer_matches(response, answer_option) && question_incorrect_option(answer_option)
+              "incorrect"
+            end
+
+          end
         end
+      end
+
+      private
+
+      def user_answer_matches(response, answer_option)
+        response.answer_id == answer_option.id
+      end
+
+      def question_correct_option(answer_option)
+        answer_option.weight && answer_option.weight > 0
+      end
+
+      def question_incorrect_option(answer_option)
+        answer_option.weight.nil? || answer_option.weight <= 0
       end
     end
   end

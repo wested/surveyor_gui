@@ -74,23 +74,42 @@ describe SurveyorHelper do
   end
 
   context "scoring methods" do
-    it "should return css class that corresponds to whether an answer is correct or not" do
+    it "should return css class that corresponds to whether an answer is correct or not for single select" do
       q1 = FactoryGirl.create(:question, pick: :one, :answers => [a = FactoryGirl.create(:answer, :text => "correct", weight: 1), b = FactoryGirl.create(:answer, :text => "nothing"), c = FactoryGirl.create(:answer, :text => "penalty", weight: -1)])
       correct_response_set = FactoryGirl.create(:response_set, :responses => [r1 = FactoryGirl.create(:response, :question => q1, :answer => a)])
       incorrect_response_set = FactoryGirl.create(:response_set, :responses => [r2 = FactoryGirl.create(:response, :question => q1, :answer => b)])
       incorrect_penalty_response_set = FactoryGirl.create(:response_set, :responses => [r3 = FactoryGirl.create(:response, :question => q1, :answer => c)])
 
-      expect(helper.answer_result_css_class(r1, a)).to eq "correct"
-      expect(helper.answer_result_css_class(r1, b)).to be_nil
-      expect(helper.answer_result_css_class(r1, c)).to be_nil
+      expect(helper.answer_result_css_class(r1, a, "one")).to eq "correct"
+      expect(helper.answer_result_css_class(r1, b, "one")).to be_nil
+      expect(helper.answer_result_css_class(r1, c, "one")).to be_nil
 
-      expect(helper.answer_result_css_class(r2, a)).to eq "correct"
-      expect(helper.answer_result_css_class(r2, b)).to eq "incorrect"
-      expect(helper.answer_result_css_class(r2, c)).to be_nil
+      expect(helper.answer_result_css_class(r2, a, "one")).to eq "correct"
+      expect(helper.answer_result_css_class(r2, b, "one")).to eq "incorrect"
+      expect(helper.answer_result_css_class(r2, c, "one")).to be_nil
 
-      expect(helper.answer_result_css_class(r3, a)).to eq "correct"
-      expect(helper.answer_result_css_class(r3, b)).to be_nil
-      expect(helper.answer_result_css_class(r3, c)).to eq "incorrect"
+      expect(helper.answer_result_css_class(r3, a, "one")).to eq "correct"
+      expect(helper.answer_result_css_class(r3, b, "one")).to be_nil
+      expect(helper.answer_result_css_class(r3, c, "one")).to eq "incorrect"
+    end
+
+    it "should return css class that corresponds to whether an answer is correct or not for multi select" do
+      q1 = FactoryGirl.create(:question, pick: :one, :answers => [a = FactoryGirl.create(:answer, :text => "correct", weight: 1), b = FactoryGirl.create(:answer, :text => "nothing"), c = FactoryGirl.create(:answer, :text => "penalty", weight: -1)])
+      correct_response_set = FactoryGirl.create(:response_set, :responses => [r1 = FactoryGirl.create(:response, :question => q1, :answer => a)])
+      incorrect_response_set = FactoryGirl.create(:response_set, :responses => [r2 = FactoryGirl.create(:response, :question => q1, :answer => b)])
+      incorrect_penalty_response_set = FactoryGirl.create(:response_set, :responses => [r3 = FactoryGirl.create(:response, :question => q1, :answer => c)])
+
+      expect(helper.answer_result_css_class(r1, a, "any")).to eq "correct"
+      expect(helper.answer_result_css_class(r1, b, "any")).to be_nil
+      expect(helper.answer_result_css_class(r1, c, "one")).to be_nil
+
+      expect(helper.answer_result_css_class(r2, a, "any")).to eq "missed"
+      expect(helper.answer_result_css_class(r2, b, "any")).to eq "incorrect"
+      expect(helper.answer_result_css_class(r2, c, "any")).to be_nil
+
+      expect(helper.answer_result_css_class(r3, a, "any")).to eq "missed"
+      expect(helper.answer_result_css_class(r3, b, "any")).to be_nil
+      expect(helper.answer_result_css_class(r3, c, "any")).to eq "incorrect"
     end
 
   end
