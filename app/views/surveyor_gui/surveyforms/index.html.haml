@@ -29,6 +29,7 @@
     %tr
       %th Title
       %th Version
+      %th Internal Title
       %th Template?
       %th
         Users
@@ -43,6 +44,7 @@
       %tr
         %td= survey.title
         %td= survey.survey_version
+        %td= survey.internal_title
         %td= (survey.template ? "Yes" : "No")
         %td= survey.response_sets.count
         %td= survey.responses.count

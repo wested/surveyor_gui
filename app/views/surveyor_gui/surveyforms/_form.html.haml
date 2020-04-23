@@ -24,8 +24,8 @@
         = link_to "Edit", edit_surveyform_path(@surveyform.id), class: "btn-sm btn-primary"
     - else
       = f.hidden_field :id
-      = f.label :title, :required => false,  :style => 'font-size: 150%;'
-      = f.input :title, :input_html => { :size => '35', :style=>'margin-top: 0.5%; font-size: 110%; float:left;'}, :required=>false , :label=>false
+      = f.input :title, :required=>true
+      = f.input :internal_title
       = f.input :template, :disabled=>@survey_locked, :label => "Template?"
 
     .sections{"data-survey_locked" => @survey_locked, class: ("sortable_sections" unless params[:action] == "show")}
