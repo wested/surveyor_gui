@@ -10,6 +10,10 @@ feature "User adds scores using browser", %q{
 
   include_context "scores"
 
+  before(:each) do
+    Survey.find_by(title: "Scores").update_attribute(:quiz, true)
+  end
+
   scenario "user adds scores to pick one question", js: true do
     #Given I have a survey with two questions
     visit surveyor_gui.surveyforms_path
@@ -22,7 +26,7 @@ feature "User adds scores using browser", %q{
     expect(page).to have_content("What is your favorite color?")
     #And I click Add Logic on the second question
     within "fieldset.questions", text: "What is your favorite color?" do
-      click_button "Scores"
+      click_button "Add Scores"
     end
 
     wait_for_ajax
@@ -42,7 +46,7 @@ feature "User adds scores using browser", %q{
     wait_for_ajax
 
     within "fieldset.questions", text: "What is your favorite color?" do
-      click_button "Scores"
+      click_button "Add Scores"
     end
 
     wait_for_ajax
@@ -67,7 +71,7 @@ feature "User adds scores using browser", %q{
     expect(page).to have_content("Choose the colors you don't like")
     #And I click Add Logic on the second question
     within "fieldset.questions", text: "Choose the colors you don't like" do
-      click_button "Scores"
+      click_button "Add Scores"
     end
 
     wait_for_ajax
@@ -86,7 +90,7 @@ feature "User adds scores using browser", %q{
     wait_for_ajax
 
     within "fieldset.questions", text: "Choose the colors you don't like" do
-      click_button "Scores"
+      click_button "Add Scores"
     end
 
     wait_for_ajax
@@ -130,7 +134,7 @@ feature "User adds scores using browser", %q{
     wait_for_ajax
 
     within "fieldset.questions .question_group_element", text: "What is your favorite animal?" do
-      click_button "Scores"
+      click_button "Add Scores"
     end
 
     wait_for_ajax
@@ -144,7 +148,7 @@ feature "User adds scores using browser", %q{
 
     #And I click Add Logic on the second question
     within "fieldset.questions .question_group_element", text: "Choose the animals you don't like" do
-      click_button "Scores"
+      click_button "Add Scores"
     end
 
     wait_for_ajax
@@ -162,7 +166,7 @@ feature "User adds scores using browser", %q{
     wait_for_ajax
 
     within "fieldset.questions .question_group_element", text: "Choose the animals you don't like" do
-      click_button "Scores"
+      click_button "Add Scores"
     end
 
     wait_for_ajax

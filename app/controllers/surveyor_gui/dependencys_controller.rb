@@ -32,6 +32,8 @@ class SurveyorGui::DependencysController < ApplicationController
 
   def update
     @question = Question.includes(:answers).find(params[:id])
+    @surveyform = Surveyform.find(@question.survey_section.survey.id)
+
     if @question.part_of_group?
       update_object = @question.question_group
       update_params = question_group_params
@@ -127,6 +129,7 @@ class SurveyorGui::DependencysController < ApplicationController
 
   def prep_variables
     @question = Question.includes(:dependency).find(params[:id]) unless @question
+    @surveyform = Surveyform.find(@question.survey_section.survey.id)
     controlling_questions = get_controlling_question_collection(@question)
     @controlling_questions = controlling_questions.collection
     @this_question = @question.part_of_group? ? @question.question_group.text : @question.question_description

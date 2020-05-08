@@ -216,9 +216,9 @@ describe SurveyorGui::SurveyformsController do
         put :update, params: params
       end
 
-      it "redirects to index" do
+      it "redirects back to edit" do
         do_put(:id=>survey.id,:surveyform=>{:id=>survey.id})
-        expect(response).to redirect_to(surveyforms_path)
+        expect(response).to redirect_to(edit_surveyform_path(survey.id))
       end
 
     end

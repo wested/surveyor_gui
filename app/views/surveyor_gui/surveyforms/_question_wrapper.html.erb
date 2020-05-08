@@ -63,7 +63,7 @@
             <% end %>
 
             <% if f.object.pick == "any" || (f.object.pick == "one" && f.object.display_type != "stars") -%>
-                <button type="button" id="scores" class="btn btn-primary"
+                <button type="button" id="scores" class="btn btn-primary add-scores" style="display: <%= @surveyform.quiz? ? 'inline' : 'none' %>;"
                         data-url="<%= surveyor_gui.edit_score_url(:id=>f.object.id) %>"
                 >Add Scores</button>
             <% end %>

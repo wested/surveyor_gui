@@ -409,6 +409,6 @@ feature "User creates a new survey using a browser",  %q{
     build_a_survey
     click_button "Save Changes"
     expect(page).to have_content(/[Ss]uccessfully update/)
-    expect(page).to have_content("How was Boston?")
+    expect(page).to have_selector("input[value='How was Boston?']")
   end
 end #end feature

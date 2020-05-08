@@ -10,6 +10,8 @@ class SurveyorGui::ScoresController < ApplicationController
 
   def update
     @question = Question.includes(:answers).find(params[:id])
+    @surveyform = Surveyform.find(@question.survey_section.survey.id)
+
     update_object = @question
     update_params = question_params
 
@@ -37,6 +39,8 @@ class SurveyorGui::ScoresController < ApplicationController
 
   def prep_variables
     @question = Question.includes(:dependency).find(params[:id]) unless @question
+    @surveyform = Surveyform.find(@question.survey_section.survey.id)
+
     controlling_questions = get_controlling_question_collection(@question)
     @controlling_questions = controlling_questions.collection
     @question_target = @question.part_of_group? ? @question.question_group.questions.to_a.first : @question

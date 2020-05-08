@@ -4,6 +4,8 @@
         initTinyMce();
         evaluate_group_question_last_row();
 
+        $('.quiz').on('click', scoresVisibility);
+
     });
 
 } ) ( jQuery );
@@ -1427,4 +1429,12 @@ function initTinyMce() {
 
         target_list: [{title: 'New page', value: '_blank'}]
     });
+}
+
+function scoresVisibility() {
+    if ($("input.quiz:checked").length) {
+        $('.add-scores').show();
+    } else {
+        $('.add-scores').hide();
+    }
 }
