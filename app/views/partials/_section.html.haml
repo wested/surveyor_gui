@@ -9,5 +9,7 @@
         = render q.question_group.custom_renderer || "/partials/question_group.html", :g => q.question_group, :qs => qs, :f => f
         - qs = []
       = render q.custom_renderer || "/partials/question.html", :q => q, :f => f if q.is_comment == true
+      = yield q
     - else # gather up the group questions
       = render q.custom_renderer || "/partials/question.html", :q => q, :f => f
+      = yield q

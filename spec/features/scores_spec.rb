@@ -146,8 +146,11 @@ feature "User adds scores using browser", %q{
 
       click_button "Save Changes"
     end
+    wait_for_ajax
 
-    #And I click Add Logic on the second question
+    page.save_screenshot(File.join(Rails.root, "tmp", "hotel.png"), :full => true)
+    find("fieldset.questions .question_group_element", match: :first)
+    sleep 1
     within "fieldset.questions .question_group_element", text: "Choose the animals you don't like" do
       click_button "Add Scores"
     end
@@ -208,17 +211,6 @@ feature "User adds scores using browser", %q{
 
     wait_for_ajax
 
-    within "fieldset.questions .question_group_element", text: "What is your favorite animal?" do
-      click_button "Scores"
-    end
-
-    wait_for_ajax
-
-    within ".modal" do
-      expect(page).to have_field('question_correct_feedback', with: "here is why you got it right")
-      click_link 'Feedback: Incorrectly answered'
-      expect(page).to have_field('question_incorrect_feedback', with: "here is why you got it wrong")
-    end
-
+    expect(Question.where(text: "What is your favorite animal?").first.correct_feedback).to eq "here is why you got it right"
   end
 end
