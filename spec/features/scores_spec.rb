@@ -2,6 +2,7 @@ require 'spec_helper'
 #from spec/support/surveyforms_helpers.rb
 include SurveyFormsCreationHelpers::CreateSurvey
 include SurveyFormsCreationHelpers::BuildASurvey
+include GeneralPurposeHelpers
 
 feature "User adds scores using browser", %q{
   As a user
@@ -177,5 +178,47 @@ feature "User adds scores using browser", %q{
 
       click_button "Save Changes"
     end
+  end
+
+  scenario "user adds correct and incorrect feedback", js: true do
+    visit surveyor_gui.surveyforms_path
+    expect(page).to have_content("Scores")
+    within "tr", text: "Scores" do
+      click_link "Edit"
+    end
+
+    expect(page).to have_content("scoring in sub questions")
+    within "fieldset.questions .question_group_element", text: "What is your favorite animal?" do
+      click_button "Scores"
+    end
+
+    wait_for_ajax
+
+    #Then I see a window pop-up
+    within ".modal" do
+      expect(page).to have_content("dog")
+      expect(page).to have_content("cat")
+      expect(page).to have_content("bird")
+
+      tinymce_fill_in_explicitly("question_correct_feedback", with: "here is why you got it right")
+      tinymce_fill_in_explicitly("question_incorrect_feedback", with: "here is why you got it wrong")
+
+      click_button "Save Changes"
+    end
+
+    wait_for_ajax
+
+    within "fieldset.questions .question_group_element", text: "What is your favorite animal?" do
+      click_button "Scores"
+    end
+
+    wait_for_ajax
+
+    within ".modal" do
+      expect(page).to have_field('question_correct_feedback', with: "here is why you got it right")
+      click_link 'Feedback: Incorrectly answered'
+      expect(page).to have_field('question_incorrect_feedback', with: "here is why you got it wrong")
+    end
+
   end
 end

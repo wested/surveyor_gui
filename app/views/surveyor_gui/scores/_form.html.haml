@@ -14,6 +14,21 @@
           = f.simple_fields_for :answers do |answer|
             = answer.input :weight, label: answer.object.text
 
+        .dependency_editor
+
+          %ul.nav.nav-tabs{:role => "tablist"}
+            %li.active{:role => "presentation"}
+              %a{"aria-controls" => "home", "data-toggle" => "tab", :href => "#correct", :role => "tab"} Feedback: Correctly answered
+            %li{:role => "presentation"}
+              %a{"aria-controls" => "profile", "data-toggle" => "tab", :href => "#incorrect", :role => "tab"} Feedback: Incorrectly answered
+
+          / Tab panes
+          .tab-content
+            #correct.tab-pane.active{:role => "tabpanel"}
+              = f.input :correct_feedback, label: false, input_html: { class: "tinymce" }
+            #incorrect.tab-pane{:role => "tabpanel"}
+              = f.input :incorrect_feedback, label: false, input_html: { class: "tinymce" }
+
       .modal-footer
         = f.button :submit,  'Save Changes',  data: { "ajax-target" => "#question_#{@question_target.id}", "ajax-handler" => 'logicAddHandler', "ajax-error-handler" => "modalErrorHandler", "ajax-error-target" => "#modal", disable_with: "Please wait..." }
         %button.btn.btn-secondary{"data-dismiss" => "modal", :type => "button"} Close

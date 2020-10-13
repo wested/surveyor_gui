@@ -63,7 +63,7 @@ class SurveyorGui::ScoresController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:survey_section_id, answers_attributes: [ :id, :weight ])
+    params.require(:question).permit(:survey_section_id, :correct_feedback, :incorrect_feedback, answers_attributes: [ :id, :weight ])
   end
 
   def question_group_params

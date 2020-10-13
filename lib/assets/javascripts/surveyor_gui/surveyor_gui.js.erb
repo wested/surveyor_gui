@@ -1426,7 +1426,11 @@ function initTinyMce() {
         contextmenu: false,
         content_css: '/assets/surveyor_all.css',
         fontsize_formats: "7pt 8pt 10pt 12pt 14pt 18pt 24pt 36pt",
-
+        setup: function (editor) {
+            editor.on('change', function () {
+                tinymce.triggerSave();
+            });
+        },
         target_list: [{title: 'New page', value: '_blank'}]
     });
 }
