@@ -1417,6 +1417,7 @@ function initModalAfterLoad() {
 }
 
 function initTinyMce() {
+    tinymce.remove(); // not sure why I need this but won't work after an ajax request otherwise.....
     tinymce.init({
         selector: ".tinymce",
         theme: 'modern',
