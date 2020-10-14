@@ -8,7 +8,7 @@ module SurveyorGui
         base.send :belongs_to, :column
         base.send :attr_accessible, :response_set, :question, :answer, :date_value, :time_value,
             :response_set_id, :question_id, :answer_id, :datetime_value, :integer_value, :float_value,
-            :unit, :text_value, :string_value, :response_other, :response_group, 
+            :unit, :text_value, :string_value, :response_other, :response_group,
             :survey_section_id, :blob, :column if defined? ActiveModel::MassAssignmentSecurity
         #belongs_to :user
 
@@ -17,6 +17,7 @@ module SurveyorGui
 
         #extends response to allow file uploads.
         base.send :mount_uploader, :blob, BlobUploader
+        base.send :attribute, :incorrect, default: false
       end
 
       VALUE_TYPE = ['float', 'integer', 'string', 'datetime', 'text']

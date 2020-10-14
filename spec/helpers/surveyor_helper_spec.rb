@@ -71,6 +71,20 @@ describe SurveyorHelper do
       expect(helper.rc_to_as(:date)).to eq(:string)
       expect(helper.rc_to_as(:time)).to eq(:string)
     end
+
+    it "should return all responses for a pick one question" do
+      q1 = FactoryGirl.create(:question, pick: :one, :answers => [a = FactoryGirl.create(:answer, :text => "correct", weight: 1), b = FactoryGirl.create(:answer, :text => "nothing"), c = FactoryGirl.create(:answer, :text => "penalty", weight: -1)])
+      response_set = FactoryGirl.create(:response_set, :responses => [r1 = FactoryGirl.create(:response, :question => q1, :answer => a)])
+
+      expect(helper.responses_for(response_set, q1)).to match([r1])
+    end
+
+    it "should return all responses for a pick any question" do
+      q1 = FactoryGirl.create(:question, pick: :any, :answers => [a = FactoryGirl.create(:answer, :text => "correct", weight: 1), b = FactoryGirl.create(:answer, :text => "nothing"), c = FactoryGirl.create(:answer, :text => "penalty", weight: -1)])
+      response_set = FactoryGirl.create(:response_set, :responses => [r1 = FactoryGirl.create(:response, :question => q1, :answer => a), r2 = FactoryGirl.create(:response, :question => q1, :answer => c)])
+
+      expect(helper.responses_for(response_set, q1)).to match([r1, r2])
+    end
   end
 
   context "scoring methods" do
@@ -83,14 +97,17 @@ describe SurveyorHelper do
       expect(helper.answer_result_css_class(r1, a, "one")).to eq "correct"
       expect(helper.answer_result_css_class(r1, b, "one")).to be_nil
       expect(helper.answer_result_css_class(r1, c, "one")).to be_nil
+      expect(r1.incorrect).to be_falsey
 
       expect(helper.answer_result_css_class(r2, a, "one")).to eq "correct"
       expect(helper.answer_result_css_class(r2, b, "one")).to eq "incorrect"
       expect(helper.answer_result_css_class(r2, c, "one")).to be_nil
+      expect(r2.incorrect).to be_truthy
 
       expect(helper.answer_result_css_class(r3, a, "one")).to eq "correct"
       expect(helper.answer_result_css_class(r3, b, "one")).to be_nil
       expect(helper.answer_result_css_class(r3, c, "one")).to eq "incorrect"
+      expect(r3.incorrect).to be_truthy
     end
 
     it "should return css class that corresponds to whether an answer is correct or not for multi select" do
@@ -102,14 +119,17 @@ describe SurveyorHelper do
       expect(helper.answer_result_css_class(r1, a, "any")).to eq "correct"
       expect(helper.answer_result_css_class(r1, b, "any")).to be_nil
       expect(helper.answer_result_css_class(r1, c, "one")).to be_nil
+      expect(r1.incorrect).to be_falsey
 
       expect(helper.answer_result_css_class(r2, a, "any")).to eq "missed"
       expect(helper.answer_result_css_class(r2, b, "any")).to eq "incorrect"
       expect(helper.answer_result_css_class(r2, c, "any")).to be_nil
+      expect(r2.incorrect).to be_truthy
 
       expect(helper.answer_result_css_class(r3, a, "any")).to eq "missed"
       expect(helper.answer_result_css_class(r3, b, "any")).to be_nil
       expect(helper.answer_result_css_class(r3, c, "any")).to eq "incorrect"
+      expect(r3.incorrect).to be_truthy
     end
 
   end

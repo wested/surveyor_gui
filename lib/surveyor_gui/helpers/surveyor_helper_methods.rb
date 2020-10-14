@@ -15,14 +15,24 @@ module SurveyorGui
           column_id: column_id) : result
       end
 
+      def responses_for(response_set, question)
+        return nil unless response_set && question && question.id
+
+        result = response_set.responses.find_all{ |r| r.question_id == question.id }
+
+        result.blank? ? [] : result
+      end
+
       # Scoring
       def answer_result_css_class(response, answer_option, question_type)
         if response
           if question_type == "any"
 
             if user_answer_matches(response, answer_option) && question_incorrect_option(answer_option)
+              response.incorrect = true
               "incorrect"
             elsif !user_answer_matches(response, answer_option) && question_correct_option(answer_option)
+              response.incorrect = true
               "missed"
             elsif user_answer_matches(response, answer_option) && question_correct_option(answer_option)
               "correct"
@@ -33,6 +43,7 @@ module SurveyorGui
             if question_correct_option(answer_option)
               "correct"
             elsif user_answer_matches(response, answer_option) && question_incorrect_option(answer_option)
+              response.incorrect = true
               "incorrect"
             end
 
