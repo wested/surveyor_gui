@@ -42,7 +42,10 @@ class SurveyorGui::ResponsesController < ApplicationController
   def destroy_all
     survey = Survey.find(params[:survey_id])
 
-    survey.response_sets.destroy_all
+    Response.transaction do
+      Response.where(response_set: survey.response_sets.map(&:id)).destroy_all
+      survey.response_sets.update_all(completed_at: nil)
+    end
 
     redirect_back(fallback_location: surveyor_gui.surveyforms_path)
   end
