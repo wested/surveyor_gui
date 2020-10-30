@@ -94,41 +94,41 @@ describe SurveyorHelper do
       incorrect_response_set = FactoryGirl.create(:response_set, :responses => [r2 = FactoryGirl.create(:response, :question => q1, :answer => b)])
       incorrect_penalty_response_set = FactoryGirl.create(:response_set, :responses => [r3 = FactoryGirl.create(:response, :question => q1, :answer => c)])
 
-      expect(helper.answer_result_css_class(r1, a, "one")).to eq "correct"
-      expect(helper.answer_result_css_class(r1, b, "one")).to be_nil
-      expect(helper.answer_result_css_class(r1, c, "one")).to be_nil
+      expect(helper.answer_result_css_class(r1, a, q1)).to eq "correct"
+      expect(helper.answer_result_css_class(r1, b, q1)).to be_nil
+      expect(helper.answer_result_css_class(r1, c, q1)).to be_nil
       expect(r1.incorrect).to be_falsey
 
-      expect(helper.answer_result_css_class(r2, a, "one")).to eq "correct"
-      expect(helper.answer_result_css_class(r2, b, "one")).to eq "incorrect"
-      expect(helper.answer_result_css_class(r2, c, "one")).to be_nil
+      expect(helper.answer_result_css_class(r2, a, q1)).to eq "correct"
+      expect(helper.answer_result_css_class(r2, b, q1)).to eq "incorrect"
+      expect(helper.answer_result_css_class(r2, c, q1)).to be_nil
       expect(r2.incorrect).to be_truthy
 
-      expect(helper.answer_result_css_class(r3, a, "one")).to eq "correct"
-      expect(helper.answer_result_css_class(r3, b, "one")).to be_nil
-      expect(helper.answer_result_css_class(r3, c, "one")).to eq "incorrect"
+      expect(helper.answer_result_css_class(r3, a, q1)).to eq "correct"
+      expect(helper.answer_result_css_class(r3, b, q1)).to be_nil
+      expect(helper.answer_result_css_class(r3, c, q1)).to eq "incorrect"
       expect(r3.incorrect).to be_truthy
     end
 
     it "should return css class that corresponds to whether an answer is correct or not for multi select" do
-      q1 = FactoryGirl.create(:question, pick: :one, :answers => [a = FactoryGirl.create(:answer, :text => "correct", weight: 1), b = FactoryGirl.create(:answer, :text => "nothing"), c = FactoryGirl.create(:answer, :text => "penalty", weight: -1)])
+      q1 = FactoryGirl.create(:question, pick: :any, :answers => [a = FactoryGirl.create(:answer, :text => "correct", weight: 1), b = FactoryGirl.create(:answer, :text => "nothing"), c = FactoryGirl.create(:answer, :text => "penalty", weight: -1)])
       correct_response_set = FactoryGirl.create(:response_set, :responses => [r1 = FactoryGirl.create(:response, :question => q1, :answer => a)])
       incorrect_response_set = FactoryGirl.create(:response_set, :responses => [r2 = FactoryGirl.create(:response, :question => q1, :answer => b)])
       incorrect_penalty_response_set = FactoryGirl.create(:response_set, :responses => [r3 = FactoryGirl.create(:response, :question => q1, :answer => c)])
 
-      expect(helper.answer_result_css_class(r1, a, "any")).to eq "correct"
-      expect(helper.answer_result_css_class(r1, b, "any")).to be_nil
-      expect(helper.answer_result_css_class(r1, c, "one")).to be_nil
+      expect(helper.answer_result_css_class(r1, a, q1)).to eq "correct"
+      expect(helper.answer_result_css_class(r1, b, q1)).to be_nil
+      expect(helper.answer_result_css_class(r1, c, q1)).to be_nil
       expect(r1.incorrect).to be_falsey
 
-      expect(helper.answer_result_css_class(r2, a, "any")).to eq "missed"
-      expect(helper.answer_result_css_class(r2, b, "any")).to eq "incorrect"
-      expect(helper.answer_result_css_class(r2, c, "any")).to be_nil
+      expect(helper.answer_result_css_class(r2, a, q1)).to eq "missed"
+      expect(helper.answer_result_css_class(r2, b, q1)).to eq "incorrect"
+      expect(helper.answer_result_css_class(r2, c, q1)).to be_nil
       expect(r2.incorrect).to be_truthy
 
-      expect(helper.answer_result_css_class(r3, a, "any")).to eq "missed"
-      expect(helper.answer_result_css_class(r3, b, "any")).to be_nil
-      expect(helper.answer_result_css_class(r3, c, "any")).to eq "incorrect"
+      expect(helper.answer_result_css_class(r3, a, q1)).to eq "missed"
+      expect(helper.answer_result_css_class(r3, b, q1)).to be_nil
+      expect(helper.answer_result_css_class(r3, c, q1)).to eq "incorrect"
       expect(r3.incorrect).to be_truthy
     end
 
