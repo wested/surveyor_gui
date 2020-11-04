@@ -20,7 +20,11 @@
             <% if !@survey_locked && (f.object.modifiable?) -%>
 
                 <% unless params[:action] == "show" %>
-                    <span class="fl ui-icon ui-icon-arrowthick-2-n-s"></span>
+                    <span class="answer_handle" style="font-size:20px;margin:15px 10px 0 0">
+                        <i class="fa fa-bars"></i>
+                        &nbsp
+                    </span>
+
                 <% end %>
 
                 <span class="question_button_bar">

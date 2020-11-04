@@ -13,7 +13,9 @@
       / the survey is explicitly marked not modifiable (e.g., an administrator locks it).
       - if !@survey_locked && (f.object.modifiable?)
         - unless params[:action] == "show"
-          %span.fl.ui-icon.ui-icon-arrowthick-2-n-s
+          %span{style: "font-size:20px;margin:15px 10px 0 0"}
+            %i.fa.fa-bars
+            &nbsp
         %span.question_button_bar
           = link_to "Edit Question", question_group_edit_url_based_on_question_type(f.object), class: "btn btn-primary"
           %button.btn.btn-primary#cut_question{"data-cut_question_surveyform_url" => surveyor_gui.cut_question_surveyform_url(id: f.object.survey_section.survey.id, question_id:  f.object.id), "data-question_already_cut" => session[:cut_question], :type => "button"} Cut Question

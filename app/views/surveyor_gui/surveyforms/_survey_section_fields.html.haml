@@ -5,8 +5,9 @@
         %h2{:style => "position:relative;"}
 
           - unless params[:action] == "show"
-            %span.fl.ui-icon.ui-icon-arrowthick-2-n-s
-            &nbsp
+            %span{style: "font-size:20px;margin:15px 10px 0 0"}
+              %i.fa.fa-bars
+              &nbsp
           %span{id: "sectionTitle#{s.object.id}"}= s.object.title
 
           .section_top_button_bar
