@@ -13,6 +13,8 @@ module SurveyorGui
         base.send :scope, :is_comment, -> { base.where(is_comment: true) }
 
         base.send :validates_numericality_of, :weight, allow_blank: true
+
+        base.send :before_save, :populate_data_export_id
       end
 
       def split_or_hidden_text(part = nil)
@@ -22,6 +24,10 @@ module SurveyorGui
       end
 
       private
+
+      def populate_data_export_id
+        self.data_export_identifier = Surveyor::Common.normalize(text) if self.data_export_identifier.blank?
+      end
 
       # Overriding Surveyor method so we can add an image class for styling.
       def imaged(text)
