@@ -60,4 +60,6 @@ Gem::Specification.new do |s|
 
   # TODO The editor fails when upgrading to the new 5.0 version.  So will need to be fixed when upgrading the whole project
   s.add_dependency 'tinymce-rails', '= 4.8.3'
+  s.add_dependency 'cocoon'
+  s.add_dependency 'font-awesome-rails'
 end

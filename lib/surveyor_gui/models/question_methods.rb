@@ -8,6 +8,7 @@ module SurveyorGui
         base.send :attr_accessor, :dummy_answer, :dummy_answer_array, :type, :decimals
         base.send :attr_writer, :grid_columns_textbox, :omit, :omit_text,
                   :other, :other_text, :comments_text, :comments, :dropdown_column_count
+
         base.send :attr_accessible, :dummy_answer, :dummy_answer_array, :question_type, :question_type_id, :survey_section_id, :question_group_id,
                   :text, :pick, :reference_identifier, :display_order, :display_type,
                   :is_mandatory,  :prefix, :suffix, :answers_attributes, :decimals, :dependency_attributes,
@@ -15,7 +16,7 @@ module SurveyorGui
                   :grid_columns_textbox, :grid_rows_textbox, :omit_text, :omit, :other, :other_text, :is_comment, :comments, :comments_text,
                   :dynamic_source, :modifiable, :report_code, :question_group_attributes if
             defined? ActiveModel::MassAssignmentSecurity
-        base.send :accepts_nested_attributes_for, :answers, :reject_if => lambda { |a| a[:text].blank? && a[:weight].blank?}, :allow_destroy => true
+
         base.send :belongs_to, :survey_section
         base.send :has_many, :responses
         base.send :has_many, :dependency_conditions, :through=>:dependency, :dependent => :destroy
@@ -23,6 +24,7 @@ module SurveyorGui
         base.send :scope, :by_display_order, -> {base.order('display_order')}
         ### everything below this point must be commented out to run the rake tasks.
         base.send :accepts_nested_attributes_for, :dependency, :reject_if => lambda { |d| d[:rule].blank?}, :allow_destroy => true
+        base.send :accepts_nested_attributes_for, :answers, :reject_if => :all_blank, :allow_destroy => true
         ### everything below this point must be commented out to run the rake tasks.
 
         base.send :mount_uploader, :dummy_blob, BlobUploader
@@ -33,6 +35,7 @@ module SurveyorGui
         # base.send :before_destroy, :no_responses, :no_dependent_questions
         base.send :before_destroy, :no_dependent_questions
         base.send :after_save, :build_complex_questions
+        base.send :before_save, :set_question_type
         base.send :before_save, :make_room_for_question
 
         base.send :scope, :is_not_comment, -> { base.where(is_comment: false) }
@@ -109,45 +112,36 @@ module SurveyorGui
         @question_type = QuestionType.find(question_type_id)
       end
       #
-
-      #setter for question type.  Sets both pick and display_type
+      #
       def question_type_id=(type)
         case type
           when "grid_one"
             write_attribute(:pick, "one")
-            prep_picks
             write_attribute(:display_type, "default")
             _update_group_id
           when "pick_one"
             write_attribute(:pick, "one")
-            prep_picks
             write_attribute(:display_type, "default")
             _remove_group
           when "slider"
             write_attribute(:pick, "one")
-            prep_picks
             write_attribute(:display_type, "slider")
           when "stars"
             write_attribute(:pick, "one")
             write_attribute(:display_type, "stars")
-            prep_picks
           when "dropdown"
             write_attribute(:pick, "one")
             write_attribute(:display_type, "dropdown")
-            prep_picks
           when "pick_any"
             write_attribute(:pick, "any")
-            prep_picks
             write_attribute(:display_type, "default")
             _remove_group
           when "grid_any"
             write_attribute(:pick, "any")
-            prep_picks
             write_attribute(:display_type, "default")
             _update_group_id
           when "grid_dropdown"
             write_attribute(:pick, "one")
-            prep_picks
             write_attribute(:display_type, "dropdown")
             _update_group_id
           when "group_inline"
@@ -171,6 +165,28 @@ module SurveyorGui
             prep_not_picks('string')
         end
         @question_type_id = type
+      end
+
+      #setter for question type.  Sets both pick and display_type
+      def set_question_type
+        case self.question_type_id.to_s
+          when "grid_one"
+            prep_picks
+          when "pick_one"
+            prep_picks
+          when "slider"
+            prep_picks
+          when "stars"
+            prep_picks
+          when "dropdown"
+            prep_picks
+          when "pick_any"
+            prep_picks
+          when "grid_any"
+            prep_picks
+          when "grid_dropdown"
+            prep_picks
+        end
       end
 
 

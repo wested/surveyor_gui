@@ -37,8 +37,10 @@ feature "Bug fix #41", %q{
         check "question_is_mandatory"
 
       #And I add some choices"
-        fill_in "question_answers_textbox", with: """Yes
-                                                   No"""
+        find(:css, "input.option-value", match: :first).set("Yes")
+        click_link "Add Another Option"
+        all("input.option-value").last.set("No")
+
 
       #And I save the question
         click_button "Save Changes"
@@ -47,8 +49,9 @@ feature "Bug fix #41", %q{
       end
 
       #Then I can see the question in my survey
-      expect(first_question).to have_content("Was it snowing?")
       page.save_screenshot(File.join(Rails.root, "tmp", "snowing.png"), :full => true)
+      expect(first_question).to have_content("Was it snowing?")
+
 
       #Then I add another question
       add_question do

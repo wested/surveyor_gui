@@ -6,6 +6,11 @@
 
         $('.quiz').on('click', scoresVisibility);
 
+        $(document).on('cocoon:after-insert', '#fixed_source, .group_inline_question', function(e, insertedItem, originalEvent) {
+            $(this).sortable_answers();
+            update_answer_display_order();
+        });
+
     });
 
 } ) ( jQuery );
@@ -310,16 +315,18 @@ function application_js_code(){
     sortable_sections_and_questions();
 
     $.fn.sortable_answers = function(){
-        $('#sortable_answers').sortable({
+        $('#answers.sortable').sortable({
             axis:"y",
             opacity: 0.6,
             scroll: true,
+            handle: '.answer_handle',
             update: function(){
                 update_answer_display_order();
             }
         });
     };
 
+    $(document).sortable_answers();
 
     update_uislider();
     update_datepickers();
@@ -466,6 +473,7 @@ function application_js_code(){
                 update_group_answers();
                 sortable_sections_and_questions();
                 evaluate_group_question_last_row();
+                $('.sortable_group_questions').sortable_answers();
             }
         );
     }
@@ -895,7 +903,7 @@ function update_question_numbers() {
 
 
 function update_answer_display_order () {
-    $('#sortable_answers').find('input[id$="display_order"]').each(function(index, value){
+    $('#answers.sortable').find('input[id$="display_order"]').each(function(index, value){
         $(value).val(index);
     });
 }
@@ -954,6 +962,7 @@ function sortable_sections_and_questions() {
             opacity: 0.6,
             scroll: true,
             connectWith: ".sortable_group_questions",
+            handle: ".handle",
             update: function(){
                 var questions = $('.group_inline_question')
                 var display_order = Math.min.apply(

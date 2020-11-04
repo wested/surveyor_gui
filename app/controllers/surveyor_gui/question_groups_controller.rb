@@ -21,6 +21,7 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
     else
       @question_group.questions.build(
           display_order: params[:display_order])
+      @question_group.questions.first.answers.build(:text => '', :response_class=>"string")
     end
 
     render "surveyor_gui/questions/new", locals: { question: @question_group }

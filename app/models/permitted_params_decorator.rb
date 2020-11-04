@@ -67,7 +67,7 @@ module ParamDecorator
   def answer_attributes
     super +
         [:text, :response_class, :display_order, :original_choice, :hide_label,
-         :question_id, :display_type, :_destroy, :id, :is_comment, :comment]
+         :question_id, :display_type, :data_export_identifier, :_destroy, :id, :is_comment, :comment]
   end
 
 end

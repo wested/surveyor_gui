@@ -160,9 +160,11 @@ module SurveyFormsCreationHelpers
       #And I frame the question
         tinymce_fill_in "question_text", with: "What type of room did you get?"
       #And I add some choices"
-        fill_in "question_answers_textbox", with: """Deluxe King
-                                                   Standard Queen
-                                                   Standard Double"""
+        find(:css, "input.option-value", match: :first).set("Deluxe King")
+        click_link "Add Another Option"
+        all("input.option-value").last.set("Standard Queen")
+        click_link "Add Another Option"
+        all("input.option-value").last.set("Standard Double")
       #And I save the question
         click_button "Save Changes"
       #Then the window goes away
@@ -177,9 +179,11 @@ module SurveyFormsCreationHelpers
       #And I frame the question
         tinymce_fill_in "question_text", with: "What did you order from the minibar?"
       #And I add some choices"
-        fill_in "question_answers_textbox", with: """Bottled Water
-                                                   Kit Kats
-                                                   Scotch"""
+        find(:css, "input.option-value", match: :first).set("Bottled Water")
+        click_link "Add Another Option"
+        all("input.option-value").last.set("Kit Kats")
+        click_link "Add Another Option"
+        all("input.option-value").last.set("Scotch")
       #And I save the question
         click_button "Save Changes"
       #Then the window goes away
@@ -194,9 +198,12 @@ module SurveyFormsCreationHelpers
       #And I frame the question
         tinymce_fill_in "question_text", with: "What neighborhood were you in?"
       #And I add some choices"
-        fill_in "question_answers_textbox", with: """ Financial District
-                                                    Back Bay
-                                                    North End"""
+        find(:css, "input.option-value", match: :first).set("Financial District")
+        click_link "Add Another Option"
+        all("input.option-value").last.set("Back Bay")
+        click_link "Add Another Option"
+        all("input.option-value").last.set("North End")
+
       #And I save the question
         click_button "Save Changes"
       #Then the window goes away
@@ -250,10 +257,13 @@ module SurveyFormsCreationHelpers
       #And I frame the question
         tinymce_fill_in "question_text", with: "What did you think of the food?"
       #And I add some choices"
-        fill_in "question_answers_textbox", with: """Sucked!
-                                                   Meh
-                                                   Good
-                                                   Wicked good!"""
+        find(:css, "input.option-value", match: :first).set("Sucked!")
+        click_link "Add Another Option"
+        all("input.option-value").last.set("Meh")
+        click_link "Add Another Option"
+        all("input.option-value").last.set("Good")
+        click_link "Add Another Option"
+        all("input.option-value").last.set("Wicked good!")
       #And I save the question
         click_button "Save Changes"
       #Then the window goes away

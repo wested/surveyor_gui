@@ -2,20 +2,25 @@
   .sortable_group_questions{:id => "sortable_question#{@survey_section_id.to_s}"}
     = qg.simple_fields_for :questions do |q|
       = content_tag(:div, q.object, class: "question group_inline_question row", id: "question_#{q.object.try(:id)}") do
-        .col-md-6
+        .col-md-5
           %span.handle
-            %span.ui-icon.ui-icon-arrowthick-2-n-s
+            %i.fa.fa-bars
           -#- unless @question_group.question_type_id == :group_default
           = q.hidden_field :survey_section_id, value: @survey_section_id
           = q.hidden_field :id
+          = q.hidden_field :display_order, value: q.object.display_order||0
           = q.input :text, label: false, wrapper_html:{class: "question"}, input_html: { class: "tinymce" }
         .col-md-2
           = q.input :question_type_id, label: false, collection: QuestionType.all.map{|t|[t.text, t.id]}[0..13].uniq.select{|c| [:box,:number,:date,:string,:dropdown,:pick_one,:pick_any, :slider, :stars, :file].include? c[1]}, wrapper_html:{class: "question"}
-        .col-md-3
-          = q.input :answers_textbox, label: false, as: :text, wrapper_html:{class: "question group_answers_textbox"}
-          = q.hidden_field :display_order
-          = q.hidden_field :display_type
-          = q.hidden_field :pick
+        .col-md-4
+
+          #answers.sortable{class: "question group_answers_textbox"}
+            = q.simple_fields_for :answers do |a|
+              = render "surveyor_gui/questions/answer_fields", f: a
+
+            .links
+              = link_to_add_association "<i class='fa fa-plus' style='font-size:16px;margin-right:5px'></i>Add Another Option".html_safe, q, :answers, partial: "surveyor_gui/questions/answer_fields"
+
         .col-md-1
           %span.delete_group_inline_question
             = link_to_remove_fields "remove", q, ".group_inline_question"

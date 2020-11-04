@@ -7,9 +7,11 @@ module SurveyorGui
         base.send :attr_writer, :question_id
         base.send :attr_accessible, :questions_attributes if
             defined? ActiveModel::MassAssignmentSecurity
-        base.send :accepts_nested_attributes_for, :questions, :allow_destroy => true
+
         base.send :has_many, :columns
         base.send :has_one, :dependency, dependent: :destroy
+
+        base.send :accepts_nested_attributes_for, :questions, :allow_destroy => true
         base.send :accepts_nested_attributes_for, :columns,  :allow_destroy => true
         base.send :accepts_nested_attributes_for, :dependency, :reject_if => lambda { |d| d[:rule].blank?}, :allow_destroy => true
       end

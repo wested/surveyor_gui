@@ -1,0 +1,13 @@
+%hr/
+
+= simple_form_for @questions do |f|
+
+  %h3 Possible options for question
+
+  #answers.sortable
+    = f.simple_fields_for :answers do |a|
+      = render "surveyor_gui/questions/answer_fields", f: a
+
+    .links
+      = link_to_add_association "<i class='fa fa-plus' style='font-size:16px;margin-right:5px'></i>Add Another Option".html_safe, f, :answers
+    = render 'surveyor_gui/questions/answer_options', f: f

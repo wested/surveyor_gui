@@ -128,7 +128,7 @@ describe DependencyCondition do
       @b = FactoryGirl.create(:answer, :question => @a.question)
       @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a)
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question, :answer => @a, :operator => "==", :rule_key => "D")
+      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "==", :rule_key => "D")
       expect(@dc.as(:answer)).to eq(@r.as(:answer))
     end
 
@@ -181,7 +181,7 @@ describe DependencyCondition do
       @b = FactoryGirl.create(:answer, :question => @a.question)
       @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a)
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question, :answer => @a, :operator => "!=", :rule_key => "E")
+      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "!=", :rule_key => "E")
       expect(@dc.as(:answer)).to eq(@r.as(:answer))
     end
 
@@ -234,7 +234,7 @@ describe DependencyCondition do
       @b = FactoryGirl.create(:answer, :question => @a.question)
       @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a)
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question, :answer => @a, :operator => "<", :rule_key => "F")
+      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "<", :rule_key => "F")
       expect(@dc.as(:answer)).to eq(@r.as(:answer))
     end
 
@@ -263,7 +263,7 @@ describe DependencyCondition do
       @b = FactoryGirl.create(:answer, :question => @a.question)
       @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a)
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question, :answer => @a, :operator => "<=", :rule_key => "G")
+      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "<=", :rule_key => "G")
       expect(@dc.as(:answer)).to eq(@r.as(:answer))
     end
 
@@ -297,7 +297,7 @@ describe DependencyCondition do
       @b = FactoryGirl.create(:answer, :question => @a.question)
       @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a)
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question, :answer => @a, :operator => ">", :rule_key => "H")
+      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => ">", :rule_key => "H")
       expect(@dc.as(:answer)).to eq(@r.as(:answer))
     end
 
@@ -326,7 +326,7 @@ describe DependencyCondition do
       @b = FactoryGirl.create(:answer, :question => @a.question)
       @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a)
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question, :answer => @a, :operator => ">=", :rule_key => "I")
+      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => ">=", :rule_key => "I")
       expect(@dc.as(:answer)).to eq(@r.as(:answer))
     end
 
@@ -359,7 +359,7 @@ describe DependencyCondition do
       @b = FactoryGirl.create(:answer, :question => @a.question)
       @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a, :string_value => "")
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question, :answer => @a, :operator => "==", :rule_key => "J")
+      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "==", :rule_key => "J")
       expect(@dc.to_hash(@rs)).to eq({:J => true})
     end
 
@@ -368,7 +368,7 @@ describe DependencyCondition do
       @b = FactoryGirl.create(:answer, :question => @a.question)
       @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a, :string_value => "foo")
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question, :answer => @a, :operator => "==", :rule_key => "K", :string_value => "foo")
+      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "==", :rule_key => "K", :string_value => "foo")
       expect(@dc.to_hash(@rs)).to eq({:K => true})
 
       @r.update_attributes(:string_value => "")
@@ -380,7 +380,6 @@ describe DependencyCondition do
   describe "evaluate 'count' operator" do
     before(:each) do
       @q = FactoryGirl.create(:question)
-      @dc = DependencyCondition.new(:operator => "count>2", :rule_key => "M", :question => @q)
       @as = []
       3.times do
         @as << FactoryGirl.create(:answer, :question => @q, :response_class => "answer")
@@ -390,6 +389,8 @@ describe DependencyCondition do
         FactoryGirl.create(:response, :question => @q, :answer => a, :response_set => @rs)
       end
       @rs.save
+
+      @dc = DependencyCondition.new(:operator => "count>2", :rule_key => "M", :question => @q.reload)
     end
 
     it "with operator with >" do

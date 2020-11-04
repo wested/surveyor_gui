@@ -146,7 +146,7 @@ class SurveyorGui::QuestionsController < ApplicationController
         @questions.answers.build(:text=>'', :display_order=>display_order)
       end
     end
-    render :partial => 'answer_fields'
+    render :partial => 'answer_form'
   end
 
   def render_grid_partial

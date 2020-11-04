@@ -11,7 +11,7 @@
       <strong>Possible Answers:</strong>
       <div id='sortable_answers'>
         <%= f.simple_fields_for @answers do |a| %>
-          <%= render 'answer_fields', :a => a %>
+          <%= render 'answer_form', :a => a %>
         <% end %>
         <p class="floatdown2">
           Add Possible Answer<%= link_to_add_fields "Add Answer", @questions.id, f, :answers, 'a' %>

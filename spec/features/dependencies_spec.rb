@@ -60,6 +60,7 @@ feature "User creates a dependency using browser", %q{
     #When I click yes as the answer to the first question
     choose "yes"
     #Then the second question magically appears
+    page.save_screenshot(File.join(Rails.root, "tmp", "hotel.png"), :full => true)
     expect(page).to have_content("Who was your concierge?")
   end
 end

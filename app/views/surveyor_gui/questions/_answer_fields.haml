@@ -1,0 +1,14 @@
+.nested-fields
+  = content_tag(:div, f.object, class: f.object.class.name.underscore, id: "#{f.object.class.name.underscore}_#{f.object.try(:id)}") do
+    #original_choice{ 'data-original_choice'=>f.object.original_choice }
+  .fields.vertical_collection
+    .row
+      .col-md-7
+        %span.answer_handle{style: "font-size:20px;margin:15px 10px 0 0"}
+          %i.fa.fa-bars
+        = f.input :text, :as => :string, :label => false, :required => false, placeholder: "option value", input_html: { style: "width:100%", class: 'option-value'}, wrapper_html: { style: "width:80%;display:inline-block"}
+      .col-md-5
+        = f.input :data_export_identifier, :as => :string, :label => false, placeholder: "export ID", input_html: { style: "width:100%"}, wrapper_html: { style: "width:80%;display:inline-block"}
+        = f.hidden_field :display_order
+        = f.hidden_field :id
+        = link_to_remove_association "<i class='fa fa-times' style='color:red;font-size:26px;margin:15px 0 0 10px'></i>".html_safe, f
