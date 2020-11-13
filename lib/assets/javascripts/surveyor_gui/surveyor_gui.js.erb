@@ -125,43 +125,63 @@ function application_js_code(){
     });
 
     $(document).on('click', '#delete_section', function() {
+        var survey_section_count = $(".survey_section").length;
         var survey_section_url =  $(this).data('survey_section_url');
         var survey_section_id =   $(this).data('survey_section_id');
         var survey_section_title =   $(this).data('survey_section_title');
-        var result = confirm("Are you sure you want to delete section " + survey_section_title + "?")
 
-        if (result) {
+        if (survey_section_count == 1) {
+            alert("A survey must have at least one section.  Please create a new section before deleting this one.")
+        } else {
+            var result = confirm("Are you sure you want to delete section " + survey_section_title + "?  It will be immediately deleted from the system.")
 
-            $.ajax({
-                type: "DELETE",
-                url: survey_section_url,
-                success: function(msg){
-                    if (typeof msg !== undefined  && msg.length>0) {
-                        alert(msg);
+            if (result) {
+
+                $.ajax({
+                    type: "DELETE",
+                    url: survey_section_url,
+                    success: function(msg){
+                        if (typeof msg !== undefined  && msg.length>0) {
+                            alert(msg);
+                        }
+                        else {
+                            $("#survey_section_"+survey_section_id).remove();
+                            update_question_numbers();
+                            update_dependency_questions();
+                        }
                     }
-                    else {
-                        $("#survey_section_"+survey_section_id).remove();
-                        update_question_numbers();
-                        update_dependency_questions();
-                    }
-                }
-            });
+                });
 
+            }
         }
+
     });
 
     $(document).on('click', '#cut_section', function() {
+        var survey_section_count = $(".survey_section").length;
         var cut_section_surveyform_url = $(this).data('cut_section_surveyform_url');
+        var survey_section_title =   $(this).data('survey_section_title');
         var section_already_cut =        $(this).data('section_already_cut');
-        //provides a way to check that this function is complete in tests.  It disappears on complete when
-        //the contents of div#box are replaced.
-        $('div#survey').addClass('jquery_cut_section_started');
-        $.get(cut_section_surveyform_url,
-            {},
-            function(response) {
-                replace_surveyform_contents(response);
+
+        if (survey_section_count == 1) {
+            alert("Your survey only has one section.  Please create another section before cutting this one.")
+        } else {
+
+            var result = confirm("Are you sure you want to cut section " + survey_section_title + "?  It will be removed from the survey but you can click any 'Paste Section' button where you would like the section moved to.")
+
+            if (result) {
+                //provides a way to check that this function is complete in tests.  It disappears on complete when
+                //the contents of div#box are replaced.
+                $('div#survey').addClass('jquery_cut_section_started');
+                $.get(cut_section_surveyform_url,
+                    {},
+                    function (response) {
+                        replace_surveyform_contents(response);
+                    }
+                );
             }
-        );
+
+        }
     });
 
     $(document).on('click', '#paste_section', function() {
@@ -178,17 +198,24 @@ function application_js_code(){
     });
 
     $(document).on('click', '#cut_question', function() {
+        var question_no                 = $(this).parents('.question').find('.question-number').text().replace(' )','').trim();
         var cut_question_surveyform_url = $(this).data('cut_question_surveyform_url');
-        var question_already_cut =        $(this).data('question_already_cut');
-        //provides a way to check that this function is complete in tests.  It disappears on complete when
-        //the contents of div#box are replaced.
-        $('div#survey').addClass('jquery_cut_question_started');
-        $.get(cut_question_surveyform_url,
-            {},
-            function(response) {
-                replace_surveyform_contents(response);
-            }
-        );
+        var question_already_cut        = $(this).data('question_already_cut');
+
+        var result = confirm("Are you sure you want to cut question #" + question_no + "?  It will be removed from the survey but you can click any 'Paste Question' button where you would like the question moved to.")
+
+        if (result) {
+            //provides a way to check that this function is complete in tests.  It disappears on complete when
+            //the contents of div#box are replaced.
+            $('div#survey').addClass('jquery_cut_question_started');
+            $.get(cut_question_surveyform_url,
+                {},
+                function(response) {
+                    replace_surveyform_contents(response);
+                }
+            );
+        }
+
     });
 
     $(document).on('click', '#paste_question', function() {
@@ -205,28 +232,35 @@ function application_js_code(){
     });
 
     $(document).on('click', '#delete_question', function() {
-        var question_url =                $(this).data('question_url');
+        var question_no                 = $(this).parents('.question').find('.question-number').text().replace(' )','').trim();
+        var question_url                = $(this).data('question_url');
         var replace_form_surveyform_url = $(this).data('replace_form_surveyform_url');
-        $.ajax({
-            type: "DELETE",
-            url: question_url,
-            success: function(msg){
-                if (typeof msg !== undefined && msg.length>0) {
-                    alert(msg);
+
+        var result = confirm("Are you sure you want to delete question #" + question_no + "?  It will be immediately deleted from the system.")
+
+        if (result) {
+            $.ajax({
+                type: "DELETE",
+                url: question_url,
+                success: function(msg){
+                    if (typeof msg !== undefined && msg.length>0) {
+                        alert(msg);
+                    }
+                    else {
+                        $.get(replace_form_surveyform_url,
+                            {},
+                            function(response) {
+                                replace_surveyform_contents(response);
+                            }
+                        );
+                    }
+                },
+                error: function(){
+                    alert("This question cannot be deleted.");
                 }
-                else {
-                    $.get(replace_form_surveyform_url,
-                        {},
-                        function(response) {
-                            replace_surveyform_contents(response);
-                        }
-                    );
-                }
-            },
-            error: function(){
-                alert("This question cannot be deleted.");
-            }
-        });
+            });
+        }
+
     });
 
 //     $(document).on('click', '#edit_logic', function() {
