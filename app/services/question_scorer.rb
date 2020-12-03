@@ -7,18 +7,11 @@ class QuestionScorer
   end
 
   def correct?
-    if @question.pick == "any"
-      user_answer_matches && question_correct_option
-    else
-      question_correct_option
-    end
-
+    user_answer_matches && question_correct_option
   end
 
   def missed?
-    @question.pick == "any" &&
-      !user_answer_matches &&
-          question_correct_option
+    !user_answer_matches && question_correct_option
   end
 
   def incorrect?
