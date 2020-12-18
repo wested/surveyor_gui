@@ -47,8 +47,9 @@ module SurveyorGui
             #don't set answer.text if question_type = number.  In this case, text should get set by the prefix and suffix setters.
             #note: Surveyor uses the answer.text field to store prefix and suffix for numbers.
             #if not a number question, go ahead and set the text attribute as normal.
-            if @question_type_id!="number" && !ans.empty? && ans["0"]
-              ans["0"].merge!( {"original_choice"=>ans["0"]["text"]})
+            if @question_type_id!="number" && !ans.empty?
+              first_answer_key = ans.keys.first
+              ans[first_answer_key].merge!( {"original_choice"=>ans[first_answer_key]["text"]})
               assign_nested_attributes_for_collection_association(:answers, ans)
             end
           end
