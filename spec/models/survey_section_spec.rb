@@ -13,11 +13,11 @@ describe SurveySection do
   end
 
   context "with questions" do
-    let(:question_1){ FactoryGirl.create(:question, :survey_section => survey_section, :display_order => 3, :text => "Peep")}
-    let(:question_2){ FactoryGirl.create(:question, :survey_section => survey_section, :display_order => 1, :text => "Little")}
-    let(:question_3){ FactoryGirl.create(:question, :survey_section => survey_section, :display_order => 2, :text => "Bo")}
+    let(:question_1){ FactoryGirl.create(:question, :survey_section => survey_section, :text => "Peep")}
+    let(:question_2){ FactoryGirl.create(:question, :survey_section => survey_section, :text => "Little")}
+    let(:question_3){ FactoryGirl.create(:question, :survey_section => survey_section, :text => "Bo")}
     before do
-      [question_1, question_2, question_3].each{|q| survey_section.questions << q }
+      [question_2, question_3, question_1].each{|q| survey_section.questions << q }
     end
     it{ expect(survey_section.questions.size).to eq(3)}
     it "gets questions in order" do

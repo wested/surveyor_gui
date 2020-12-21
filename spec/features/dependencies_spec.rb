@@ -58,8 +58,10 @@ feature "User creates a dependency using browser", %q{
     #Then I don't see the second question just yet
     expect(page).not_to have_content("Who was your concierge?")
     #When I click yes as the answer to the first question
-    choose "yes"
+
+    find("input[value='#{answer1.id}']").trigger('click')
     #Then the second question magically appears
+    # don't know why this isn't working.....
     page.save_screenshot(File.join(Rails.root, "tmp", "hotel.png"), :full => true)
     expect(page).to have_content("Who was your concierge?")
   end

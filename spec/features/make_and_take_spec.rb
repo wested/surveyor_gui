@@ -148,8 +148,9 @@ feature "Bug fix #41", %q{
       expect(page).to_not have_content("Was the T running?")
 
       #Then I change the answer to "No"
+      no = Answer.find_by text: "No"
       within_fieldset('1) ') do
-        choose('No')
+        find("input[value='#{no.id}']").trigger('click')
       end
 
       #Then I see a question, 'Did you take the T?'
@@ -168,8 +169,9 @@ feature "Bug fix #41", %q{
       expect(page).to have_content("Was it snowing?")
 
       #Then I change the answer to "No"
+      yes = Answer.find_by text: "Yes"
       within_fieldset('1) ') do
-        choose('Yes')
+        find("input[value='#{yes.id}']").trigger('click')
       end
 
       #When I click finish

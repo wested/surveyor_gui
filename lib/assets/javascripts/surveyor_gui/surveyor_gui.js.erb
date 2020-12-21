@@ -788,16 +788,10 @@ function check_dropdown_column_count() {
 //      };
     });
 }
-function getAllSerialize() {
-    $('.sortable_questions').each(function(index, value) {
-        if (index === 0) {
-            newarr = $(this).sortable('serialize',{key:$(this).attr('id')+'[]'});
-        }
-        else{
-            newarr = newarr+'&'+$(this).sortable('serialize',{key:$(this).attr('id')+'[]'});
-        }
+function getAllSerialize(section) {
+    return $(section).find('.actual-question').map(function() {
+        return $(this).data("questionId");
     });
-    return newarr;
 }
 
 function insert_id_if_missing(wrapped_set, response_id){
@@ -1002,15 +996,15 @@ function sortable_sections_and_questions() {
                 var display_order = Math.min.apply(
                     null,
                     questions.find(
-                        'input[id*="display_order"]'
+                        '.question-display-order'
                     ).map(
                         function(){
                             return parseInt($(this).val());
                         }
                     ).toArray()
                 );
-                $('.group_inline_question').each(function(index, value){
-                    questions.eq(index).find('input[id*="display_order"]').val(display_order+index);
+                questions.each(function(index, value){
+                    questions.eq(index).find('.question-display-order').val(display_order+index);
                 });
             }
         });
@@ -1020,16 +1014,29 @@ function sortable_sections_and_questions() {
             opacity: 0.6,
             scroll: true,
             connectWith: ".sortable_questions",
-            update: function(){
+            update: function(event, droppedObject, c){
+                var section = event.target;
+                var $previousQuestion = $(droppedObject.item).prev();
+                var $droppedQuestion = $(droppedObject.item);
+                var droppedQuestionId = $droppedQuestion.attr('id').match(/\d+/g)[0]
+                var surveyId = $('input[id*="surveyform_id"]')[0].value;
+                var url = surveyor_gui_mount_point+'/questions/sort?survey_id='+surveyId+"&dropped_question_id="+droppedQuestionId;
+
+                if ($previousQuestion.length) {
+                    var previousQuestionId = $previousQuestion.attr('id').match(/\d+/g)[0];
+
+                    url = url+'&previous_question_id='+previousQuestionId;
+                }
+
                 $.ajax({
                     type: 'post',
-                    data: getAllSerialize()+'&survey_id='+$('input[id*="surveyform_id"]')[0].value,
+                    data: 'questions='+getAllSerialize(section).get().join(",")+'&survey_id='+$('input[id*="surveyform_id"]')[0].value,
                     dataType: 'script',
                     complete: function(request){
                         $('#survey_section').effect('highlight');
                         update_question_numbers();
                     },
-                    url: surveyor_gui_mount_point+'/questions/sort'
+                    url: url
                 })
             }
         });

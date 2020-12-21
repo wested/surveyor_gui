@@ -50,13 +50,20 @@ class SurveyorGui::QuestionsController < ApplicationController
   def create
 
     Question.transaction do
-      Question.where(:survey_section_id => params[:question][:survey_section_id])
-          .where("display_order >= ?", params[:question][:display_order])
-          .update_all("display_order = display_order+1")
+      # Question.where(:survey_section_id => params[:question][:survey_section_id])
+      #     .where("display_order >= ?", params[:question][:display_order])
+      #     .update_all("display_order = display_order+1")
       if !params[:question][:answers_attributes].blank? && !params[:question][:answers_attributes]['0'].blank?
         params[:question][:answers_attributes]['0'][:original_choice] = params[:question][:answers_attributes]['0'][:text]
       end
       @question = Question.new(question_params)
+
+      if params[:prev_question_id].present?
+        previous_question = Question.find(params[:prev_question_id])
+      end
+
+      @question.display_order = previous_question&.next_display_order||1
+
       if @question.save
         @question.answers.each_with_index {|a, index| a.destroy if index > 0} if @question.pick == 'none'
         #load any page - if it has no flash errors, the colorbox that contains it will be closed immediately after the page loads
@@ -114,8 +121,13 @@ class SurveyorGui::QuestionsController < ApplicationController
   end
 
   def sort
-    survey = Surveyform.find(params[:survey_id])
-    survey.sort_as_per_array(params)
+    question_ids = params[:questions].split(",")
+
+    question_ids.each_with_index do | question_id, i |
+      Question.find(question_id).update_column(:display_order, i+1)
+    end
+
+    # survey.sort_as_per_array(params)
     head :ok
   end
 

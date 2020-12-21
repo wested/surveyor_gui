@@ -2,6 +2,9 @@
 <% if question_type.id != :label -%>
 
     <span class='question-number'> <%= "#{@question_no.to_s} )" %></span>
-    <div class="question-text"><%= text.to_s.html_safe %> </div>
-
+    <% if question.is_a? Question %>
+        <div class="question-text actual-question" data-question-id=<%=question.id %>><%= text.to_s.html_safe %> </div>
+    <% else %>
+        <div class="question-text"><%= text.to_s.html_safe %> </div>
+    <% end %>
 <% end %>

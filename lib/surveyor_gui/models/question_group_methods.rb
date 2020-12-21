@@ -10,6 +10,7 @@ module SurveyorGui
 
         base.send :has_many, :columns
         base.send :has_one, :dependency, dependent: :destroy
+        base.send :has_many, :questions, -> { order("questions.display_order ASC") }
 
         base.send :accepts_nested_attributes_for, :questions, :allow_destroy => true
         base.send :accepts_nested_attributes_for, :columns,  :allow_destroy => true

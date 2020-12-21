@@ -6,11 +6,12 @@
     = f.hidden_field :display_type
 
     - if question.is_a? Question
-      = f.hidden_field :display_order
+      = f.hidden_field :display_order, class: "question-display-order"
       = f.hidden_field :survey_section_id
       = f.hidden_field :pick
       = f.hidden_field :modifiable
       = f.hidden_field :question_group_id
+      = hidden_field_tag :prev_question_id, params[:prev_question_id]
 
     - if question.is_a? QuestionGroup
 

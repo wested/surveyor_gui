@@ -36,7 +36,7 @@ module SurveyorGui
         base.send :before_destroy, :no_dependent_questions
         base.send :after_save, :build_complex_questions
         base.send :before_save, :set_question_type
-        base.send :before_save, :make_room_for_question
+        # base.send :before_save, :make_room_for_question
 
         base.send :scope, :is_not_comment, -> { base.where(is_comment: false) }
         base.send :scope, :is_comment, -> { base.where(is_comment: true) }
@@ -425,15 +425,15 @@ module SurveyorGui
         end
       end
 
-      def make_room_for_question
-        if new_record?
-          if Question.where('survey_section_id = ? and display_order = ?',survey_section_id, display_order).size > 0
-            Question.where(:survey_section_id => survey_section_id)
-                .where("display_order >= ?", display_order)
-                .update_all("display_order = display_order+1")
-          end
-        end
-      end
+      # def make_room_for_question
+      #   if new_record?
+      #     if Question.where('survey_section_id = ? and display_order = ?',survey_section_id, display_order).size > 0
+      #       Question.where(:survey_section_id => survey_section_id)
+      #           .where("display_order >= ?", display_order)
+      #           .update_all("display_order = display_order+1")
+      #     end
+      #   end
+      # end
 
       def repeater?
         part_of_group? ? (question_group.display_type=="repeater" ? true : false ) : false

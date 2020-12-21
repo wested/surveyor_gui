@@ -74,15 +74,6 @@ module SurveyorUIHelpers
     end
     return mod
   end
-  def override_surveyor_helper_numbering
-    SurveyorHelper.module_eval do
-      def next_question_number(question)
-        @letters ||= ("A".."Z").to_a
-        @n ||= 25
-        "<span class='qnum'>#{@letters[(@n += 1)%26]}. </span>"
-      end
-    end
-  end
   def restore_surveyor_helper_numbering
     SurveyorHelper.module_eval do
       def next_question_number(question)

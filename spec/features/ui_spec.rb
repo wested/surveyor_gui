@@ -367,18 +367,9 @@ describe "ui interactions" do
       expect(page).to_not have_content("Friends")
       expect(page).to_not have_content("Who are your friends?")
       # custom class "hidden" does nothing unless you add your own css to hide it
-      expect(page).to have_content("5) What is your favorite number?")
+      expect(page).to have_content("What is your favorite number?")
     end
-    it "customizing numbering" do
-      override_surveyor_helper_numbering
-      response_set = start_survey('Everything')
-      expect(page).to have_content("A. What is your favorite color?")
-      expect(page).to have_content("B. Choose the colors you don't like")
-      expect(page).to have_content("C. What color is the sky right now?")
-      expect(page).to have_content("D. What is the best color for a fire engine?")
-      expect(page).to have_content("E. What was the last room you painted, and what color?")
-      restore_surveyor_helper_numbering
-    end
+
     it "mustache syntax" do
       # Issue 259 - substitution of the text with Mustache
       SurveyorController.send(:include, mustache_context_module(name: "Santa", thing: "beards"))
