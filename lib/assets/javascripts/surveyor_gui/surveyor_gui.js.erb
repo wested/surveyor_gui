@@ -485,7 +485,7 @@ function application_js_code(){
             option = ' ';
         }
         var last_question = $(this).closest('.questions').find('input#question_group_id').first();
-        var display_order = (this).closest('.questions').find('input[id$="display_order"]').last().val();
+        var display_order = (this).closest('.questions').find('.question-display-order').last().val();
         display_order = parseInt(display_order) + 1;
         $.get(
             render_group_inline_partial_url + "?id="
@@ -992,6 +992,7 @@ function sortable_sections_and_questions() {
             connectWith: ".sortable_group_questions",
             handle: ".handle",
             update: function(){
+                initTinyMce();
                 var questions = $('.group_inline_question')
                 var display_order = Math.min.apply(
                     null,

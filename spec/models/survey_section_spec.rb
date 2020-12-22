@@ -22,7 +22,6 @@ describe SurveySection do
     it{ expect(survey_section.questions.size).to eq(3)}
     it "gets questions in order" do
       expect(survey_section.questions.order("display_order asc")).to eq([question_2, question_3, question_1])
-      expect(survey_section.questions.order("display_order asc").map(&:display_order)).to eq([1,2,3])
     end
     it "deletes child questions when deleted" do
       question_ids = survey_section.questions.map(&:id)
