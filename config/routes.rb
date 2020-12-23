@@ -13,16 +13,13 @@ SurveyorGui::Engine.routes.draw do
       get 'set_default'
       get 'cut_section'
       get 'paste_section'
-      get 'cut_question'
-      get 'paste_question'
+      post 'reorder_questions'
     end
   end
 
   resources :survey_sections do
     post :sort, :on => :collection
   end
-
-  match '/questions/sort',   :to => 'questions#sort', :via => :post
 
   resources :questions do
     member do

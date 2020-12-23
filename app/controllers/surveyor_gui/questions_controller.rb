@@ -37,22 +37,9 @@ class SurveyorGui::QuestionsController < ApplicationController
     render "new", locals: { question: @question }
   end
 
-  # def adjusted_text
-  #   if @question.part_of_group?
-  #     @question.question_group.text
-  #   else
-  #     @question.text
-  #   end
-  # end
-  #
-  # helper_method :adjusted_text
-
   def create
 
     Question.transaction do
-      # Question.where(:survey_section_id => params[:question][:survey_section_id])
-      #     .where("display_order >= ?", params[:question][:display_order])
-      #     .update_all("display_order = display_order+1")
       if !params[:question][:answers_attributes].blank? && !params[:question][:answers_attributes]['0'].blank?
         params[:question][:answers_attributes]['0'][:original_choice] = params[:question][:answers_attributes]['0'][:text]
       end
@@ -120,24 +107,6 @@ class SurveyorGui::QuestionsController < ApplicationController
     render :plain=>''
   end
 
-  def sort
-    question_ids = params[:questions].split(",")
-
-    question_ids.each_with_index do | question_id, i |
-      Question.find(question_id).update_column(:display_order, i+1)
-    end
-
-    # survey.sort_as_per_array(params)
-    head :ok
-  end
-
-  def cut_question
-    session[:cut_question]=params[:id]
-    if q=Question.find(params[:id])
-      q.update_attribute(:survey_section_id,nil)
-    end
-    redirect_back(fallback_location: surveyor_gui.surveyforms_path)
-  end
 
   def render_answer_fields_partial
     if params[:id].blank?

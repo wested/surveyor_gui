@@ -39,8 +39,9 @@ module CutAndPaste
   def cut_question(question)
     cut_button = "$('fieldset.questions:contains(\"#{question}\") button:contains(\"Cut Question\")')[0].click();"
     #When I cut <from_item>
-    page.execute_script(cut_button)
     expect(page).not_to have_css('div.jquery_cut_question_started')
+    page.execute_script(cut_button)
+    expect(page).to have_css('div.jquery_cut_question_started')
     #Then I see paste buttons appear
     expect(page).to have_content('Paste Question')
   end

@@ -199,8 +199,7 @@ function application_js_code(){
 
     $(document).on('click', '#cut_question', function() {
         var question_no                 = $(this).parents('.question').find('.question-number').text().replace(' )','').trim();
-        var cut_question_surveyform_url = $(this).data('cut_question_surveyform_url');
-        var question_already_cut        = $(this).data('question_already_cut');
+        var cutQuestionContainer = $(this).parents(".question.ui-sortable-handle");
 
         var result = confirm("Are you sure you want to cut question #" + question_no + "?  It will be removed from the survey but you can click any 'Paste Question' button where you would like the question moved to.")
 
@@ -208,27 +207,36 @@ function application_js_code(){
             //provides a way to check that this function is complete in tests.  It disappears on complete when
             //the contents of div#box are replaced.
             $('div#survey').addClass('jquery_cut_question_started');
-            $.get(cut_question_surveyform_url,
-                {},
-                function(response) {
-                    replace_surveyform_contents(response);
-                }
-            );
+            $(cutQuestionContainer).hide();
+            $(cutQuestionContainer).addClass('question-to-paste');
+            $(".paste-question").show();
+            $(".add-question").hide();
+
         }
 
     });
 
     $(document).on('click', '#paste_question', function() {
-        var paste_question_surveyform_url = $(this).data('paste_question_surveyform_url');
-        //provides a way to check that this function is complete in tests.  It disappears on complete when
-        //the contents of div#box are replaced.
-        $('div#survey').addClass('jquery_paste_question_started');
-        $.get(paste_question_surveyform_url,
-            {},
-            function(response) {
-                replace_surveyform_contents(response);
-            }
-        );
+        var $questionToPaste = $('.question-to-paste');
+        var previousQuestionId = $(this).data('questionId');
+        var $previousQuestion = $("#question_"+previousQuestionId)
+        var $section = $(this).parents(".survey_section.ui-sortable-handle");
+        var $survey = $('div#survey')
+
+        $survey.addClass('jquery_paste_question_started');
+        $survey.block();
+
+        if ($previousQuestion.length) {
+            $questionToPaste.insertAfter($previousQuestion);
+        } else {
+            var $firstQuestionInSection = $section.find(".sortable_questions .question.ui-sortable-handle").first();
+            $questionToPaste.insertBefore($firstQuestionInSection);
+        }
+
+        $questionToPaste.removeClass('.question-to-paste');
+
+        reorderQuestions($section, true);
+
     });
 
     $(document).on('click', '#delete_question', function() {
@@ -263,34 +271,6 @@ function application_js_code(){
 
     });
 
-//     $(document).on('click', '#edit_logic', function() {
-//         var replace_question_url =  $(this).data('replace_question_url');
-//         var edit_dependency_url =   $(this).data('edit_dependency_url');
-//         var question_id =           $(this).data('question_id');
-//         $.colorbox({
-//             width:"98%",
-//             height:"80%",
-//             scrolling:true,
-//             iframe:true,
-//             onClosed:function(){
-//                 submitted = $("input#pass_cbox_data").val();
-//                 if (submitted) {
-//
-//                     $.get(replace_question_url,
-//                         {},
-//                         function(response) {
-//                             var question=$("#question_"+question_id).html(replace_idx($("#question_"+question_id),"questions", response));
-//                             refresh_stars(question);
-//                             update_question_numbers();
-//                         }
-//                     );
-//                 };
-//             },
-//             href: edit_dependency_url,
-//             opacity:.3
-//         });
-//     });
-
     $(document).on('click', '#delete_logic', function() {
         var replace_question_url =  $(this).data('replace_question_url');
         var dependency_url =  $(this).data('dependency_url');
@@ -313,34 +293,6 @@ function application_js_code(){
             }
         });
     });
-
-//     $(document).on('click', '#add_logic', function() {
-//         var replace_question_url =  $(this).data('replace_question_url');
-//         var new_dependency_url =    $(this).data('new_dependency_url');
-//         var question_id =           $(this).data('question_id');
-//         $.colorbox({
-//             width:"98%",
-//             height:"50%",
-//             scrolling:true,
-//             iframe:true,
-//             onClosed:function(){
-//                 submitted = $("input#pass_cbox_data").val();
-//                 if (submitted) {
-//                     $.get(
-//                         replace_question_url,
-//                         {},
-//                         function(response) {
-//                             var question=$("#question_"+question_id).html(replace_idx($("#question_"+question_id),"questions", response));
-//                             refresh_stars(question);
-//                             update_question_numbers();
-//                         }
-//                     );
-//                 };
-//             },
-//             href: new_dependency_url,
-//             opacity:.3
-//         });
-//     });
 
     $(document).on('click', '.go_back', function() {
         history.back();
@@ -1017,34 +969,43 @@ function sortable_sections_and_questions() {
             connectWith: ".sortable_questions",
             update: function(event, droppedObject, c){
                 var section = event.target;
-                var $previousQuestion = $(droppedObject.item).prev();
-                var $droppedQuestion = $(droppedObject.item);
-                var droppedQuestionId = $droppedQuestion.attr('id').match(/\d+/g)[0]
-                var surveyId = $('input[id*="surveyform_id"]')[0].value;
-                var url = surveyor_gui_mount_point+'/questions/sort?survey_id='+surveyId+"&dropped_question_id="+droppedQuestionId;
 
-                if ($previousQuestion.length) {
-                    var previousQuestionId = $previousQuestion.attr('id').match(/\d+/g)[0];
+                reorderQuestions(section);
 
-                    url = url+'&previous_question_id='+previousQuestionId;
-                }
-
-                $.ajax({
-                    type: 'post',
-                    data: 'questions='+getAllSerialize(section).get().join(",")+'&survey_id='+$('input[id*="surveyform_id"]')[0].value,
-                    dataType: 'script',
-                    complete: function(request){
-                        $('#survey_section').effect('highlight');
-                        update_question_numbers();
-                    },
-                    url: url
-                })
             }
         });
     }
 }
 
+function surveyId() {
+    return $('input[id*="surveyform_id"]')[0].value;
+}
 
+function reorderQuestions(section, pastingQuestion) {
+    var surveySectionId = $(section).attr('id').match(/\d+/g)[0]
+    var url = surveyor_gui_mount_point+'/surveyforms/'+surveyId()+'/reorder_questions?survey_section_id='+surveySectionId;
+    var $survey = $("div#survey");
+
+    if (pastingQuestion) {
+        url = url+"&paste_question=true";
+    }
+
+    $.ajax({
+        type: 'post',
+        data: 'questions='+getAllSerialize(section).get().join(",")+'&survey_id='+surveyId+'&survey_section_id='+surveySectionId,
+        dataType: 'script',
+        complete: function(request){
+            if (pastingQuestion) {
+                replace_surveyform_contents(request.responseText);
+                $survey.unblock();
+            } else {
+                $('#survey_section').effect('highlight');
+                update_question_numbers();
+            }
+        },
+        url: url
+    })
+}
 function show_dependency_value(data, target) {
     data = data.split(',');
     var $question_row = target.closest('.question-row');

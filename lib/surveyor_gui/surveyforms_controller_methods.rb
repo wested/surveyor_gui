@@ -186,49 +186,26 @@ module SurveyorGui
       end
     end
 
-    def cut_question
-      session[:cut_question]=params[:question_id]
-      if q=Question.find(params[:question_id])
-        @surveyform=q.survey_section.surveyform
-        q.update_attribute(:survey_section_id,nil)
-        q.question_group.questions.map{|q| q.update_attribute(:survey_section_id,nil)} if q.part_of_group?
-        @question_no = 0
-        render :new, :layout=>false
-        return true
-      end
-      render :nothing=>true
-      return false
-    end
+    def reorder_questions
+      question_ids = params[:questions].split(",")
+      survey_section_id = params[:survey_section_id]
 
-    def paste_question
-      @title="Edit Survey"
-      if session[:cut_question]
-        @question = Question.find(session[:cut_question])
-        @question_no = 0
-        if params[:question_id]
-          place_under_question = Question.find(params[:question_id])
-          survey_section = place_under_question.survey_section
-          survey_section_id = survey_section.id
-          survey_section.questions.where('display_order>?',place_under_question.display_order).update_all('display_order=display_order+1')
-          @question.display_order = place_under_question.display_order+1
-          @surveyform = survey_section.surveyform
-        else
-          survey_section_id = params[:survey_section_id]
-          @question.display_order = 0
-          SurveySection.find(survey_section_id).questions.update_all('display_order = display_order+1')
-          @surveyform = SurveySection.find(survey_section_id).surveyform
-        end
-        @question.survey_section_id = survey_section_id
+      question_ids.each_with_index do | question_id, i |
+        question = Question.find(question_id)
+        question.update_column(:display_order, i+1)
+        question.update_column(:survey_section_id, survey_section_id) if question.survey_section_id != survey_section_id
 
-        if @question.save
-          @surveyform.reload
-          session[:cut_question]=nil
-          render :new, :layout=>false
-        else
-          render :nothing=>true
-          return false
-        end
       end
+
+      if params[:paste_question]
+        @surveyform = Surveyform.find(params[:id])
+        @surveyform.reload
+        @question_no = 0
+        render "surveyor_gui/surveyforms/new", :layout=>false
+      else
+        head :ok
+      end
+
     end
 
     def replace_question

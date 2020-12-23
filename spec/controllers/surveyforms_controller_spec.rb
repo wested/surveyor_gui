@@ -352,13 +352,13 @@ describe SurveyorGui::SurveyformsController do
     end
   end
 
-  context "#cut_question" do
+  context "reorder_questions" do
     def do_get(params = {})
       survey.sections = [FactoryGirl.create(:survey_section, :survey => survey)]
       survey.sections.first.questions = [FactoryGirl.create(:question, :survey_section => survey.sections.first)]
-      get :cut_question, params: {:id => survey.id, :question_id => survey.sections.first.questions.first.id}.merge(params)
+      get :reorder_questions, params: {:id => survey.id, survey_section_id: survey.sections.first.id, :questions => survey.sections.first.questions.first.id}.merge(params)
     end
-    it "cuts a question" do
+    it "reorders questions" do
       do_get
       expect(response).to be_successful
     end
