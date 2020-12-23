@@ -13,6 +13,7 @@ module SurveyorGui
         base.send :scope, :is_comment, -> { base.where(is_comment: true) }
 
         base.send :validates_numericality_of, :weight, allow_blank: true
+        base.send :validates_length_of, :text, maximum: 255
 
         base.send :before_save, :populate_data_export_id
       end
