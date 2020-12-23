@@ -1,7 +1,7 @@
 %hr
 
 = simple_fields_for 'question', @questions do |f|
-  = f.input :dropdown_column_count, :collection =>  10.times.map{|i| [(i+1).to_s + " column".pluralize(i+1), i+1]},  :as => :select, :label => "Number of columns:", :include_blank => false, selected: @question_group.columns.count
+  = f.input :dropdown_column_count, :collection =>  10.times.map{|i| [(i+1).to_s + " column".pluralize(i+1), i+1]},  :as => :select, :label => "Number of columns:", :include_blank => false, selected: (params[:index].to_i == 0 ? @question_group.columns.count : params[:index].to_i)
 
   = f.simple_fields_for :question_group, @question_group do |qg|
     = qg.hidden_field :id
