@@ -220,7 +220,7 @@ function application_js_code(){
         var $questionToPaste = $('.question-to-paste');
         var previousQuestionId = $(this).data('questionId');
         var $previousQuestion = $("#question_"+previousQuestionId)
-        var $section = $(this).parents(".survey_section.ui-sortable-handle");
+        var $section = $(this).parents(".survey_section");
         var $survey = $('div#survey')
 
         $survey.addClass('jquery_paste_question_started');
@@ -230,7 +230,13 @@ function application_js_code(){
             $questionToPaste.insertAfter($previousQuestion);
         } else {
             var $firstQuestionInSection = $section.find(".sortable_questions .question.ui-sortable-handle").first();
-            $questionToPaste.insertBefore($firstQuestionInSection);
+
+            if ($firstQuestionInSection.length) {
+                $questionToPaste.insertBefore($firstQuestionInSection);
+            } else {
+                $questionToPaste.appendTo($section);
+            }
+
         }
 
         $questionToPaste.removeClass('.question-to-paste');
