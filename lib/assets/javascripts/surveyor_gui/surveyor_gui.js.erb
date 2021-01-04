@@ -414,7 +414,7 @@ function application_js_code(){
         //var original_question_id = $('input[id="question_id"]')
         var survey_section_id = $('input[id$="survey_section_id"]').val();
         var text = tinyMCE.activeEditor.getContent();
-        var display_order = $('input[id$="display_order"]').last().val();
+        var display_order = $('#answer_choice input[id$="display_order"]').last().val()||1;
         var question_id = $('input#question_id').val();
         var question_group_id = $('.questions').find('input[id*="question_group_id"]').val();
         var question_type_id = $('div.question_type input[id*="question_type_id"]:checked').val();
