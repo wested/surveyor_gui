@@ -29,6 +29,7 @@
         = f.input :internal_title
         = f.input :template, :disabled=>@survey_locked, :label => "Template?"
         = f.input :quiz, :disabled=>@survey_locked, :label => "Quiz?", input_html: { class: "quiz" }
+        = f.input :public, :disabled=>@survey_locked, :label => "Public?", input_html: { class: "quiz" }
 
         - if @survey_locked
           %p

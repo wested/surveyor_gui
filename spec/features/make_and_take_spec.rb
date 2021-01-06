@@ -11,6 +11,44 @@ feature "Bug fix #41", %q{
   And take the new survey successfully
 } do
 
+  scenario "make a public survey and take public survey", js: true do
+    #Given I'm on the "Create New Survey" page
+    visit surveyor_gui.new_surveyform_path
+
+    #When I fill in a title
+    fill_in "Title", with: "Public Survey"
+
+    check "Public?"
+
+    #And I save the survey
+    click_button "Save Changes"
+
+    #use the public route to take it
+    visit "/surveys/public-survey/new"
+
+    expect(page).to have_content("Public Survey")
+    expect(page).to_not have_content("Access Denied")
+
+  end
+
+  scenario "make a non-public survey and CANNOT take public survey", js: true do
+    #Given I'm on the "Create New Survey" page
+    visit surveyor_gui.new_surveyform_path
+
+    #When I fill in a title
+    fill_in "Title", with: "Not Public Survey"
+
+    #And I save the survey
+    click_button "Save Changes"
+
+    #use the public route to take it
+    visit "/surveys/not-public-survey/new"
+
+    expect(page).to have_content("Not Public Survey")
+    expect(page).to have_content("Access Denied")
+
+  end
+
   scenario "Make survey and take survey", :js => true do
       #Given I'm on the "Create New Survey" page
       visit surveyor_gui.new_surveyform_path
