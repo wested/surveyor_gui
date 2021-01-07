@@ -19,14 +19,14 @@ describe SurveyorController do
   # match '/:survey_code/:response_set_code/take', :to => 'surveyor#edit', :as   => 'edit_my_survey', :via    => :get
   # match '/:survey_code/:response_set_code', :to      => 'surveyor#update', :as => 'update_my_survey', :via  => :put
 
-  context "#new" do
+  context "#index" do
     def do_get
-      get :new
+      get :index
     end
-    it "renders new" do
+    it "renders index" do
       do_get
       expect(response).to be_successful
-      expect(response).to render_template('new')
+      expect(response).to render_template('index')
     end
     it "assigns surveys_by_access_code" do
       do_get

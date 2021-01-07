@@ -8,7 +8,7 @@
 
         $(document).on('cocoon:after-insert', '#fixed_source, .group_inline_question', function(e, insertedItem, originalEvent) {
             $(this).sortable_answers();
-            update_answer_display_order();
+            update_answer_display_order(this);
         });
 
     });
@@ -888,8 +888,8 @@ function update_question_numbers() {
 }
 
 
-function update_answer_display_order () {
-    $('#answers.sortable').find('input[id$="display_order"]').each(function(index, value){
+function update_answer_display_order (question) {
+    $(question).find('#answers.sortable input[id$="display_order"]').each(function(index, value){
         $(value).val(index);
     });
 }
