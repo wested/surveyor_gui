@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem 'surveyor', git: "https://github.com/wested/surveyor.git", branch: 'lrs_integration'
+gem 'surveyor', git: "https://github.com/wested/surveyor.git", branch: 'rails_6'
 
 gem 'rails-controller-testing'
 
