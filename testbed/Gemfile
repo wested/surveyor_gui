@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
 
-gem 'surveyor', git: "https://github.com/wested/surveyor.git", branch: 'rails_6'
+gem 'surveyor', git: "https://github.com/wested/surveyor.git", branch: 'master'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
- gem 'rails', '~> 6.1'
+ gem 'rails', '~> 5.2'
 plugin_root = File.expand_path('../..', __FILE__)
 gem 'surveyor_gui', :path => plugin_root
 # gem 'therubyracer'
@@ -27,6 +27,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'cocoon'
 gem 'font-awesome-rails'
+gem 'sprockets', '~> 3.7'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
