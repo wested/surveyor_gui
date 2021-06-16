@@ -36,7 +36,7 @@ config/initializers/secret_token.rb
 /tmp
 
 # Ignore testbed
-testbed
+#testbed
 
 # Ignore RVM directives
 .ruby-version
