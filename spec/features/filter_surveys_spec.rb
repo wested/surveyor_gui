@@ -26,10 +26,12 @@ feature "Filter Surveys" do
     expect(page).to have_content("Favorites")
   end
 
-  scenario "clicking 'Surveys Only' filters to only surveys" do
+  scenario "clicking 'Surveys Only' filters to only surveys", js: true do
 
     #Given I'm on the surveyform web page
     visit surveyor_gui.surveyforms_path
+
+    #page.save_screenshot(File.join(Rails.root, "tmp", "surveys_only.png"), :full => true)
 
     #When I click on filter 'Surveys Only'
     click_link "Surveys Only"

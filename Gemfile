@@ -2,6 +2,8 @@ source "https://rubygems.org"
 
 gem 'surveyor', git: "https://github.com/wested/surveyor.git", branch: 'rails_6'
 
+gem 'sprockets', '~> 3.7'
+
 gem 'rails-controller-testing'
 
 # Bundler will treat runtime dependencies like base dependencies, and

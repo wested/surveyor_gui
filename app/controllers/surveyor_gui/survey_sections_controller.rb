@@ -43,7 +43,7 @@ class SurveyorGui::SurveySectionsController < ApplicationController
 
     respond_to do |format|
       format.html do
-        if @survey_section.update_attributes(survey_section_params)
+        if @survey_section.update(survey_section_params)
           render html: @survey_section.title, :layout => false
         else
           render :action => 'edit', :layout => false, status: :unprocessable_entity
@@ -78,7 +78,7 @@ class SurveyorGui::SurveySectionsController < ApplicationController
       satts[:survey_sections_attributes][index.to_s] = { :id => sid, :display_order => index }
     end
     puts satts
-    survey.update_attributes!(satts)
+    survey.update!(satts)
     head :ok
   end
 

@@ -1,14 +1,11 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe SurveyorController do
+describe SurveyorController, type: :request do
   include Surveyor::Engine.routes.url_helpers
-  before do
-    @routes = Surveyor::Engine.routes
-  end
 
-  let!(:survey)           { FactoryGirl.create(:survey, :title => "Alphabet", :access_code => "alpha", :survey_version => 0)}
-  let!(:survey_beta)      { FactoryGirl.create(:survey, :title => "Alphabet", :access_code => "alpha", :survey_version => 1)}
-  let!(:response_set)      { FactoryGirl.create(:response_set, :survey => survey, :access_code => "pdq")}
+  let!(:survey)           { FactoryBot.create(:survey, :title => "Alphabet", :access_code => "alpha", :survey_version => 0)}
+  let!(:survey_beta)      { FactoryBot.create(:survey, :title => "Alphabet", :access_code => "alpha", :survey_version => 1)}
+  let!(:response_set)      { FactoryBot.create(:response_set, :survey => survey, :access_code => "pdq")}
 
   before { allow(ResponseSet).to receive(:create).and_return(response_set) }
 
@@ -21,7 +18,7 @@ describe SurveyorController do
 
   context "#index" do
     def do_get
-      get :index
+      get surveyor.available_surveys_path
     end
     it "renders index" do
       do_get
@@ -36,7 +33,7 @@ describe SurveyorController do
 
   context "#create" do
     def do_post(params = {})
-      post :create, params: {:survey_code => "alpha"}.merge(params)
+      post surveyor.take_survey_path({:survey_code => "alpha"}.merge(params))
     end
     it "finds latest version" do
       do_post
@@ -52,38 +49,25 @@ describe SurveyorController do
     end
     it "should redirects to the new response_set" do
       do_post
-      expect(response).to redirect_to( edit_my_survey_path(:survey_code => "alpha", :response_set_code  => "pdq"))
+      expect(response).to redirect_to( surveyor.edit_my_survey_path(:survey_code => "alpha", :response_set_code  => "pdq"))
     end
 
     context "with failures" do
       it "redirect to #new on failed ResponseSet#create" do
         expect(ResponseSet).to receive(:create).and_return(false)
         do_post
-        expect(response).to redirect_to(available_surveys_path)
+        expect(response).to redirect_to(surveyor.available_surveys_path)
       end
       it "redirect to #new on failed Survey#find" do
         do_post :survey_code => "missing"
-        expect(response).to redirect_to(available_surveys_path)
-      end
-    end
-
-    context "with javascript check, assigned in session" do
-      it "enabled" do
-        do_post :surveyor_javascript_enabled => "true"
-        expect(session[:surveyor_javascript]).not_to be_nil
-        expect(session[:surveyor_javascript]).to eq("enabled")
-      end
-      it "disabled" do
-        post :create, params: { :survey_code => "xyz", :surveyor_javascript_enabled => "not_true" }
-        expect(session[:surveyor_javascript]).not_to be_nil
-        expect(session[:surveyor_javascript]).to eq("not_enabled")
+        expect(response).to redirect_to(surveyor.available_surveys_path)
       end
     end
   end
 
   context "#show" do
     def do_get(params = {})
-      get :show, params: {:survey_code => "alpha", :response_set_code => "pdq"}.merge(params)
+      get surveyor.view_my_survey_path({ :survey_code => "alpha", :response_set_code => "pdq" }.merge(params))
     end
     it "renders show" do
       do_get
@@ -92,7 +76,7 @@ describe SurveyorController do
     end
     it "redirects for missing response set" do
       do_get :response_set_code => "DIFFERENT"
-      expect(response).to redirect_to(available_surveys_path)
+      expect(response).to redirect_to(surveyor.available_surveys_path)
     end
     it "assigns earlier survey_version" do
       response_set
@@ -101,7 +85,7 @@ describe SurveyorController do
       expect(assigns[:survey]).to eq(survey)
     end
     it "assigns later survey_version" do
-      response_set_beta = FactoryGirl.create(:response_set, :survey => survey_beta, :access_code => "rst")
+      response_set_beta = FactoryBot.create(:response_set, :survey => survey_beta, :access_code => "rst")
       do_get :response_set_code => "rst"
       expect(assigns[:response_set]).to eq(response_set_beta)
       expect(assigns[:survey]).to eq(survey_beta)
@@ -111,10 +95,10 @@ describe SurveyorController do
   context "#edit" do
     context "responses have been collected" do
       def do_get(params = {})
-        @survey = FactoryGirl.create(:survey, :title => "Alphabet Soup", :access_code => "alphasoup", :survey_version => 0)
-        @survey.sections = [FactoryGirl.create(:survey_section, :survey => @survey)]
-        @response_set = FactoryGirl.create(:response_set, :survey => @survey, :access_code => "foo")
-        get :edit, params: {:survey_code => "alphasoup", :response_set_code => "foo"}.merge(params)
+        @survey = FactoryBot.create(:survey, :title => "Alphabet Soup", :access_code => "alphasoup", :survey_version => 0)
+        @survey.sections = [FactoryBot.create(:survey_section, :survey => @survey)]
+        @response_set = FactoryBot.create(:response_set, :survey => @survey, :access_code => "foo")
+        get surveyor.edit_my_survey_path({ :survey_code => "alphasoup", :response_set_code => "foo" }.merge(params))
       end
       it "renders edit" do
         do_get
@@ -128,17 +112,10 @@ describe SurveyorController do
       end
       it "redirects for missing response set" do
         do_get :response_set_code => "DIFFERENT"
-        expect(response).to redirect_to(available_surveys_path)
-      end
-      it "assigns dependents if javascript not enabled" do
-        allow(controller).to receive(:get_unanswered_dependencies_minus_section_questions).and_return([FactoryGirl.create(:question)])
-        expect(session[:surveyor_javascript]).to be_nil
-        do_get
-        expect(assigns[:dependents]).not_to be_empty
+        expect(response).to redirect_to(surveyor.available_surveys_path)
       end
       it "does not assign dependents if javascript is enabled" do
-        allow(controller).to receive(:get_unanswered_dependencies_minus_section_questions).and_return([FactoryGirl.create(:question)])
-        session[:surveyor_javascript] = "enabled"
+        allow(controller).to receive(:get_unanswered_dependencies_minus_section_questions).and_return([FactoryBot.create(:question)])
         do_get
         expect(assigns[:dependents]).to be_empty
       end
@@ -148,8 +125,8 @@ describe SurveyorController do
         expect(assigns[:survey]).to eq(@survey)
       end
       it "assigns later survey_version" do
-        survey_beta.sections = [FactoryGirl.create(:survey_section, :survey => survey_beta)]
-        response_set_beta = FactoryGirl.create(:response_set, :survey => survey_beta, :access_code => "rst")
+        survey_beta.sections = [FactoryBot.create(:survey_section, :survey => survey_beta)]
+        response_set_beta = FactoryBot.create(:response_set, :survey => survey_beta, :access_code => "rst")
         do_get :response_set_code => "rst"
         expect(assigns[:survey]).to eq(survey_beta)
         expect(assigns[:response_set]).to eq(response_set_beta)
@@ -202,13 +179,13 @@ describe SurveyorController do
 
     context "with form submission" do
       def do_put(extra_params = {})
-        put :update, params: update_params.merge(extra_params)
+        put update_my_survey_path(update_params.merge(extra_params))
       end
 
       it_behaves_like "#update action"
       it "redirects to #edit without params" do
         do_put
-        expect(response).to redirect_to(edit_my_survey_path(:survey_code => "alpha", :response_set_code => "pdq"))
+        expect(response).to redirect_to(surveyor.edit_my_survey_path(:survey_code => "alpha", :response_set_code => "pdq"))
       end
       it "completes the found response set on finish" do
         do_put :finish => 'finish'
@@ -220,14 +197,14 @@ describe SurveyorController do
       end
       it "redirects for missing response set" do
         do_put :response_set_code => "DIFFERENT"
-        expect(response).to redirect_to(available_surveys_path)
+        expect(response).to redirect_to(surveyor.available_surveys_path)
         expect(flash[:notice]).to eq("Unable to find your responses to the survey")
       end
     end
 
     context 'with ajax' do
       def do_put(extra_params = {})
-        put :update, params: update_params.merge(extra_params), xhr: true
+        put update_my_survey_path(update_params.merge(extra_params)), xhr: true
       end
 
       it_behaves_like "#update action"
@@ -246,10 +223,9 @@ describe SurveyorController do
   end
 
   context "#export" do
-    render_views
 
     let(:json) {
-      get :export, params: { :survey_code => survey.access_code, :format => 'json' }
+      get surveyor.export_survey_path(:survey_code => survey.access_code, :format => 'json' )
       JSON.parse(response.body)
     }
 

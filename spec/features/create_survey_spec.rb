@@ -412,7 +412,7 @@ feature "User creates a new survey using a browser",  %q{
   scenario "User saves a survey with all the different question types", :js=>true do
     build_a_survey
     click_button "Save Changes"
-    expect(page).to have_content(/[Ss]uccessfully update/)
+    expect(page).to have_content('Successfully update')
     expect(page).to have_selector("input[value='How was Boston?']")
   end
 end #end feature

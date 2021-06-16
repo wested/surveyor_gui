@@ -60,7 +60,7 @@ module SurveyorGui
     def update
       @title = "Update Survey"
       @surveyform = Surveyform.includes(:survey_sections).find(params[:surveyform][:id])
-      if @surveyform.update_attributes(surveyforms_params)
+      if @surveyform.update(surveyforms_params)
         flash[:notice] = "Successfully updated surveyform."
         redirect_to edit_surveyform_path(@surveyform.id)
       else

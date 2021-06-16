@@ -17,7 +17,7 @@ module SurveyorGui
                   :dynamic_source, :modifiable, :report_code, :question_group_attributes if
             defined? ActiveModel::MassAssignmentSecurity
 
-        base.send :belongs_to, :survey_section
+        base.send :belongs_to, :survey_section, optional: true
         base.send :has_many, :responses
         base.send :has_many, :dependency_conditions, :through=>:dependency, :dependent => :destroy
         base.send :default_scope, lambda{ base.order('display_order')}
@@ -28,7 +28,7 @@ module SurveyorGui
         ### everything below this point must be commented out to run the rake tasks.
 
         base.send :mount_uploader, :dummy_blob, BlobUploader
-        base.send :belongs_to, :question_type
+        base.send :belongs_to, :question_type, optional: true
 
         # base.send :validate, :no_responses
         base.send :validates_presence_of, :survey_section
@@ -380,7 +380,7 @@ module SurveyorGui
 
       def question_group_attributes=(params)
         if question_group
-          question_group.update_attributes(params.except(:id))
+          question_group.update(params.except(:id))
           @question_group_attributes=params
         else
           QuestionGroup.create!(params)
@@ -391,7 +391,7 @@ module SurveyorGui
         return if destroyed?
         write_attribute(:text, txt)
         if part_of_group? && ( !%w(inline default repeater).include?(question_group.display_type) )
-          question_group.update_attributes(text: txt)
+          question_group.update(text: txt)
         end
         @text = txt
       end

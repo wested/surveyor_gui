@@ -54,7 +54,7 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
       @survey_section_id = question_group_params[:survey_section_id]
 
       if @question_group.save
-        #@question_group.questions.update_attributes(survey_section_id: question_group_params[])
+        #@question_group.questions.update(survey_section_id: question_group_params[])
         original_question = Question.find(question_group_params[:question_id]) if !question_group_params[:question_id].blank?
         original_question.destroy if original_question
 
@@ -72,7 +72,7 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
     @question_group = QuestionGroup.includes(:questions).find(params[:id])
     @survey_section = @question_group.questions.first.survey_section
 
-    if @question_group.update_attributes(question_group_params)
+    if @question_group.update(question_group_params)
 
       redirect_to surveyor_gui.edit_surveyform_url(@survey_section.survey)
 

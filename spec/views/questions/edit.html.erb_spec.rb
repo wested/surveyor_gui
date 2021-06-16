@@ -11,8 +11,8 @@ end
 describe "surveyor_gui/questions/edit.html.erb" do
   include CapybaraHelper
 
-  let(:question){ FactoryGirl.create(:question) }
-  let(:question2){ FactoryGirl.create(:question, :question_type_id => "pick_one") }
+  let(:question){ FactoryBot.create(:question) }
+  let(:question2){ FactoryBot.create(:question, :question_type_id => "pick_one") }
   let(:form){find('form')}
    
   before do
@@ -39,9 +39,9 @@ describe "surveyor_gui/questions/edit.html.erb" do
     
   context "It has a multiple choice field" do
     let (:form) {find('form')}
-    let(:answer_1){ FactoryGirl.create(:answer, :question => question2, :display_order => 3, :text => "blue")}
-    let(:answer_2){ FactoryGirl.create(:answer, :question => question2, :display_order => 1, :text => "red")}    
-    let(:answer_3){ FactoryGirl.create(:answer, :question => question2, :display_order => 2, :text => "green")}
+    let(:answer_1){ FactoryBot.create(:answer, :question => question2, :display_order => 3, :text => "blue")}
+    let(:answer_2){ FactoryBot.create(:answer, :question => question2, :display_order => 1, :text => "red")}    
+    let(:answer_3){ FactoryBot.create(:answer, :question => question2, :display_order => 2, :text => "green")}
    
     before do
       [answer_1, answer_2, answer_3].each{|a| question2.answers << a } 

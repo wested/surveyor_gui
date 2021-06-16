@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'jquery-ui-rails'
   s.add_dependency 'bootstrap-sass', '~> 3.3'
 
-  s.add_development_dependency "sqlite3", '~> 1.3.0'
+  s.add_development_dependency "mysql2"
 
   s.add_development_dependency 'sass-rails'
   s.add_development_dependency 'uglifier', '>= 1.0.3'
@@ -40,7 +40,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency('puma')
   s.add_development_dependency('capybara-webkit', "= 1.15.1")
   s.add_development_dependency('json_spec', '~> 1.1.1')
-  s.add_development_dependency('factory_girl', '~> 4.4.0')
+  s.add_development_dependency('factory_bot_rails')
   s.add_development_dependency('database_cleaner')
   s.add_development_dependency('rspec-retry', "= 0.4.4")
   s.add_development_dependency('phantomjs', '~> 2.1')

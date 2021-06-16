@@ -1,4 +1,4 @@
 module SurveyorHelper
   include Surveyor::Helpers::SurveyorHelperMethods
-  include SurveyorGui::Helpers::SurveyorGuiHelperMethods
+  include SurveyorGui::Helpers::SurveyorHelperMethods
 end

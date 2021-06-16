@@ -88,9 +88,9 @@ describe DependencyCondition do
   end
 
   it "returns true for != with no responses" do
-    question = FactoryGirl.create(:question)
-    dependency_condition = FactoryGirl.create(:dependency_condition, :rule_key => "C", :question => question)
-    rs = FactoryGirl.create(:response_set)
+    question = FactoryBot.create(:question)
+    dependency_condition = FactoryBot.create(:dependency_condition, :rule_key => "C", :question => question)
+    rs = FactoryBot.create(:response_set)
     expect(dependency_condition.to_hash(rs)).to eq({:C => false})
   end
 
@@ -106,16 +106,16 @@ describe DependencyCondition do
     # condition_A :q_HEIGHT_FT, "<", {:integer_value => "4"}
     # condition_B :q_HEIGHT_FT, ">", {:integer_value => "7"}
 
-    answer = FactoryGirl.create(:answer, :response_class => :integer)
+    answer = FactoryBot.create(:answer, :response_class => :integer)
     @dependency_condition = DependencyCondition.new(
-      :dependency => FactoryGirl.create(:dependency),
+      :dependency => FactoryBot.create(:dependency),
       :question => answer.question,
       :answer => answer,
       :operator => ">",
       :integer_value => 4,
       :rule_key => "A")
 
-    response = FactoryGirl.create(:response, :answer => answer, :question => answer.question)
+    response = FactoryBot.create(:response, :answer => answer, :question => answer.question)
     response_set = response.response_set
     expect(response.integer_value).to eq(nil)
 
@@ -124,11 +124,11 @@ describe DependencyCondition do
 
   describe "evaluate '==' operator" do
     before(:each) do
-      @a = FactoryGirl.create(:answer, :response_class => "answer")
-      @b = FactoryGirl.create(:answer, :question => @a.question)
-      @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a)
+      @a = FactoryBot.create(:answer, :response_class => "answer")
+      @b = FactoryBot.create(:answer, :question => @a.question)
+      @r = FactoryBot.create(:response, :question => @a.question, :answer => @a)
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "==", :rule_key => "D")
+      @dc = FactoryBot.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "==", :rule_key => "D")
       expect(@dc.as(:answer)).to eq(@r.as(:answer))
     end
 
@@ -139,49 +139,49 @@ describe DependencyCondition do
     end
 
     it "with string value response" do
-      @a.update_attributes(:response_class => "string")
-      @r.update_attributes(:string_value => "hello123")
+      @a.update(:response_class => "string")
+      @r.update(:string_value => "hello123")
       @dc.string_value = "hello123"
       expect(@dc.to_hash(@rs)).to eq({:D => true})
-      @r.update_attributes(:string_value => "foo_abc")
+      @r.update(:string_value => "foo_abc")
       expect(@dc.to_hash(@rs)).to eq({:D => false})
     end
 
     it "with a text value response" do
-      @a.update_attributes(:response_class => "text")
-      @r.update_attributes(:text_value => "hello this is some text for comparison")
+      @a.update(:response_class => "text")
+      @r.update(:text_value => "hello this is some text for comparison")
       @dc.text_value = "hello this is some text for comparison"
       expect(@dc.to_hash(@rs)).to eq({:D => true})
-      @r.update_attributes(:text_value => "Not the same text")
+      @r.update(:text_value => "Not the same text")
       expect(@dc.to_hash(@rs)).to eq({:D => false})
     end
 
     it "with an integer value response" do
-      @a.update_attributes(:response_class => "integer")
-      @r.update_attributes(:integer_value => 10045)
+      @a.update(:response_class => "integer")
+      @r.update(:integer_value => 10045)
       @dc.integer_value = 10045
       expect(@dc.to_hash(@rs)).to eq({:D => true})
-      @r.update_attributes(:integer_value => 421)
+      @r.update(:integer_value => 421)
       expect(@dc.to_hash(@rs)).to eq({:D => false})
     end
 
     it "with a float value response" do
-      @a.update_attributes(:response_class => "float")
-      @r.update_attributes(:float_value => 121.1)
+      @a.update(:response_class => "float")
+      @r.update(:float_value => 121.1)
       @dc.float_value = 121.1
       expect(@dc.to_hash(@rs)).to eq({:D => true})
-      @r.update_attributes(:float_value => 130.123)
+      @r.update(:float_value => 130.123)
       expect(@dc.to_hash(@rs)).to eq({:D => false})
     end
   end
 
   describe "evaluate '!=' operator" do
     before(:each) do
-      @a = FactoryGirl.create(:answer)
-      @b = FactoryGirl.create(:answer, :question => @a.question)
-      @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a)
+      @a = FactoryBot.create(:answer)
+      @b = FactoryBot.create(:answer, :question => @a.question)
+      @r = FactoryBot.create(:response, :question => @a.question, :answer => @a)
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "!=", :rule_key => "E")
+      @dc = FactoryBot.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "!=", :rule_key => "E")
       expect(@dc.as(:answer)).to eq(@r.as(:answer))
     end
 
@@ -192,100 +192,100 @@ describe DependencyCondition do
     end
 
     it "with string value response" do
-      @a.update_attributes(:response_class => "string")
-      @r.update_attributes(:string_value => "hello123")
+      @a.update(:response_class => "string")
+      @r.update(:string_value => "hello123")
       @dc.string_value = "hello123"
       expect(@dc.to_hash(@rs)).to eq({:E => false})
-      @r.update_attributes(:string_value => "foo_abc")
+      @r.update(:string_value => "foo_abc")
       expect(@dc.to_hash(@rs)).to eq({:E => true})
     end
 
     it "with a text value response" do
-      @a.update_attributes(:response_class => "text")
-      @r.update_attributes(:text_value => "hello this is some text for comparison")
+      @a.update(:response_class => "text")
+      @r.update(:text_value => "hello this is some text for comparison")
       @dc.text_value = "hello this is some text for comparison"
       expect(@dc.to_hash(@rs)).to eq({:E => false})
-      @r.update_attributes(:text_value => "Not the same text")
+      @r.update(:text_value => "Not the same text")
       expect(@dc.to_hash(@rs)).to eq({:E => true})
     end
 
     it "with an integer value response" do
-      @a.update_attributes(:response_class => "integer")
-      @r.update_attributes(:integer_value => 10045)
+      @a.update(:response_class => "integer")
+      @r.update(:integer_value => 10045)
       @dc.integer_value = 10045
       expect(@dc.to_hash(@rs)).to eq({:E => false})
-      @r.update_attributes(:integer_value => 421)
+      @r.update(:integer_value => 421)
       expect(@dc.to_hash(@rs)).to eq({:E => true})
     end
 
     it "with a float value response" do
-      @a.update_attributes(:response_class => "float")
-      @r.update_attributes(:float_value => 121.1)
+      @a.update(:response_class => "float")
+      @r.update(:float_value => 121.1)
       @dc.float_value = 121.1
       expect(@dc.to_hash(@rs)).to eq({:E => false})
-      @r.update_attributes(:float_value => 130.123)
+      @r.update(:float_value => 130.123)
       expect(@dc.to_hash(@rs)).to eq({:E => true})
     end
   end
 
   describe "evaluate the '<' operator" do
     before(:each) do
-      @a = FactoryGirl.create(:answer)
-      @b = FactoryGirl.create(:answer, :question => @a.question)
-      @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a)
+      @a = FactoryBot.create(:answer)
+      @b = FactoryBot.create(:answer, :question => @a.question)
+      @r = FactoryBot.create(:response, :question => @a.question, :answer => @a)
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "<", :rule_key => "F")
+      @dc = FactoryBot.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "<", :rule_key => "F")
       expect(@dc.as(:answer)).to eq(@r.as(:answer))
     end
 
     it "with an integer value response" do
-      @a.update_attributes(:response_class => "integer")
-      @r.update_attributes(:integer_value => 50)
+      @a.update(:response_class => "integer")
+      @r.update(:integer_value => 50)
       @dc.integer_value = 100
       expect(@dc.to_hash(@rs)).to eq({:F => true})
-      @r.update_attributes(:integer_value => 421)
+      @r.update(:integer_value => 421)
       expect(@dc.to_hash(@rs)).to eq({:F => false})
     end
 
     it "with a float value response" do
-      @a.update_attributes(:response_class => "float")
-      @r.update_attributes(:float_value => 5.1)
+      @a.update(:response_class => "float")
+      @r.update(:float_value => 5.1)
       @dc.float_value = 121.1
       expect(@dc.to_hash(@rs)).to eq({:F => true})
-      @r.update_attributes(:float_value => 130.123)
+      @r.update(:float_value => 130.123)
       expect(@dc.to_hash(@rs)).to eq({:F => false})
     end
   end
 
   describe "evaluate the '<=' operator" do
     before(:each) do
-      @a = FactoryGirl.create(:answer)
-      @b = FactoryGirl.create(:answer, :question => @a.question)
-      @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a)
+      @a = FactoryBot.create(:answer)
+      @b = FactoryBot.create(:answer, :question => @a.question)
+      @r = FactoryBot.create(:response, :question => @a.question, :answer => @a)
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "<=", :rule_key => "G")
+      @dc = FactoryBot.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "<=", :rule_key => "G")
       expect(@dc.as(:answer)).to eq(@r.as(:answer))
     end
 
     it "with an integer value response" do
-      @a.update_attributes(:response_class => "integer")
-      @r.update_attributes(:integer_value => 50)
+      @a.update(:response_class => "integer")
+      @r.update(:integer_value => 50)
       @dc.integer_value = 100
       expect(@dc.to_hash(@rs)).to eq({:G => true})
-      @r.update_attributes(:integer_value => 100)
+      @r.update(:integer_value => 100)
       expect(@dc.to_hash(@rs)).to eq({:G => true})
-      @r.update_attributes(:integer_value => 421)
+      @r.update(:integer_value => 421)
       expect(@dc.to_hash(@rs)).to eq({:G => false})
     end
 
     it "with a float value response" do
-      @a.update_attributes(:response_class => "float")
-      @r.update_attributes(:float_value => 5.1)
+      @a.update(:response_class => "float")
+      @r.update(:float_value => 5.1)
       @dc.float_value = 121.1
       expect(@dc.to_hash(@rs)).to eq({:G => true})
-      @r.update_attributes(:float_value => 121.1)
+      @r.update(:float_value => 121.1)
       expect(@dc.to_hash(@rs)).to eq({:G => true})
-      @r.update_attributes(:float_value => 130.123)
+      @r.update(:float_value => 130.123)
       expect(@dc.to_hash(@rs)).to eq({:G => false})
     end
 
@@ -293,85 +293,85 @@ describe DependencyCondition do
 
   describe "evaluate the '>' operator" do
     before(:each) do
-      @a = FactoryGirl.create(:answer)
-      @b = FactoryGirl.create(:answer, :question => @a.question)
-      @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a)
+      @a = FactoryBot.create(:answer)
+      @b = FactoryBot.create(:answer, :question => @a.question)
+      @r = FactoryBot.create(:response, :question => @a.question, :answer => @a)
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => ">", :rule_key => "H")
+      @dc = FactoryBot.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => ">", :rule_key => "H")
       expect(@dc.as(:answer)).to eq(@r.as(:answer))
     end
 
     it "with an integer value response" do
-      @a.update_attributes(:response_class => "integer")
-      @r.update_attributes(:integer_value => 50)
+      @a.update(:response_class => "integer")
+      @r.update(:integer_value => 50)
       @dc.integer_value = 100
       expect(@dc.to_hash(@rs)).to eq({:H => false})
-      @r.update_attributes(:integer_value => 421)
+      @r.update(:integer_value => 421)
       expect(@dc.to_hash(@rs)).to eq({:H => true})
     end
 
     it "with a float value response" do
-      @a.update_attributes(:response_class => "float")
-      @r.update_attributes(:float_value => 5.1)
+      @a.update(:response_class => "float")
+      @r.update(:float_value => 5.1)
       @dc.float_value = 121.1
       expect(@dc.to_hash(@rs)).to eq({:H => false})
-      @r.update_attributes(:float_value => 130.123)
+      @r.update(:float_value => 130.123)
       expect(@dc.to_hash(@rs)).to eq({:H => true})
     end
   end
 
   describe "evaluate the '>=' operator" do
     before(:each) do
-      @a = FactoryGirl.create(:answer)
-      @b = FactoryGirl.create(:answer, :question => @a.question)
-      @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a)
+      @a = FactoryBot.create(:answer)
+      @b = FactoryBot.create(:answer, :question => @a.question)
+      @r = FactoryBot.create(:response, :question => @a.question, :answer => @a)
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => ">=", :rule_key => "I")
+      @dc = FactoryBot.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => ">=", :rule_key => "I")
       expect(@dc.as(:answer)).to eq(@r.as(:answer))
     end
 
     it "with an integer value response" do
-      @a.update_attributes(:response_class => "integer")
-      @r.update_attributes(:integer_value => 50)
+      @a.update(:response_class => "integer")
+      @r.update(:integer_value => 50)
       @dc.integer_value = 100
       expect(@dc.to_hash(@rs)).to eq({:I => false})
-      @r.update_attributes(:integer_value => 100)
+      @r.update(:integer_value => 100)
       expect(@dc.to_hash(@rs)).to eq({:I => true})
-      @r.update_attributes(:integer_value => 421)
+      @r.update(:integer_value => 421)
       expect(@dc.to_hash(@rs)).to eq({:I => true})
     end
 
     it "with a float value response" do
-      @a.update_attributes(:response_class => "float")
-      @r.update_attributes(:float_value => 5.1)
+      @a.update(:response_class => "float")
+      @r.update(:float_value => 5.1)
       @dc.float_value = 121.1
       expect(@dc.to_hash(@rs)).to eq({:I => false})
-      @r.update_attributes(:float_value => 121.1)
+      @r.update(:float_value => 121.1)
       expect(@dc.to_hash(@rs)).to eq({:I => true})
-      @r.update_attributes(:float_value => 130.123)
+      @r.update(:float_value => 130.123)
       expect(@dc.to_hash(@rs)).to eq({:I => true})
     end
   end
 
   describe "evaluating with response_class string" do
     it "should compare answer ids when the dependency condition string_value is nil" do
-      @a = FactoryGirl.create(:answer, :response_class => "string")
-      @b = FactoryGirl.create(:answer, :question => @a.question)
-      @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a, :string_value => "")
+      @a = FactoryBot.create(:answer, :response_class => "string")
+      @b = FactoryBot.create(:answer, :question => @a.question)
+      @r = FactoryBot.create(:response, :question => @a.question, :answer => @a, :string_value => "")
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "==", :rule_key => "J")
+      @dc = FactoryBot.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "==", :rule_key => "J")
       expect(@dc.to_hash(@rs)).to eq({:J => true})
     end
 
     it "should compare strings when the dependency condition string_value is not nil, even if it is blank" do
-      @a = FactoryGirl.create(:answer, :response_class => "string")
-      @b = FactoryGirl.create(:answer, :question => @a.question)
-      @r = FactoryGirl.create(:response, :question => @a.question, :answer => @a, :string_value => "foo")
+      @a = FactoryBot.create(:answer, :response_class => "string")
+      @b = FactoryBot.create(:answer, :question => @a.question)
+      @r = FactoryBot.create(:response, :question => @a.question, :answer => @a, :string_value => "foo")
       @rs = @r.response_set
-      @dc = FactoryGirl.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "==", :rule_key => "K", :string_value => "foo")
+      @dc = FactoryBot.create(:dependency_condition, :question => @a.question.reload, :answer => @a, :operator => "==", :rule_key => "K", :string_value => "foo")
       expect(@dc.to_hash(@rs)).to eq({:K => true})
 
-      @r.update_attributes(:string_value => "")
+      @r.update(:string_value => "")
       @dc.string_value = ""
       expect(@dc.to_hash(@rs)).to eq({:K => true})
     end
@@ -379,14 +379,14 @@ describe DependencyCondition do
 
   describe "evaluate 'count' operator" do
     before(:each) do
-      @q = FactoryGirl.create(:question)
+      @q = FactoryBot.create(:question)
       @as = []
       3.times do
-        @as << FactoryGirl.create(:answer, :question => @q, :response_class => "answer")
+        @as << FactoryBot.create(:answer, :question => @q, :response_class => "answer")
       end
-      @rs = FactoryGirl.create(:response_set)
+      @rs = FactoryBot.create(:response_set)
       @as.slice(0,2).each do |a|
-        FactoryGirl.create(:response, :question => @q, :answer => a, :response_set => @rs)
+        FactoryBot.create(:response, :question => @q, :answer => a, :response_set => @rs)
       end
       @rs.save
 
@@ -395,7 +395,7 @@ describe DependencyCondition do
 
     it "with operator with >" do
       expect(@dc.to_hash(@rs)).to eq({:M => false})
-      FactoryGirl.create(:response, :question => @q, :answer => @as.last, :response_set => @rs)
+      FactoryBot.create(:response, :question => @q, :answer => @as.last, :response_set => @rs)
       expect(@rs.reload.responses.count).to eq(3)
       expect(@dc.to_hash(@rs.reload)).to eq({:M => true})
     end

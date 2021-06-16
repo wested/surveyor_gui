@@ -889,6 +889,10 @@ function update_question_numbers() {
 
 
 function update_answer_display_order (question) {
+    if (question == undefined) {
+        question = $("#question_id").val();
+    }
+
     $(question).find('#answers.sortable input[id$="display_order"]').each(function(index, value){
         $(value).val(index);
     });

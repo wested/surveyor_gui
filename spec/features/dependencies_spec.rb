@@ -8,13 +8,13 @@ feature "User creates a dependency using browser", %q{
   I want to create logic on questions
   So that I can display one question depending on the answer to another} do
 
-  let!(:survey){FactoryGirl.create(:survey, title: "Hotel ratings")}
-  let!(:survey_section){FactoryGirl.create(:survey_section, survey: survey)}
-  let!(:question1) {FactoryGirl.create(:question, survey_section: survey_section, text: "Rate the service")}
-  let!(:answer1) {FactoryGirl.create(:answer, question: question1, text: "yes", display_type: "default", response_class: "answer")}
-  let!(:answer2) {FactoryGirl.create(:answer, question: question1, text: "no", display_type: "default", response_class: "answer")}
-  let!(:question2) {FactoryGirl.create(:question, survey_section: survey_section, text: "Who was your concierge?")}
-  let!(:answer2) {FactoryGirl.create(:answer, question: question2)}
+  let!(:survey){FactoryBot.create(:survey, title: "Hotel ratings")}
+  let!(:survey_section){FactoryBot.create(:survey_section, survey: survey)}
+  let!(:question1) {FactoryBot.create(:question, survey_section: survey_section, text: "Rate the service")}
+  let!(:answer1) {FactoryBot.create(:answer, question: question1, text: "yes", display_type: "default", response_class: "answer")}
+  let!(:answer2) {FactoryBot.create(:answer, question: question1, text: "no", display_type: "default", response_class: "answer")}
+  let!(:question2) {FactoryBot.create(:question, survey_section: survey_section, text: "Who was your concierge?")}
+  let!(:answer2) {FactoryBot.create(:answer, question: question2)}
   before :each do
     question1.pick = "one"
     question1.save!

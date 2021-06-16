@@ -39,6 +39,11 @@ module SurveyorGui
         send builder.to_sym, question, args
       end
 
+      # rails 6 upgrade requiring this function....
+      def marked_for_destruction?
+
+      end
+
       private
 
       def _build_pick_one(question, args)
@@ -489,7 +494,7 @@ class TextBoxParser
 
   def _update_nested_object(nested_object, index, update_params)
     params = {:display_order=>index}.merge(update_params)
-    nested_object.update_attributes(params)
+    nested_object.update(params)
   end
 
   def _dedupe

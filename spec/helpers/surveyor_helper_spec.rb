@@ -3,13 +3,13 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe SurveyorHelper do
   context "numbering" do
     it "should return the question text with number, except for labels, dependencies, images, and grouped questions" do
-      q1 = FactoryGirl.create(:question)
-      q2 = FactoryGirl.create(:question, :display_type => "label")
-      q3 = FactoryGirl.create(:question) do |question|
-        FactoryGirl.create(:dependency, :question=>question)
+      q1 = FactoryBot.create(:question)
+      q2 = FactoryBot.create(:question, :display_type => "label")
+      q3 = FactoryBot.create(:question) do |question|
+        FactoryBot.create(:dependency, :question=>question)
       end
-      q4 = FactoryGirl.create(:question, :display_type => "image", :text => "rails.png")
-      q5 = FactoryGirl.create(:question, :question_group => FactoryGirl.create(:question_group))
+      q4 = FactoryBot.create(:question, :display_type => "image", :text => "rails.png")
+      q5 = FactoryBot.create(:question, :question_group => FactoryBot.create(:question_group))
       expect(helper.q_text(q1)).to eq("<div class='question'><span class='qnum'>1) </span>#{q1.text}</div>")
       expect(helper.q_text(q2)).to eq(q2.text)
       expect(helper.q_text(q3)).to eq(q3.text)
@@ -23,8 +23,8 @@ describe SurveyorHelper do
     require 'mustache'
     let(:mustache_context){ Class.new(::Mustache){ def site; "Northwestern"; end; def somethingElse; "something new"; end; def group; "NUBIC"; end } }
     it "substitues values into Question#text" do
-      q1 = FactoryGirl.create(:question, :text => "You are in {{site}}")
-      label = FactoryGirl.create(:question, :display_type => "label", :text => "Testing {{somethingElse}}")
+      q1 = FactoryBot.create(:question, :text => "You are in {{site}}")
+      label = FactoryBot.create(:question, :display_type => "label", :text => "Testing {{somethingElse}}")
       expect(helper.q_text(q1, mustache_context)).to eq("<div class='question'><span class='qnum'>1) </span>You are in Northwestern</div>")
       expect(helper.q_text(label, mustache_context)).to eq("Testing something new")
     end
@@ -32,10 +32,10 @@ describe SurveyorHelper do
 
   context "response methods" do
     it "should find or create responses, with index" do
-      q1 = FactoryGirl.create(:question, :answers => [a = FactoryGirl.create(:answer, :text => "different")])
-      q2 = FactoryGirl.create(:question, :answers => [b = FactoryGirl.create(:answer, :text => "strokes")])
-      q3 = FactoryGirl.create(:question, :answers => [c = FactoryGirl.create(:answer, :text => "folks")])
-      rs = FactoryGirl.create(:response_set, :responses => [r1 = FactoryGirl.create(:response, :question => q1, :answer => a), r3 = FactoryGirl.create(:response, :question => q3, :answer => c, :response_group => 1)])
+      q1 = FactoryBot.create(:question, :answers => [a = FactoryBot.create(:answer, :text => "different")])
+      q2 = FactoryBot.create(:question, :answers => [b = FactoryBot.create(:answer, :text => "strokes")])
+      q3 = FactoryBot.create(:question, :answers => [c = FactoryBot.create(:answer, :text => "folks")])
+      rs = FactoryBot.create(:response_set, :responses => [r1 = FactoryBot.create(:response, :question => q1, :answer => a), r3 = FactoryBot.create(:response, :question => q3, :answer => c, :response_group => 1)])
 
       expect(helper.response_for(rs, nil)).to eq(nil)
       expect(helper.response_for(nil, q1)).to eq(nil)
@@ -73,15 +73,15 @@ describe SurveyorHelper do
     end
 
     it "should return all responses for a pick one question" do
-      q1 = FactoryGirl.create(:question, pick: :one, :answers => [a = FactoryGirl.create(:answer, :text => "correct", weight: 1), b = FactoryGirl.create(:answer, :text => "nothing"), c = FactoryGirl.create(:answer, :text => "penalty", weight: -1)])
-      response_set = FactoryGirl.create(:response_set, :responses => [r1 = FactoryGirl.create(:response, :question => q1, :answer => a)])
+      q1 = FactoryBot.create(:question, pick: :one, :answers => [a = FactoryBot.create(:answer, :text => "correct", weight: 1), b = FactoryBot.create(:answer, :text => "nothing"), c = FactoryBot.create(:answer, :text => "penalty", weight: -1)])
+      response_set = FactoryBot.create(:response_set, :responses => [r1 = FactoryBot.create(:response, :question => q1, :answer => a)])
 
       expect(helper.responses_for(response_set, q1)).to match([r1])
     end
 
     it "should return all responses for a pick any question" do
-      q1 = FactoryGirl.create(:question, pick: :any, :answers => [a = FactoryGirl.create(:answer, :text => "correct", weight: 1), b = FactoryGirl.create(:answer, :text => "nothing"), c = FactoryGirl.create(:answer, :text => "penalty", weight: -1)])
-      response_set = FactoryGirl.create(:response_set, :responses => [r1 = FactoryGirl.create(:response, :question => q1, :answer => a), r2 = FactoryGirl.create(:response, :question => q1, :answer => c)])
+      q1 = FactoryBot.create(:question, pick: :any, :answers => [a = FactoryBot.create(:answer, :text => "correct", weight: 1), b = FactoryBot.create(:answer, :text => "nothing"), c = FactoryBot.create(:answer, :text => "penalty", weight: -1)])
+      response_set = FactoryBot.create(:response_set, :responses => [r1 = FactoryBot.create(:response, :question => q1, :answer => a), r2 = FactoryBot.create(:response, :question => q1, :answer => c)])
 
       expect(helper.responses_for(response_set, q1)).to match([r1, r2])
     end
@@ -89,10 +89,10 @@ describe SurveyorHelper do
 
   context "scoring methods" do
     it "should return css class that corresponds to whether an answer is correct or not for single select" do
-      q1 = FactoryGirl.create(:question, pick: :one, :answers => [a = FactoryGirl.create(:answer, :text => "correct", weight: 1), b = FactoryGirl.create(:answer, :text => "nothing"), c = FactoryGirl.create(:answer, :text => "penalty", weight: -1)])
-      correct_response_set = FactoryGirl.create(:response_set, :responses => [r1 = FactoryGirl.create(:response, :question => q1, :answer => a)])
-      incorrect_response_set = FactoryGirl.create(:response_set, :responses => [r2 = FactoryGirl.create(:response, :question => q1, :answer => b)])
-      incorrect_penalty_response_set = FactoryGirl.create(:response_set, :responses => [r3 = FactoryGirl.create(:response, :question => q1, :answer => c)])
+      q1 = FactoryBot.create(:question, pick: :one, :answers => [a = FactoryBot.create(:answer, :text => "correct", weight: 1), b = FactoryBot.create(:answer, :text => "nothing"), c = FactoryBot.create(:answer, :text => "penalty", weight: -1)])
+      correct_response_set = FactoryBot.create(:response_set, :responses => [r1 = FactoryBot.create(:response, :question => q1, :answer => a)])
+      incorrect_response_set = FactoryBot.create(:response_set, :responses => [r2 = FactoryBot.create(:response, :question => q1, :answer => b)])
+      incorrect_penalty_response_set = FactoryBot.create(:response_set, :responses => [r3 = FactoryBot.create(:response, :question => q1, :answer => c)])
 
       expect(helper.answer_result_css_class(r1, a, q1)).to eq "correct"
       expect(helper.answer_result_css_class(r1, b, q1)).to be_nil
@@ -111,10 +111,10 @@ describe SurveyorHelper do
     end
 
     it "should return css class that corresponds to whether an answer is correct or not for multi select" do
-      q1 = FactoryGirl.create(:question, pick: :any, :answers => [a = FactoryGirl.create(:answer, :text => "correct", weight: 1), b = FactoryGirl.create(:answer, :text => "nothing"), c = FactoryGirl.create(:answer, :text => "penalty", weight: -1)])
-      correct_response_set = FactoryGirl.create(:response_set, :responses => [r1 = FactoryGirl.create(:response, :question => q1, :answer => a)])
-      incorrect_response_set = FactoryGirl.create(:response_set, :responses => [r2 = FactoryGirl.create(:response, :question => q1, :answer => b)])
-      incorrect_penalty_response_set = FactoryGirl.create(:response_set, :responses => [r3 = FactoryGirl.create(:response, :question => q1, :answer => c)])
+      q1 = FactoryBot.create(:question, pick: :any, :answers => [a = FactoryBot.create(:answer, :text => "correct", weight: 1), b = FactoryBot.create(:answer, :text => "nothing"), c = FactoryBot.create(:answer, :text => "penalty", weight: -1)])
+      correct_response_set = FactoryBot.create(:response_set, :responses => [r1 = FactoryBot.create(:response, :question => q1, :answer => a)])
+      incorrect_response_set = FactoryBot.create(:response_set, :responses => [r2 = FactoryBot.create(:response, :question => q1, :answer => b)])
+      incorrect_penalty_response_set = FactoryBot.create(:response_set, :responses => [r3 = FactoryBot.create(:response, :question => q1, :answer => c)])
 
       expect(helper.answer_result_css_class(r1, a, q1)).to eq "correct"
       expect(helper.answer_result_css_class(r1, b, q1)).to be_nil
