@@ -20,8 +20,8 @@ module SurveyorGui
         base.send :belongs_to, :survey_section, optional: true
         base.send :has_many, :responses
         base.send :has_many, :dependency_conditions, :through=>:dependency, :dependent => :destroy
-        base.send :default_scope, lambda{ base.order('display_order')}
-        base.send :scope, :by_display_order, -> {base.order('display_order')}
+        base.send :default_scope, lambda{ order('display_order')}
+        base.send :scope, :by_display_order, -> {order('display_order')}
         ### everything below this point must be commented out to run the rake tasks.
         base.send :accepts_nested_attributes_for, :dependency, :reject_if => lambda { |d| d[:rule].blank?}, :allow_destroy => true
         base.send :accepts_nested_attributes_for, :answers, :reject_if => :all_blank, :allow_destroy => true
@@ -38,8 +38,8 @@ module SurveyorGui
         base.send :before_save, :set_question_type
         # base.send :before_save, :make_room_for_question
 
-        base.send :scope, :is_not_comment, -> { base.where(is_comment: false) }
-        base.send :scope, :is_comment, -> { base.where(is_comment: true) }
+        base.send :scope, :is_not_comment, -> { where(is_comment: false) }
+        base.send :scope, :is_comment, -> { where(is_comment: true) }
 
         base.class_eval do
 

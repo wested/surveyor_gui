@@ -1,0 +1,1 @@
+ActiveRecord::Base.verbose_query_logs = true

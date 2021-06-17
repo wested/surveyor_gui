@@ -1,5 +1,5 @@
 # This migration comes from surveyor_gui (originally 20140601011151)
-class CreateColumns < ActiveRecord::Migration
+class CreateColumns < ActiveRecord::Migration[4.2]
   def change
     create_table :columns do |t|
       t.integer :question_group_id
