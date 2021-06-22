@@ -418,18 +418,28 @@ function application_js_code(){
         var question_id = $('input#question_id').val();
         var question_group_id = $('.questions').find('input[id*="question_group_id"]').val();
         var question_type_id = $('div.question_type input[id*="question_type_id"]:checked').val();
+        var prev_question_id;
+
         if (question_group_id != undefined && question_group_id != "")  {
             var question_group_clause = "/"+question_group_id+"/edit";
         }
-        else
+        else {
+
             var question_group_clause = "/new";
+            var redirect_url          = surveyor_gui_mount_point + "question_groups" + question_group_clause + "?survey_section_id=" +
+                survey_section_id + "&text=" + text +
+                "&display_order=" + display_order +
+                "&question_id=" + question_id +
+                "&question_type_id=" + question_type_id
 
-        window.location.href = surveyor_gui_mount_point+"question_groups"+question_group_clause+"?survey_section_id="+
-            survey_section_id+"&text="+text+
-            "&display_order="+display_order +
-            "&question_id="+question_id +
-            "&question_type_id="+question_type_id;
+            prev_question_id = new URLSearchParams(window.location.search).get('prev_question_id');
 
+            if (prev_question_id && prev_question_id.length) {
+                redirect_url = redirect_url + '&prev_question_id=' + prev_question_id;
+            }
+
+            window.location.href = redirect_url;
+        }
     }
 
     $.fn.render_group_inline_fields_partial = function (add_row){

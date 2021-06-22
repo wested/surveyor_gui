@@ -8,7 +8,7 @@ include GeneralPurposeHelpers
 feature "Survey Creator rearranges survey",  %q{
   As a Survey Creator
   I want to rearrange a survey
-  So that I can change my mind if I don't like the order of sections and questions} do
+  So that I can change my mind if I don't like the order of sections and questions}, type: :system, js: true, headless_selenium: true do
 
   #force a cr/lf to make the output look better
   scenario " " do
@@ -70,8 +70,8 @@ feature "Survey Creator rearranges survey",  %q{
     scenario "Survey Creator cuts and pastes questions and sections" do
       #Given that my survey has questions in the wrong sections
       #and sections in the wrong order:
-      page.save_screenshot(File.join(Rails.root, "tmp", "cut_paste_section.png"), :full => true)
-      expect(page).to have_content(/Accommodations.*Describe your day at Fenway Park.*Food.*Entertainment.*Describe your room/)
+      # page.save_screenshot(File.join(Rails.root, "tmp", "cut_paste_section.png"), :full => true)
+      expect(page.body).to match(/Accommodations.*Describe your day at Fenway Park.*Food.*Entertainment.*Describe your room/m)
 
       #When I move questions to the appropriate sections
       cut_question("Describe your day at Fenway Park.")
@@ -84,7 +84,7 @@ feature "Survey Creator rearranges survey",  %q{
       paste_section("under", "Food")
 
       #Then the survey is organized correctly:
-      expect(page).to have_content(/Food.*Accommodations.*Describe your room.*Entertainment.*Describe your day at Fenway Park/)
+      expect(page.body).to match(/Food.*Accommodations.*Describe your room.*Entertainment.*Describe your day at Fenway Park/m)
     end
   end
 end

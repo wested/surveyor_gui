@@ -36,7 +36,10 @@ Gem::Specification.new do |s|
 
   # tests fail with capybara 3...lots of custom rspec shenanigans that result in many failing tests...failing rspec
   # customizations will need to be addressed before upgrading :(
-  s.add_development_dependency('capybara', '~> 2.3')
+  s.add_development_dependency('capybara')
+  s.add_development_dependency('capybara-screenshot')
+  s.add_development_dependency('selenium-webdriver')
+  s.add_development_dependency('webdrivers', '~> 4.0')
   s.add_development_dependency('launchy', '~> 2.4.2')
   s.add_development_dependency('poltergeist')
   s.add_development_dependency('puma')

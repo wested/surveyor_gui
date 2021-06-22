@@ -64,7 +64,7 @@ feature "Bug fix #41", %q{
 
       #Given I've added a new question
       add_question do
-
+        sleep 0.5
       #Then I select the "multiple choice" question type
         select_question_type "Multiple Choice (only one answer)"
 
@@ -93,7 +93,7 @@ feature "Bug fix #41", %q{
 
       #Then I add another question
       add_question do
-
+        sleep 0.5
       #Then I select the "Text" question type
         select_question_type "Text"
 
@@ -127,7 +127,7 @@ feature "Bug fix #41", %q{
       #Then I add another question
       wait_for_ajax
       add_question do
-
+        sleep 0.5
       #Then I select the "Text" question type
         select_question_type "Text"
 

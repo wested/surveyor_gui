@@ -41,6 +41,7 @@ module CutAndPaste
     #When I cut <from_item>
     expect(page).not_to have_css('div.jquery_cut_question_started')
     page.execute_script(cut_button)
+    page.accept_alert
     expect(page).to have_css('div.jquery_cut_question_started')
     #Then I see paste buttons appear
     expect(page).to have_content('Paste Question')
@@ -50,6 +51,7 @@ module CutAndPaste
     cut_button = "$('div.survey_section:contains(\"#{section}\") button:contains(\"Cut Section\")')[0].click();"
     #When I cut <from_item>
     page.execute_script(cut_button)
+    page.accept_alert
     expect(page).not_to have_css('div.jquery_cut_section_started')
     #Then I see paste buttons appear
     expect(page).to have_content('Paste Section')
@@ -127,9 +129,10 @@ module CutAndPaste
     order.split("").each do |question|
       exp += "Unique #{@item_name} #{question}.*"
     end
-    regexp = Regexp.new exp
+    regexp = Regexp.new exp, Regexp::MULTILINE
     #Then I see the questions in the correct order
-    expect(page).to have_content(regexp)
+    # expect(page).to have_content(regexp)
+    expect(page.body).to match(regexp)
   end
 end
 

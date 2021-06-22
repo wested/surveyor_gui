@@ -5,10 +5,10 @@ include SurveyFormsCreationHelpers::CreateSurvey
 include SurveyFormsCreationHelpers::BuildASurvey
 include GeneralPurposeHelpers
 
-feature "User creates a new survey using a browser",  %q{
+describe "User creates a new survey using a browser",  %q{
   As a user
   I want to create a new survey using a browser
-  So that I don't have to learn the Surveyor DSL or dive into technical weeds} do
+  So that I don't have to learn the Surveyor DSL or dive into technical weeds}, type: :system, js: true, headless_selenium: true do
   #force a cr/lf to make the output look better
   scenario " " do
   end
@@ -107,7 +107,7 @@ feature "User creates a new survey using a browser",  %q{
       scenario "User adds a number question", :js=>true do
         #Given I've added a new question
         add_question do
-
+          sleep 0.5
         #Then I select the "number" question type
           select_question_type "Number"
 
@@ -129,7 +129,7 @@ feature "User creates a new survey using a browser",  %q{
         #And I can see the question in my survey
         expect(first_question).to have_content("How many days did you stay?")
         expect(page).to have_css("input[type='text']")
-        expect(page).to have_content(/Stayed.*days at hotel/)
+        expect(page.body).to match(/Stayed.*days at hotel/m)
       end
 
 

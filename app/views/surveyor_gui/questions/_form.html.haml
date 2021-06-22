@@ -19,8 +19,9 @@
 
       = f.input :survey_section_id, as: :hidden, input_html: { value: @survey_section_id }
 
-      - if question.question_type_id == :group_default
+      - if question.question_type_id.to_sym == :group_default
         = f.hidden_field :question_id
+        = hidden_field_tag :prev_question_id, params[:prev_question_id] if params[:prev_question_id].present?
 
     = f.input :text , :label => "Question", :input_html=>{:size=>'55', value: adjusted_text(question), class: "tinymce"}
 
