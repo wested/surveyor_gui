@@ -409,6 +409,24 @@ describe "User creates a new survey using a browser",  %q{
     end
   end #end context "user has started a new survey"
 
+  scenario "User adds group question to bottom of survey" do
+    build_a_three_question_survey
+
+    add_a_pick_one_question_in_question_group
+
+    expect(Question.last.text).to eq "<p>Just need another question here for drag/drop test</p>"
+    expect(Question.last.display_order).to eq 5
+  end
+
+  scenario "User adds inline question to bottom of survey" do
+    build_a_three_question_survey
+
+    add_a_text_question_in_inline_question_group
+
+    expect(Question.last.text).to eq "<p>Give me your thoughts Inline?</p>"
+    expect(Question.last.display_order).to eq 4
+  end
+
   scenario "User saves a survey with all the different question types", :js=>true do
     build_a_survey
     click_button "Save Changes"

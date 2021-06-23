@@ -224,6 +224,22 @@ module SurveyFormsCreationHelpers
 
     end
 
+    def add_a_text_question_in_inline_question_group
+      add_question do
+        sleep 0.5
+        #Then I select the "question group" question type
+        select_question_type "Inline Question Group"
+        #And I frame the question
+        tinymce_fill_in "question_group_text", with: "Inline Question Group Test"
+        #And I frame the question
+        tinymce_fill_in "question_group_questions_attributes_0_text", with: "Give me your thoughts Inline?"
+
+        click_button "Save Changes"
+        #Then the window goes away
+      end
+
+    end
+
     def add_a_pick_any_question
       #Given I've added a new question
       add_question do

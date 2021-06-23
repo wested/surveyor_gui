@@ -4,6 +4,7 @@
     = f.error_messages
     = f.hidden_field :id
     = f.hidden_field :display_type
+    = hidden_field_tag :prev_question_id, params[:prev_question_id] if params[:prev_question_id].present?
 
     - if question.is_a? Question
       = f.hidden_field :display_order, class: "question-display-order"
@@ -11,7 +12,6 @@
       = f.hidden_field :pick
       = f.hidden_field :modifiable
       = f.hidden_field :question_group_id
-      = hidden_field_tag :prev_question_id, params[:prev_question_id]
 
     - if question.is_a? QuestionGroup
 
@@ -21,7 +21,7 @@
 
       - if question.question_type_id.to_sym == :group_default
         = f.hidden_field :question_id
-        = hidden_field_tag :prev_question_id, params[:prev_question_id] if params[:prev_question_id].present?
+
 
     = f.input :text , :label => "Question", :input_html=>{:size=>'55', value: adjusted_text(question), class: "tinymce"}
 
