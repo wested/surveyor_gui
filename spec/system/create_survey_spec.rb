@@ -409,6 +409,55 @@ describe "User creates a new survey using a browser",  %q{
     end
   end #end context "user has started a new survey"
 
+  scenario "User adds comment, other and omit options" do
+    start_a_new_survey
+
+    add_question do
+      sleep 0.5
+      #Then I select the "multiple choice" question type
+      select_question_type "Multiple Choice (only one answer)"
+      #And I frame the question
+      tinymce_fill_in "question_text", with: "Question with system generated options"
+      #And I add some choices"
+      find(:css, "input.option-value", match: :first).set("User option 1")
+
+      check "Add user determined choice?"
+      check "Add none of the above choice?"
+      check "At the bottom of questions, add input box?"
+    end
+
+    #And I save the question
+    click_button "Save Changes"
+
+    expect(page).to have_content(/User option 1.*Other.*none of the above.*Comments/m)
+
+    click_link "Edit Question"
+
+    click_link "Add Another Option"
+    all("input.option-value").last.set("User option 2")
+
+    fill_in "question_omit_text", with: "none at all"
+    fill_in "question_other_text", with: "All Others"
+    fill_in "question_comments_text", with: "Commentary"
+
+    click_button "Save Changes"
+
+    expect(page).to have_content(/User option 1.*User option 2.*All Others.*none at all.*Commentary/m)
+
+    answers = Answer.all.to_a
+
+    expect(answers[0].text).to eq "User option 1"
+    expect(answers[0].display_order).to eq 0
+    expect(answers[1].text).to eq "User option 2"
+    expect(answers[1].display_order).to eq 1
+    expect(answers[2].text).to eq "\nAll Others"
+    expect(answers[2].display_order).to eq 2
+    expect(answers[3].text).to eq "\nnone at all"
+    expect(answers[3].display_order).to eq 2
+    expect(answers[4].text).to eq "\nCommentary"
+    expect(answers[4].display_order).to eq 2
+  end
+
   scenario "User adds group question to bottom of survey" do
     build_a_three_question_survey
 
