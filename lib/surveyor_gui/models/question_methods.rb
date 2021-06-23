@@ -15,7 +15,7 @@ module SurveyorGui
                   :hide_label, :dummy_blob, :dynamically_generate, :answers_textbox, :dropdown_column_count,
                   :grid_columns_textbox, :grid_rows_textbox, :omit_text, :omit, :other, :other_text, :is_comment, :comments, :comments_text,
                   :dynamic_source, :modifiable, :report_code, :question_group_attributes if
-            defined? ActiveModel::MassAssignmentSecurity
+          defined? ActiveModel::MassAssignmentSecurity
 
         base.send :belongs_to, :survey_section, optional: true
         base.send :has_many, :responses
@@ -202,7 +202,7 @@ module SurveyorGui
         if self.answers.blank?
           self.answers_attributes={'0'=>{'text'=>'default', 'response_class'=>response_class}}
         else
-          self.answers.map{|a|a.response_class=response_class}
+          self.answers.is_not_other_omit_comment.map{|a|a.response_class=response_class}
         end
       end
 
@@ -403,17 +403,29 @@ module SurveyorGui
 
       def build_complex_questions
         if (@answers_textbox && self.pick!="none") || @grid_columns_textbox || @grid_rows_textbox
+
           self.question_type.build_complex_question_structure(
-              self,
-              answers_textbox:      @answers_textbox,
-              omit_text:            @omit_text,
-              is_exclusive:         @omit=="1",
-              other_text:           @other_text,
-              other:                @other=="1",
-              comments_text:        @comments_text,
-              comments:             @comments=="1",
-              grid_columns_textbox: @grid_columns_textbox,
-              grid_rows_textbox:    @grid_rows_textbox)
+            self,
+            answers_textbox:      @answers_textbox,
+            omit_text:            @omit_text,
+            is_exclusive:         @omit=="1",
+            other_text:           @other_text,
+            other:                @other=="1",
+            comments_text:        @comments_text,
+            comments:             @comments=="1",
+            grid_columns_textbox: @grid_columns_textbox,
+            grid_rows_textbox:    @grid_rows_textbox)
+
+        elsif (self.pick!="none")
+
+          self.question_type.process_answer_options(
+            self,
+            omit_text:            @omit_text,
+            is_exclusive:         @omit=="1",
+            other_text:           @other_text,
+            other:                @other=="1",
+            comments_text:        @comments_text,
+            comments:             @comments=="1")
         end
       end
 
@@ -443,7 +455,7 @@ module SurveyorGui
 
       def _update_group_id
         @question_group = @question_group || self.question_group ||
-            QuestionGroup.create!(text: @text, display_type: :grid)
+          QuestionGroup.create!(text: @text, display_type: :grid)
         self.question_group_id = @question_group.id
       end
 
@@ -461,11 +473,11 @@ module SurveyorGui
       def _preceding_questions
         ##all questions from previous sections, plus all questions with a lower display order than this one
         Question.joins(:survey_section).where(
-            '(survey_id = ? and survey_sections.display_order < ?) or (survey_section_id = ? and questions.display_order <= ?)',
-            survey_section.survey_id,
-            survey_section.display_order,
-            survey_section.id,
-            display_order
+          '(survey_id = ? and survey_sections.display_order < ?) or (survey_section_id = ? and questions.display_order <= ?)',
+          survey_section.survey_id,
+          survey_section.display_order,
+          survey_section.id,
+          display_order
         )
       end
     end

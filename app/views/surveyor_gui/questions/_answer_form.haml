@@ -5,7 +5,8 @@
   %h3 Possible answers for question
 
   #answers.sortable
-    = f.simple_fields_for :answers do |a|
+    - answers = f.object.answers.is_not_other_omit_comment.size == 0 ? f.object.answers.is_not_other_omit_comment.to_a << Answer.new : f.object.answers.is_not_other_omit_comment
+    = f.simple_fields_for :answers, answers do |a|
       = render "surveyor_gui/questions/answer_fields", f: a
 
     .links
