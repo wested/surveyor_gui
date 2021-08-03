@@ -266,6 +266,8 @@ module SurveyorGui
           _create_an_answer(display_order, other_text, question, response_class: "string", column_id: column_id)
         elsif other
           question.answers.is_other.first&.update!(text: other_text, display_order: display_order)
+        elsif !other && question.answers.is_other.count == 1
+          question.answers.is_other.first.destroy!
         end
       end
 
@@ -276,6 +278,8 @@ module SurveyorGui
           _create_an_answer(display_order, omit_text, question, is_exclusive: is_exclusive)
         elsif is_exclusive
           question.answers.is_omit.first&.update!(text: omit_text, display_order: display_order)
+        elsif !is_exclusive && question.answers.is_omit.count == 1
+          question.answers.is_omit.first.destroy!
         end
       end
 
@@ -286,6 +290,8 @@ module SurveyorGui
           _create_an_answer(display_order, comments_text, question, response_class: "string", is_comment: true)
         elsif is_comment
           question.answers.is_comment.first&.update!(text: comments_text, display_order: display_order)
+        elsif !is_comment && question.answers.is_comment.count == 1
+          question.answers.is_comment.first.destroy!
         end
       end
 

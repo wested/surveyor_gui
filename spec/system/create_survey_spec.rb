@@ -409,7 +409,7 @@ describe "User creates a new survey using a browser",  %q{
     end
   end #end context "user has started a new survey"
 
-  scenario "User adds comment, other and omit options" do
+  scenario "User adds/removes comment, other and omit options" do
     start_a_new_survey
 
     add_question do
@@ -456,6 +456,29 @@ describe "User creates a new survey using a browser",  %q{
     expect(answers[3].display_order).to eq 2
     expect(answers[4].text).to eq "\nCommentary"
     expect(answers[4].display_order).to eq 2
+
+    click_link "Edit Question"
+
+    uncheck "Add user determined choice?"
+    uncheck "Add none of the above choice?"
+    uncheck "At the bottom of questions, add input box?"
+
+    click_button "Save Changes"
+
+    expect(page).to have_content("User option 1")
+    expect(page).to have_content("User option 2")
+    expect(page).to_not have_content("All Others")
+    expect(page).to_not have_content("none at all")
+    expect(page).to_not have_content("Commentary")
+
+    expect(answers[0].text).to eq "User option 1"
+    expect(answers[0].display_order).to eq 0
+    expect(answers[1].text).to eq "User option 2"
+    expect(answers[1].display_order).to eq 1
+    expect(answers[2].text).to eq "\nAll Others"
+    expect(answers[3].text).to eq "\nnone at all"
+    expect(answers[4].text).to eq "\nCommentary"
+
   end
 
   scenario "User adds group question to bottom of survey" do
