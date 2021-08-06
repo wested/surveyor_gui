@@ -222,6 +222,10 @@ module SurveyorGui
     def clone_survey
       @title = "Clone Survey"
       @surveyform = SurveyCloneFactory.new(params[:id], true).clone
+
+      # don't need to run this callback since all data in the survey is already all set up since it was cloned from an existing one
+      Question.skip_callback(:save, :after, :build_complex_questions)
+
       if @surveyform.save
         flash[:notice] = "Successfully created survey, questionnaire, or form."
         redirect_to edit_surveyform_path(@surveyform)
@@ -229,6 +233,8 @@ module SurveyorGui
         flash[:error] = "Could not clone the survey, questionnaire, or form."
         render :action => 'new'
       end
+
+      Question.set_callback(:save, :after, :build_complex_questions)
     end
 
     private
