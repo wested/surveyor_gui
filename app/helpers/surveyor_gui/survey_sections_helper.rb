@@ -1,4 +1,5 @@
 module SurveyorGui::SurveySectionsHelper
+  include SurveyorGui::ApplicationHelper
 
   def section_form_target_url
     if params[:action] == 'edit'

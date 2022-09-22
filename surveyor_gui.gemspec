@@ -21,7 +21,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency 'rails', '~> 6.1'
-  s.add_dependency 'dynamic_form', '~> 1.1.4'
   s.add_dependency 'jquery-rails'
   s.add_dependency 'jquery-ui-rails'
   s.add_dependency 'sassc-rails'

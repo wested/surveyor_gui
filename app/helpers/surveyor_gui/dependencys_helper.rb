@@ -1,5 +1,6 @@
 module SurveyorGui::DependencysHelper
 
+  include SurveyorGui::ApplicationHelper
   include SurveyorGui::SurveyformsHelper
 
   def link_to_remove_tbody (name, f)
