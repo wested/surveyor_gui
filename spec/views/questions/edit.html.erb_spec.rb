@@ -22,7 +22,7 @@ describe "surveyor_gui/questions/edit.html.erb" do
   end
   
   it "renders a form" do
-    render template: "surveyor_gui/questions/edit.html.erb", locals: { question: question }
+    render template: "surveyor_gui/questions/edit", locals: { question: question }
     expect(rendered).to have_selector("form")
   end
 

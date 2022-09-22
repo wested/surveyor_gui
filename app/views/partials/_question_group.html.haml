@@ -60,14 +60,14 @@
                             = ff.input :question_id, :as => :quiet
                             = ff.input :api_id, :as => :quiet
                         - q.answers.each do |a|
-                          %td= render(a.custom_renderer || '/partials/answer.html', :g => g, :q => q, :a => a, :f => f) unless q.display_type == "label"
+                          %td= render(a.custom_renderer || '/partials/answer', :g => g, :q => q, :a => a, :f => f) unless q.display_type == "label"
                         %th= q.text_for(:post, @render_context, I18n.locale)
       - when :repeater
         - (@response_set.count_group_responses(qs) + 1).times do |rg|
           %li
             - qs.each do |q|
-              = render q.custom_renderer || "/partials/question.html", :g => g, :rg => rg, :q => q, :f => f
+              = render q.custom_renderer || "/partials/question", :g => g, :rg => rg, :q => q, :f => f
         = submit_tag("+ add row", :name => "section[#{@section.id}][g_#{g.id}]", :class => "add_row")
       - else # :inline
         - qs.each do |q|
-          = render q.custom_renderer || "/partials/question.html", :g => g, :q => q, :f => f
+          = render q.custom_renderer || "/partials/question", :g => g, :q => q, :f => f
