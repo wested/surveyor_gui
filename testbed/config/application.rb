@@ -12,6 +12,7 @@ module Testbed
     config.load_defaults 6.1
 
     config.assets.paths << Rails.root.join("app", "assets", "fonts")
+    config.assets.resolve_assets_in_css_urls = false
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

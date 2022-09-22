@@ -24,12 +24,12 @@ Gem::Specification.new do |s|
   s.add_dependency 'dynamic_form', '~> 1.1.4'
   s.add_dependency 'jquery-rails'
   s.add_dependency 'jquery-ui-rails'
+  s.add_dependency 'sassc-rails'
   s.add_dependency 'bootstrap-sass', '~> 3.3'
   s.add_dependency 'formtastic', '~> 3.1'
 
   s.add_development_dependency "mysql2"
 
-  s.add_development_dependency 'sass-rails'
   s.add_development_dependency 'uglifier', '>= 1.0.3'
   s.add_development_dependency('rspec-rails', '~> 3.0')
   s.add_development_dependency('sprockets', '~> 3.7')

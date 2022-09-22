@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem 'surveyor', git: "https://github.com/wested/surveyor.git", branch: 'rails_6'
 
-gem 'sprockets', '~> 3.7'
+gem 'sprockets', '~> 4.0'
 
 gem 'rails-controller-testing'
 
