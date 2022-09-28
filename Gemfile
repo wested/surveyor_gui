@@ -6,6 +6,7 @@ gem 'sprockets', '~> 4.0'
 
 group :test do
   gem 'rails-controller-testing'
+  gem 'byebug'
 end
 
 

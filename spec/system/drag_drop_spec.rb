@@ -6,7 +6,8 @@ include SurveyFormsCreationHelpers::BuildASurvey
 include SurveyFormsCreationHelpers::DragDrop
 include GeneralPurposeHelpers
 
-describe "Survey Creator drag/drop", type: :system, js: true, headless_selenium: true do
+describe "Survey Creator drag/drop", type: :system, js: true, headless_selenium: true,
+  skip: "drag and drop no longer working reliably in chrome driver" do
 
   context "drag/drops answers in order to reorder them" do
     before :each do
