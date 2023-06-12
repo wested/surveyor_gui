@@ -1,12 +1,12 @@
 # encoding: UTF-8
-class Survey < ActiveRecord::Base; end
-class Question < ActiveRecord::Base; end
-class QuestionGroup < ActiveRecord::Base; end
-class Answer < ActiveRecord::Base; end
-class Response < ActiveRecord::Base; end
-class ResponseSet < ActiveRecord::Base; end
+# class Survey < ActiveRecord::Base; end
+# class Question < ActiveRecord::Base; end
+# class QuestionGroup < ActiveRecord::Base; end
+# class Answer < ActiveRecord::Base; end
+# class Response < ActiveRecord::Base; end
+# class ResponseSet < ActiveRecord::Base; end
 
-class UpdateBlankApiIdsOnQuestionGroup < ActiveRecord::Migration
+class UpdateBlankApiIdsOnQuestionGroup < ActiveRecord::Migration[4.2]
   def self.up
     check = [Survey, Question, QuestionGroup, Answer, Response, ResponseSet]
     check.each do |clazz|

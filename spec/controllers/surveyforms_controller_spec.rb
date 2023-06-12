@@ -3,21 +3,18 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 require 'rails-controller-testing'
 
-describe SurveyorGui::SurveyformsController do
+describe SurveyorGui::SurveyformsController, type: :request do
   include Surveyor::Engine.routes.url_helpers
   include SurveyorGui::Engine.routes.url_helpers
-  before do
-    self.routes = SurveyorGui::Engine.routes
-  end
 
-  let!(:survey) { FactoryGirl.create(:survey, :title => "Alphabet", :access_code => "alpha", :survey_version => 0)}
-  let!(:survey_beta) { FactoryGirl.create(:survey, :title => "Alphabet", :access_code => "alpha", :survey_version => 1)}
-  let!(:survey_with_no_responses) {FactoryGirl.create(:survey)}
-  let!(:survey_with_responses) {FactoryGirl.create(:survey)}
-  let!(:template) {FactoryGirl.create(:template)}
-  let!(:surveyform) {FactoryGirl.create(:surveyform)}
-  let!(:response_set) { FactoryGirl.create(:survey_sections, :survey => survey_with_responses)}
-  let!(:response_set) { FactoryGirl.create(:response_set, :survey => survey_with_responses, :access_code => "pdq")}
+  let!(:survey) { FactoryBot.create(:survey, :title => "Alphabet", :access_code => "alpha", :survey_version => 0)}
+  let!(:survey_beta) { FactoryBot.create(:survey, :title => "Alphabet", :access_code => "alpha", :survey_version => 1)}
+  let!(:survey_with_no_responses) {FactoryBot.create(:survey)}
+  let!(:survey_with_responses) {FactoryBot.create(:survey)}
+  let!(:template) {FactoryBot.create(:template)}
+  let!(:surveyform) {FactoryBot.create(:surveyform)}
+  let!(:response_set) { FactoryBot.create(:survey_sections, :survey => survey_with_responses)}
+  let!(:response_set) { FactoryBot.create(:response_set, :survey => survey_with_responses, :access_code => "pdq", responses: [FactoryBot.create(:response, answer_id: 1, question_id: 1)])}
 
   def survey_with_sections
     {
@@ -33,7 +30,7 @@ describe SurveyorGui::SurveyformsController do
 
   context "#index" do
  		def do_get(params = {})
-      get :index, params: params
+      get surveyforms_path(params)
     end
 
     context "index parameters specify surveys" do
@@ -108,7 +105,7 @@ describe SurveyorGui::SurveyformsController do
 
   context "#new" do
     def do_get
-      get :new
+      get new_surveyform_path
     end
 
     it "renders new" do
@@ -126,7 +123,7 @@ describe SurveyorGui::SurveyformsController do
   context "#create" do
 
     def do_post(params = {})
-      post :create, params: { :surveyform=>params }
+      post surveyforms_path(surveyform: params)
     end
 
     context "it saves successfully" do
@@ -181,7 +178,7 @@ describe SurveyorGui::SurveyformsController do
     context "the survey has no responses" do
 
       def do_get(params = {})
-        get :edit, params: {:id => survey_with_no_responses.id}.merge(params)
+        get edit_surveyform_path({:id => survey_with_no_responses.id}.merge(params))
       end
 
       it "renders edit" do
@@ -194,16 +191,14 @@ describe SurveyorGui::SurveyformsController do
     context "the survey has responses" do
 
       def do_get(params = {})
-        get :edit, params: {:id => survey_with_responses.id}.merge(params)
+        get edit_surveyform_path({:id => survey_with_responses.id}.merge(params))
       end
 
       it "still lets you see the edit page" do
         do_get
         expect(response).to be_successful
         expect(response).to render_template('edit')
-      end
-      it "warns that responses have been collected" do
-        expect(flash[:error]) =~ /been collected/i
+        expect(flash[:error]).to match(/been collected/i)
       end
     end
   end
@@ -213,7 +208,7 @@ describe SurveyorGui::SurveyformsController do
     context "it saves successfully" do
 
       def do_put(params = {})
-        put :update, params: params
+        put surveyform_path(params)
       end
 
       it "redirects back to edit" do
@@ -226,7 +221,7 @@ describe SurveyorGui::SurveyformsController do
     context "it fails to save" do
 
       def do_put(params = {})
-        put :update, params: params
+        put surveyform_path(params)
       end
 
       it "renders edit" do
@@ -246,7 +241,7 @@ describe SurveyorGui::SurveyformsController do
 
   context "#show" do
     def do_get
-      get :show, params: {:id => survey.id}
+      get surveyform_path({:id => survey.id})
     end
 
     it "shows survey" do
@@ -260,7 +255,7 @@ describe SurveyorGui::SurveyformsController do
 
     context "no responses were submitted" do
       def do_delete
-        delete :destroy, params: { :id => survey_with_no_responses }
+        delete surveyform_path({ :id => survey_with_no_responses })
       end
 
       it "successfully destroys the survey" do
@@ -272,18 +267,14 @@ describe SurveyorGui::SurveyformsController do
 
     context "responses were submitted" do
       def do_delete
-        delete :destroy, params: { :id => survey_with_responses }
+        delete surveyform_path({ :id => survey_with_responses })
       end
 
       it "fails to delete the survey" do
         do_delete
         expect(response).to redirect_to(surveyforms_path)
         expect(Survey.exists?(survey_with_responses.id)).to be_truthy
-      end
-
-      it "displays a flash message warning responses were collected" do
-        do_delete
-        expect(flash[:error]).to have_content /not be deleted/i
+        expect(flash[:error]).to match(/not be deleted/i)
       end
     end
   end
@@ -291,8 +282,8 @@ describe SurveyorGui::SurveyformsController do
   context "#replace form" do
 
     def do_get(params = {})
-      FactoryGirl.create(:survey_section, :survey => survey)
-      get :replace_form, params: {:id=>survey.id,:survey_section_id=>survey.sections.first.id}.merge(params)
+      FactoryBot.create(:survey_section, :survey => survey)
+      get replace_form_surveyform_path({:id=>survey.id,:survey_section_id=>survey.sections.first.id}.merge(params))
     end
 
     it "resets question_no to 0" do
@@ -310,8 +301,8 @@ describe SurveyorGui::SurveyformsController do
 
   context "#insert_survey_section" do
     def do_get(params = {})
-      survey.sections = [FactoryGirl.create(:survey_section, :survey => survey)]
-      get :insert_survey_section, params: {id: survey.id}.merge(params)
+      survey.sections = [FactoryBot.create(:survey_section, :survey => survey)]
+      get insert_survey_section_surveyform_path({id: survey.id}.merge(params))
     end
     it "inserts a survey section" do
       do_get
@@ -323,8 +314,8 @@ describe SurveyorGui::SurveyformsController do
   context "#replace_survey_section" do
 
     def do_get(params = {})
-      FactoryGirl.create(:survey_section, :survey => survey)
-      get :replace_survey_section, params: {:id=>survey.id,:survey_section_id=>survey.sections.first.id}.merge(params)
+      FactoryBot.create(:survey_section, :survey => survey)
+      get replace_survey_section_surveyform_path({:id=>survey.id,:survey_section_id=>survey.sections.first.id}.merge(params))
     end
 
     it "resets question_no to 0" do
@@ -341,9 +332,9 @@ describe SurveyorGui::SurveyformsController do
   end
   context "#insert_new_question" do
     def do_get(params = {})
-      survey.sections = [FactoryGirl.create(:survey_section, :survey => survey)]
-      survey.sections.first.questions = [FactoryGirl.create(:question, :survey_section => survey.sections.first)]
-      get :insert_new_question, params: {:id => survey.id, :question_id => survey.sections.first.questions.first.id}.merge(params)
+      survey.sections = [FactoryBot.create(:survey_section, :survey => survey)]
+      survey.sections.first.questions = [FactoryBot.create(:question, :survey_section => survey.sections.first)]
+      get insert_new_question_surveyform_path({:id => survey.id, :question_id => survey.sections.first.questions.first.id}.merge(params))
     end
     it "inserts a question" do
       do_get
@@ -353,22 +344,22 @@ describe SurveyorGui::SurveyformsController do
   end
 
   context "reorder_questions" do
-    def do_get(params = {})
-      survey.sections = [FactoryGirl.create(:survey_section, :survey => survey)]
-      survey.sections.first.questions = [FactoryGirl.create(:question, :survey_section => survey.sections.first)]
-      get :reorder_questions, params: {:id => survey.id, survey_section_id: survey.sections.first.id, :questions => survey.sections.first.questions.first.id}.merge(params)
+    def do_post(params = {})
+      survey.sections = [FactoryBot.create(:survey_section, :survey => survey)]
+      survey.sections.first.questions = [FactoryBot.create(:question, :survey_section => survey.sections.first)]
+      post reorder_questions_surveyform_path({:id => survey.id, survey_section_id: survey.sections.first.id, :questions => survey.sections.first.questions.first.id}.merge(params))
     end
     it "reorders questions" do
-      do_get
+      do_post
       expect(response).to be_successful
     end
   end
 
   context "#clone_survey" do
     def do_put(params={})
-      survey.sections = [FactoryGirl.create(:survey_section, :survey => survey)]
-      survey.sections.first.questions = [FactoryGirl.create(:question, :survey_section => survey.sections.first, text: 'my cloned question')]
-      put :clone_survey, params: {id: survey.id}
+      survey.sections = [FactoryBot.create(:survey_section, :survey => survey)]
+      survey.sections.first.questions = [FactoryBot.create(:question, :survey_section => survey.sections.first, text: 'my cloned question')]
+      get clone_survey_surveyform_path({id: survey.id})
     end
 
     it "creates a new survey" do

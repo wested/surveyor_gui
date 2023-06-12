@@ -74,7 +74,7 @@ class SurveyorGui::QuestionsController < ApplicationController
   def update
     @title = "Update Question"
     @question = Question.includes(:answers).find(question_params[:id])
-    if @question.update_attributes(question_params)
+    if @question.update(question_params)
       @question.answers.each_with_index {|a, index| a.destroy if index > 0} if @question.pick == 'none'
 
       #load any page - if it has no flash errors, the colorbox that contains it will be closed immediately after the page loads

@@ -48,13 +48,23 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
         Question.find(params[:converted_question_id]).destroy
       end
 
+      insert_question_after = Question.find(params[:prev_question_id])&.display_order||1 if params[:prev_question_id].present?
+
       @question_group = QuestionGroup.new(question_group_params)
       @survey_section = SurveySection.find(question_group_params[:survey_section_id])
       @survey = @survey_section.survey
       @survey_section_id = question_group_params[:survey_section_id]
 
+      if insert_question_after
+        insert_question_after += 1
+
+        @question_group.questions.to_a.each_with_index do |question, i|
+          question.display_order = insert_question_after + i
+        end
+      end
+
       if @question_group.save
-        #@question_group.questions.update_attributes(survey_section_id: question_group_params[])
+        #@question_group.questions.update(survey_section_id: question_group_params[])
         original_question = Question.find(question_group_params[:question_id]) if !question_group_params[:question_id].blank?
         original_question.destroy if original_question
 
@@ -72,7 +82,7 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
     @question_group = QuestionGroup.includes(:questions).find(params[:id])
     @survey_section = @question_group.questions.first.survey_section
 
-    if @question_group.update_attributes(question_group_params)
+    if @question_group.update(question_group_params)
 
       redirect_to surveyor_gui.edit_surveyform_url(@survey_section.survey)
 
@@ -133,9 +143,9 @@ class SurveyorGui::QuestionGroupsController < ApplicationController
 
     # This is a hack to allow non-group questions to be edited and converted to group questions....
     if params[:action] == "new"
-      params.permit(:survey_section_id, :id, :text, :question_id, :question_type_id, :display_order, :pick, :display_type).except(:question_id)
+      params.permit(:survey_section_id, :id, :text, :question_id, :question_type_id, :display_order, :pick, :display_type, :prev_question_id).except(:question_id)
     else
-      params.permit(:survey_section_id, :id, :text, :question_id, :question_type_id, :display_order, :pick, :display_type)
+      params.permit(:survey_section_id, :id, :text, :question_id, :question_type_id, :display_order, :pick, :display_type, :prev_question_id)
     end
   end
 

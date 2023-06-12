@@ -8,7 +8,7 @@
     - question_or_group = @question.part_of_group? ? @question.question_group : @question
     = simple_form_for question_or_group, :url => dependencys_path+'/'+@question.id.to_s do |f|
       .modal-body
-        = f.error_messages
+        = error_messages_for(f.object)
         = f.hidden_field :survey_section_id if question_or_group.is_a?(Question)
         .dependency_editor
           = render "dependency", f: f

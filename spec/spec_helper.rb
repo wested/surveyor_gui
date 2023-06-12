@@ -11,14 +11,15 @@ require 'rspec/rails'
 
 require 'capybara/rails'
 require 'capybara/rspec'
-require 'capybara/poltergeist'
-require 'capybara/webkit'
+#require 'capybara/poltergeist'
 require 'factories'
 require 'json_spec'
 require 'database_cleaner'
 require 'rspec/retry'
 require 'rack/utils'
 require 'rails-controller-testing'
+require 'webdrivers'
+require 'capybara-screenshot/rspec'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -30,14 +31,10 @@ Capybara.app = Rack::ShowExceptions.new(Testbed::Application)
 # ActiveRecord::Migration.maintain_test_schema! if ::Rails.version >= "4.0" && defined?(ActiveRecord::Migration)
 
 
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, debug: false)
-end
-
 Capybara.server_port = 3001
 Capybara.asset_host = "http://lvh.me:3001"
 
-Capybara.javascript_driver = :poltergeist
+Capybara.javascript_driver = :selenium_chrome_headless
 
 RSpec.configure do |config|
   config.include JsonSpec::Helpers
@@ -108,7 +105,7 @@ RSpec.configure do |config|
     DatabaseCleaner.start
   end
 
-  config.after :each do
+  config.append_after :each do
     Capybara.reset_sessions!
     DatabaseCleaner.clean
   end
@@ -123,6 +120,10 @@ RSpec.configure do |config|
   #       # Equivalent to being in spec/controllers
   #     end
   config.infer_spec_type_from_file_location!
+
+  config.before(:all, type: :system) do
+    Capybara.server = :puma, { Silent: true }
+  end
 end
 JsonSpec.configure do
   exclude_keys "id", "created_at", "updated_at", "uuid", "modified_at", "completed_at"

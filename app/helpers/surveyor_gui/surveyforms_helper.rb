@@ -2,6 +2,8 @@ module SurveyorGui
   module SurveyformsHelper
     require 'deep_cloneable'
 
+    include SurveyorGui::ApplicationHelper
+
     def list_dependencies(o)
       controlling_questions = o.controlling_questions
 

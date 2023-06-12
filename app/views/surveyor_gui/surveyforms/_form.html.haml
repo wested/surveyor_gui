@@ -15,7 +15,7 @@
   = link_to "View All Surveys", surveyor_gui.surveyforms_path, class: "btn-link"
 
   = simple_form_for [surveyor_gui, @surveyform] do |f|
-    = f.error_messages
+    = error_messages_for(@surveyform)
     %br/
 
     - if params[:action] == "show"

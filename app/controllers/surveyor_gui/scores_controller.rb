@@ -15,7 +15,7 @@ class SurveyorGui::ScoresController < ApplicationController
     update_object = @question
     update_params = question_params
 
-    if update_object.update_attributes(update_params)
+    if update_object.update(update_params)
       @question_no = 0
       render partial: "surveyor_gui/surveyforms/question_section" , :layout=> false
 

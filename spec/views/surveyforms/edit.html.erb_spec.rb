@@ -12,11 +12,11 @@ RSpec.configure do |config|
 end
 describe "surveyor_gui/surveyforms/edit.html.erb" do
   include CapybaraHelper
-  let(:surveyform){ FactoryGirl.create(:surveyform) }
-  let(:ss){ FactoryGirl.create(:survey_section, :surveyform => surveyform, :title => "Rooms", :display_order => 0)}
-  let(:question){ FactoryGirl.create(:question, :survey_section => ss, display_order: 0 )}  
-  let(:answer){ FactoryGirl.create(:answer, :question => question)}
-  let(:question1){ FactoryGirl.create(
+  let(:surveyform){ FactoryBot.create(:surveyform) }
+  let(:ss){ FactoryBot.create(:survey_section, :surveyform => surveyform, :title => "Rooms", :display_order => 0)}
+  let(:question){ FactoryBot.create(:question, :survey_section => ss, display_order: 0 )}  
+  let(:answer){ FactoryBot.create(:answer, :question => question)}
+  let(:question1){ FactoryBot.create(
     :question, 
     survey_section: ss, 
     text: 'What rooms do you prefer?',
@@ -25,13 +25,13 @@ describe "surveyor_gui/surveyforms/edit.html.erb" do
     display_order: 1
    ) }  
    
-  let(:qg) {FactoryGirl.create(:question_group, display_type: 'grid', text: 'Rate the meals.') }
-  let(:qg2){FactoryGirl.create(:question_group, display_type: 'grid', text: 'Pick your favorite sport') }
-  let(:c1) {FactoryGirl.create(:column, question_group_id: qg2.id, text: "Spring", answers_textbox: "Football\nBaseball\nHockey\nSoccer\nBasketball" )}
-  let(:c2) {FactoryGirl.create(:column, question_group_id: qg2.id, text: "Summer", answers_textbox: "Football\nBaseball\nHockey\nSoccer\nBasketball" )}
-  let(:c3) {FactoryGirl.create(:column, question_group_id: qg2.id, text: "Fall", answers_textbox: "Football\nBaseball\nHockey\nSoccer\nBasketball")}
-  let(:c4) {FactoryGirl.create(:column, question_group_id: qg2.id, text: "Winter", answers_textbox: "Football\nBaseball\nHockey\nSoccer\nBasketball")}
-  let(:question2){ FactoryGirl.create(
+  let(:qg) {FactoryBot.create(:question_group, display_type: 'grid', text: 'Rate the meals.') }
+  let(:qg2){FactoryBot.create(:question_group, display_type: 'grid', text: 'Pick your favorite sport') }
+  let(:c1) {FactoryBot.create(:column, question_group_id: qg2.id, text: "Spring", answers_textbox: "Football\nBaseball\nHockey\nSoccer\nBasketball" )}
+  let(:c2) {FactoryBot.create(:column, question_group_id: qg2.id, text: "Summer", answers_textbox: "Football\nBaseball\nHockey\nSoccer\nBasketball" )}
+  let(:c3) {FactoryBot.create(:column, question_group_id: qg2.id, text: "Fall", answers_textbox: "Football\nBaseball\nHockey\nSoccer\nBasketball")}
+  let(:c4) {FactoryBot.create(:column, question_group_id: qg2.id, text: "Winter", answers_textbox: "Football\nBaseball\nHockey\nSoccer\nBasketball")}
+  let(:question2){ FactoryBot.create(
     :question, 
     text: 'Rate the meals.',
     survey_section: ss, 
@@ -42,9 +42,9 @@ describe "surveyor_gui/surveyforms/edit.html.erb" do
     display_order: 4
    ) }    
 
-  let(:question5){ FactoryGirl.create(:question, :survey_section => ss, text: "What brand of ketchup do they use?", display_order: 7 )}    
-  let(:answer1){FactoryGirl.create(:answer, :question => question5)}
-  let(:question6) { FactoryGirl.create(
+  let(:question5){ FactoryBot.create(:question, :survey_section => ss, text: "What brand of ketchup do they use?", display_order: 7 )}    
+  let(:answer1){FactoryBot.create(:answer, :question => question5)}
+  let(:question6) { FactoryBot.create(
     :question, 
     survey_section: ss, 
     question_group: qg2,
@@ -53,7 +53,7 @@ describe "surveyor_gui/surveyforms/edit.html.erb" do
     text: "Pick your favorite sport:",
     display_order: 8
   ) }    
-  let(:number_question) {FactoryGirl.create(
+  let(:number_question) {FactoryBot.create(
     :question, 
     survey_section: ss,
     text: "How much do you spend on Cheese Doodles?",

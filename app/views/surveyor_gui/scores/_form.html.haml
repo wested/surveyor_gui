@@ -8,7 +8,7 @@
     = simple_form_for @question, :url => scores_path+'/'+@question.id.to_s do |f|
       .modal-body
         %h3= @question.question_description.html_safe
-        = f.error_messages
+        = error_messages_for(f.object)
         = f.hidden_field :survey_section_id
         .dependency_editor
           = f.simple_fields_for :answers do |answer|

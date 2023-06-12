@@ -2,8 +2,8 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe Question do
-  let(:question){ FactoryGirl.create(:question) }
-  let(:question2){ FactoryGirl.create(:question, question_type_id: "pick_one")}
+  let(:question){ FactoryBot.create(:question) }
+  let(:question2){ FactoryBot.create(:question, question_type_id: "pick_one")}
 
   def build_answers_from_answers_textbox
       question2.answers_textbox = "blue\nred\ngreen"
@@ -24,9 +24,9 @@ describe Question do
   end
 
   context "with answers" do
-    let(:answer_1){ FactoryGirl.create(:answer, :question => question2, :display_order => 3, response_class: "answer", :text => "blue")}
-    let(:answer_2){ FactoryGirl.create(:answer, :question => question2, :display_order => 1, response_class: "answer", :text => "red")}
-    let(:answer_3){ FactoryGirl.create(:answer, :question => question2, :display_order => 2, response_class: "answer", :text => "green")}
+    let(:answer_1){ FactoryBot.create(:answer, :question => question2, :display_order => 3, response_class: "answer", :text => "blue")}
+    let(:answer_2){ FactoryBot.create(:answer, :question => question2, :display_order => 1, response_class: "answer", :text => "red")}
+    let(:answer_3){ FactoryBot.create(:answer, :question => question2, :display_order => 2, response_class: "answer", :text => "green")}
     before do
       [answer_1, answer_2, answer_3].each{|a| question2.answers << a }
     end

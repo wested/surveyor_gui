@@ -39,6 +39,24 @@ module SurveyorGui
         send builder.to_sym, question, args
       end
 
+      # rails 6 upgrade requiring this function....
+      def marked_for_destruction?
+
+      end
+
+      def process_answer_options(question, args)
+        is_exclusive  = args[:is_exclusive]
+        other         = args[:other]
+        is_comment    = args[:comments]
+        omit_text     = is_exclusive ? "\n"+args[:omit_text].to_s : ""
+        other_text    = other        ? "\n"+args[:other_text].to_s : ""
+        comments_text = is_comment   ? "\n"+args[:comments_text].to_s : ""
+
+        _create_an_other_answer(question, other, other_text)
+        _create_an_omit_answer(question, is_exclusive, omit_text)
+        _create_a_comment_answer(question, is_comment, comments_text)
+      end
+
       private
 
       def _build_pick_one(question, args)
@@ -89,8 +107,8 @@ module SurveyorGui
           is_exclusive, omit_text,
           other, other_text,
           is_comment, comments_text
-       )
-      _restore_question_group(question)
+        )
+        _restore_question_group(question)
       end
 
       def _build_grid_dropdown(question,args)
@@ -108,35 +126,31 @@ module SurveyorGui
           is_exclusive, omit_text,
           other, other_text,
           is_comment, comments_text
-       )
-       _create_a_comment(question, is_comment, comments_text)
-      _restore_question_group(question)
+        )
+        _create_a_comment(question, is_comment, comments_text)
+        _restore_question_group(question)
       end
 
       def _process_answers_textbox(question, args)
-        is_exclusive  = args[:is_exclusive]
-        other         = args[:other]
-        is_comment    = args[:comments]
-        omit_text     = is_exclusive ? "\n"+args[:omit_text].to_s : ""
-        other_text    = other        ? "\n"+args[:other_text].to_s : ""
-        comments_text = is_comment   ? "\n"+args[:comments_text].to_s : ""
         answers_textbox   = args[:answers_textbox]
-        updated_answers = TextBoxParser.new(
-          textbox: answers_textbox,
-          records_to_update: question.answers
-        )
-        updated_answers.update_or_create_records do |display_order, text|
-          _create_an_answer(display_order, text, question)
+
+        if answers_textbox.present?
+          updated_answers = TextBoxParser.new(
+            textbox: answers_textbox,
+            records_to_update: question.answers
+          )
+          updated_answers.update_or_create_records do |display_order, text|
+            _create_an_answer(display_order, text, question)
+          end
         end
-        _create_an_other_answer(question, other, other_text)
-        _create_an_omit_answer(question, is_exclusive, omit_text)
-        _create_a_comment_answer(question, is_comment, comments_text)
+
+        process_answer_options(question, args)
       end
 
       def _process_grid_rows_textbox(
         question,
         grid_rows_textbox
-       )
+      )
         #puts "processing grid rows \ntextbox grid?: #{_grid?(question)} \ntb: #{grid_rows_textbox} \ntb: #{grid_columns_textbox}\nthis: #{question.id}\ntext: #{question.text}"
         #puts 'got to inner if'
         #puts "\n\n#{question.display_order}\n\n"
@@ -160,7 +174,7 @@ module SurveyorGui
         other, other_text,
         is_comment, comments_text,
         column_id=nil
-       )
+      )
         question.question_group.questions.is_not_comment.each do |question|
           _create_some_answers(question, grid_columns_textbox, column_id)
           _create_an_other_answer(question, other, other_text, column_id)
@@ -188,11 +202,11 @@ module SurveyorGui
       end
 
       def _process_grid_columns_textbox(
-          question,
-          is_exclusive,         omit_text,
-          other,                other_text,
-          is_comment,           comments_text
-        )
+        question,
+        is_exclusive,         omit_text,
+        other,                other_text,
+        is_comment,           comments_text
+      )
         question.question_group.columns.each do |column|
           _process_grid_answers(
             question,
@@ -231,10 +245,12 @@ module SurveyorGui
       def _create_an_answer(display_order, new_text, current_question, args={})
         params = {
           question_id: current_question.id,
-          display_order: display_order,
           text: new_text
         }.merge(args)
 
+        if display_order
+          params.merge!( { display_order: display_order } )
+        end
         # If the answer text is a URL then that means the answer is an image
         if new_text =~ /\A#{URI::regexp(['http', 'https'])}\z/
           params.merge!( { display_type: "image", custom_class: "image-answer" } )
@@ -244,23 +260,38 @@ module SurveyorGui
       end
 
       def _create_an_other_answer(question, other, other_text, column_id=nil)
-        if other
-          display_order = question.answers.last.display_order+1
+        display_order = question.answers.last.display_order+1 if question.answers.last&.display_order.present?
+
+        if other && question.answers.is_other.count == 0
           _create_an_answer(display_order, other_text, question, response_class: "string", column_id: column_id)
+        elsif other
+          question.answers.is_other.first&.update!(text: other_text, display_order: display_order)
+        elsif !other && question.answers.is_other.count == 1
+          question.answers.is_other.first.destroy!
         end
       end
 
       def _create_an_omit_answer(question, is_exclusive, omit_text)
-        if is_exclusive
-          display_order = question.answers.size > 0 ? question.answers.last.display_order+1 : 0
+        display_order = question.answers.last.display_order+1 if question.answers.last&.display_order.present?
+
+        if is_exclusive && question.answers.is_omit.count == 0
           _create_an_answer(display_order, omit_text, question, is_exclusive: is_exclusive)
+        elsif is_exclusive
+          question.answers.is_omit.first&.update!(text: omit_text, display_order: display_order)
+        elsif !is_exclusive && question.answers.is_omit.count == 1
+          question.answers.is_omit.first.destroy!
         end
       end
 
       def _create_a_comment_answer(question, is_comment, comments_text)
-        if is_comment
-          display_order = question.answers.order('display_order ASC').last.display_order
-          answer = _create_an_answer(display_order, comments_text, question, response_class: "string", is_comment: true)
+        display_order = question.answers.last.display_order+1 if question.answers.last&.display_order.present?
+
+        if is_comment && question.answers.is_comment.count == 0
+          _create_an_answer(display_order, comments_text, question, response_class: "string", is_comment: true)
+        elsif is_comment
+          question.answers.is_comment.first&.update!(text: comments_text, display_order: display_order)
+        elsif !is_comment && question.answers.is_comment.count == 1
+          question.answers.is_comment.first.destroy!
         end
       end
 
@@ -295,10 +326,10 @@ module SurveyorGui
       end
 
 
-#----------------------------- end instance methods ---------------------------------------------------------------
+      #----------------------------- end instance methods ---------------------------------------------------------------
       module ClassMethods
 
-      AllTypes = [
+        AllTypes = [
           #                                                                                             group       answer
           #                                                                   part_of_         display  display     response
           #id               #text                                             group?    pick   type     type        class
@@ -377,7 +408,7 @@ module SurveyorGui
           [:pick_any,       "Multiple Choice (multiple answers)"              , true,  :any,  "inline",  nil,      :answer],
           [:pick_one,       "Multiple Choice (only one answer)"               , false, :one,  "inline",  nil,      :answer],
           [:pick_any,       "Multiple Choice (multiple answers)"              , false, :any,  "inline",  nil,      :answer]
-       ]
+        ]
 
 
         def categorize_question(question)
@@ -400,7 +431,7 @@ module SurveyorGui
                                     display_type:       t[4],
                                     group_display_type: t[5],
                                     response_class:     t[6]
-                                    )
+            )
           end
           arr
         end
@@ -415,15 +446,15 @@ module SurveyorGui
           answer_response_class = answer ? answer.response_class : "string"
 
           _match(question.part_of_group?,     question_type.part_of_group, :part_of_group)          &&
-          _match(question.pick,               question_type.pick.to_s, :pick)                       &&
-          _match(question.display_type.to_s,  question_type.display_type.to_s, :display_type)       &&
-          _match(question_group_display_type, question_type.group_display_type.to_s, :group_display_type)  &&
-          _match(answer_response_class,       question_type.response_class.to_s, :response_class)
+            _match(question.pick,               question_type.pick.to_s, :pick)                       &&
+            _match(question.display_type.to_s,  question_type.display_type.to_s, :display_type)       &&
+            _match(question_group_display_type, question_type.group_display_type.to_s, :group_display_type)  &&
+            _match(answer_response_class,       question_type.response_class.to_s, :response_class)
         end
 
         def _match(question_attribute, question_type_attribute, match_attribute)
           (question_attribute == question_type_attribute) ||
-          (question_type_attribute == "all")
+            (question_type_attribute == "all")
         end
       end
     end
@@ -489,7 +520,7 @@ class TextBoxParser
 
   def _update_nested_object(nested_object, index, update_params)
     params = {:display_order=>index}.merge(update_params)
-    nested_object.update_attributes(params)
+    nested_object.update(params)
   end
 
   def _dedupe

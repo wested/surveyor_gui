@@ -18,6 +18,7 @@ module SurveyFormsCreationHelpers
       #make sure prior jquery was completed
       expect(page).not_to have_css('div.jquery_add_question_started, div.jquery_add_section_started')
 
+      #page.save_screenshot(File.join(Rails.root, "tmp", "build_survey_click.png"), :full => true)
       all('.add-question').last.click
 
       find('form')
@@ -86,6 +87,22 @@ module SurveyFormsCreationHelpers
       question_maker.make_question(3){|text| add_a_text_question(text)}
     end
 
+    def build_a_small_survey_for_drag_drop
+      #Given I'm on the "Create New Survey" page
+      visit surveyor_gui.new_surveyform_path
+
+      title_the_survey
+      title_the_first_section
+      add_a_text_question("Describe your day at Fenway Park.")
+      add_a_number_question
+      add_a_pick_one_question
+      add_a_pick_one_question_in_question_group
+
+      add_a_new_section("Entertainment")
+
+    end
+
+
     def build_a_three_question_survey
       visit surveyor_gui.new_surveyform_path
       title_the_survey
@@ -128,6 +145,7 @@ module SurveyFormsCreationHelpers
       #And I see a new form for "Add Question"
         find('form')
         expect(find('h1')).to have_content("Add Question")
+      sleep 0.5
       #And I frame the question
         tinymce_fill_in "question_text", with: text
       #And I select the "text" question type
@@ -136,10 +154,13 @@ module SurveyFormsCreationHelpers
         click_button "Save Changes"
       #Then the window goes away
       end
+
+      #page.save_screenshot(File.join(Rails.root, "tmp", "build_survey.png"), :full => true)
     end
 
     def add_a_number_question
       add_question do
+        sleep 0.5
       #Given I've added a new question
       #Then I select the "number" question type
         select_question_type "Number"
@@ -155,6 +176,7 @@ module SurveyFormsCreationHelpers
 
     def add_a_pick_one_question
       add_question do
+        sleep 0.5
       #Then I select the "multiple choice" question type
         select_question_type "Multiple Choice (only one answer)"
       #And I frame the question
@@ -169,11 +191,59 @@ module SurveyFormsCreationHelpers
         click_button "Save Changes"
       #Then the window goes away
       end
+
+    end
+
+    def add_a_pick_one_question_in_question_group
+      add_question do
+        sleep 0.5
+        #Then I select the "question group" question type
+        select_question_type "Question Group"
+        #And I frame the question
+        tinymce_fill_in "question_group_text", with: "Question Group Test"
+        #And I frame the question
+        tinymce_fill_in "question_group_questions_attributes_0_text", with: "My favorite thing to wear is?"
+        select "Multiple Choice (only one answer)", :from => "question_group_questions_attributes_0_question_type_id"
+        #And I add some choices"
+        find(:css, "input.option-value", match: :first).set("Pants")
+        click_link "Add Another Option"
+        all("input.option-value").last.set("Dresses")
+        click_link "Add Another Option"
+        all("input.option-value").last.set("Shorts")
+        #And I save the question
+        #
+        # click_link "Add Question"
+        find(".add_group_inline_question").click
+
+        within all('.sortable_group_questions').last do
+          tinymce_fill_in "question_group_questions_attributes_2_text", with: "Just need another question here for drag/drop test"
+        end
+        click_button "Save Changes"
+        #Then the window goes away
+      end
+
+    end
+
+    def add_a_text_question_in_inline_question_group
+      add_question do
+        sleep 0.5
+        #Then I select the "question group" question type
+        select_question_type "Inline Question Group"
+        #And I frame the question
+        tinymce_fill_in "question_group_text", with: "Inline Question Group Test"
+        #And I frame the question
+        tinymce_fill_in "question_group_questions_attributes_0_text", with: "Give me your thoughts Inline?"
+
+        click_button "Save Changes"
+        #Then the window goes away
+      end
+
     end
 
     def add_a_pick_any_question
       #Given I've added a new question
       add_question do
+        sleep 0.5
       #Then I select the "number" question type
         select_question_type "Multiple Choice (multiple answers)"
       #And I frame the question
@@ -193,6 +263,7 @@ module SurveyFormsCreationHelpers
     def add_a_dropdown_question
       #Given I've added a new question
       add_question do
+        sleep 0.5
       #Then I select the "number" question type
         select_question_type "Dropdown List"
       #And I frame the question
@@ -214,6 +285,7 @@ module SurveyFormsCreationHelpers
       #And I can see the question in my survey
       #Given I've added a new question
       add_question do
+        sleep 0.5
       #Then I select the "number" question type
         select_question_type "Date"
       #And I frame the question
@@ -226,6 +298,7 @@ module SurveyFormsCreationHelpers
 
     def add_a_label
       add_question do
+        sleep 0.5
       #Then I select the "Label" question type
         select_question_type "Label"
       #And I frame the question
@@ -239,6 +312,7 @@ module SurveyFormsCreationHelpers
     def add_a_text_box_question
       #Given I've added a new question
       add_question do
+        sleep 0.5
       #Then I select the "Text Box" question type
         select_question_type "Text Box (for extended text, like notes, etc.)"
       #And I frame the question
@@ -252,6 +326,7 @@ module SurveyFormsCreationHelpers
     def add_a_slider_question
       #Given I've added a new question
       add_question do
+        sleep 0.5
       #Then I select the "Slider" question type
         select_question_type "Slider"
       #And I frame the question
@@ -273,6 +348,7 @@ module SurveyFormsCreationHelpers
     def add_a_star_question
       #Given I've added a new question
       add_question do
+        sleep 0.5
       #Then I select the "Star" question type
         select_question_type "Star"
       #And I frame the question
@@ -286,6 +362,7 @@ module SurveyFormsCreationHelpers
     def add_a_file_upload
       #Given I've added a new question
       add_question do
+        sleep 0.5
       #Then I select the "Star" question type
         select_question_type "File Upload"
       #And I frame the question
@@ -317,6 +394,18 @@ module SurveyFormsCreationHelpers
           @question_no += 1
         end
       end
+    end
+  end
+
+  module DragDrop
+    def drag_and_drop_item_above(item, to_above)
+      selenium_webdriver = page.driver.browser
+      selenium_webdriver.action
+                        .click_and_hold(item.native)
+                        .move_to(to_above.native, 0, 10)
+                        .release
+                        .perform
+      sleep 0.5
     end
   end
 end

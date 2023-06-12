@@ -5,10 +5,10 @@ include SurveyFormsCreationHelpers::CreateSurvey
 include SurveyFormsCreationHelpers::BuildASurvey
 include GeneralPurposeHelpers
 
-feature "User creates a new survey using a browser",  %q{
+describe "User creates a new survey using a browser",  %q{
   As a user
   I want to create a new survey using a browser
-  So that I don't have to learn the Surveyor DSL or dive into technical weeds} do
+  So that I don't have to learn the Surveyor DSL or dive into technical weeds}, type: :system, js: true, headless_selenium: true do
   #force a cr/lf to make the output look better
   scenario " " do
   end
@@ -107,7 +107,7 @@ feature "User creates a new survey using a browser",  %q{
       scenario "User adds a number question", :js=>true do
         #Given I've added a new question
         add_question do
-
+          sleep 0.5
         #Then I select the "number" question type
           select_question_type "Number"
 
@@ -129,7 +129,7 @@ feature "User creates a new survey using a browser",  %q{
         #And I can see the question in my survey
         expect(first_question).to have_content("How many days did you stay?")
         expect(page).to have_css("input[type='text']")
-        expect(page).to have_content(/Stayed.*days at hotel/)
+        expect(page.body).to match(/Stayed.*days at hotel/m)
       end
 
 
@@ -409,10 +409,100 @@ feature "User creates a new survey using a browser",  %q{
     end
   end #end context "user has started a new survey"
 
+  scenario "User adds/removes comment, other and omit options" do
+    start_a_new_survey
+
+    add_question do
+      sleep 0.5
+      #Then I select the "multiple choice" question type
+      select_question_type "Multiple Choice (only one answer)"
+      #And I frame the question
+      tinymce_fill_in "question_text", with: "Question with system generated options"
+      #And I add some choices"
+      find(:css, "input.option-value", match: :first).set("User option 1")
+
+      check "Add user determined choice?"
+      check "Add none of the above choice?"
+      check "At the bottom of questions, add input box?"
+    end
+
+    #And I save the question
+    click_button "Save Changes"
+
+    expect(page).to have_content(/User option 1.*Other.*none of the above.*Comments/m)
+
+    click_link "Edit Question"
+
+    click_link "Add Another Option"
+    all("input.option-value").last.set("User option 2")
+
+    fill_in "question_omit_text", with: "none at all"
+    fill_in "question_other_text", with: "All Others"
+    fill_in "question_comments_text", with: "Commentary"
+
+    click_button "Save Changes"
+
+    expect(page).to have_content(/User option 1.*User option 2.*All Others.*none at all.*Commentary/m)
+
+    answers = Answer.all.to_a
+
+    expect(answers[0].text).to eq "User option 1"
+    expect(answers[0].display_order).to eq 0
+    expect(answers[1].text).to eq "User option 2"
+    expect(answers[1].display_order).to eq 1
+    expect(answers[2].text).to eq "\nAll Others"
+    expect(answers[2].display_order).to eq 2
+    expect(answers[3].text).to eq "\nnone at all"
+    expect(answers[3].display_order).to eq 2
+    expect(answers[4].text).to eq "\nCommentary"
+    expect(answers[4].display_order).to eq 2
+
+    click_link "Edit Question"
+
+    uncheck "Add user determined choice?"
+    uncheck "Add none of the above choice?"
+    uncheck "At the bottom of questions, add input box?"
+
+    click_button "Save Changes"
+
+    expect(page).to have_content("User option 1")
+    expect(page).to have_content("User option 2")
+    expect(page).to_not have_content("All Others")
+    expect(page).to_not have_content("none at all")
+    expect(page).to_not have_content("Commentary")
+
+    expect(answers[0].text).to eq "User option 1"
+    expect(answers[0].display_order).to eq 0
+    expect(answers[1].text).to eq "User option 2"
+    expect(answers[1].display_order).to eq 1
+    expect(answers[2].text).to eq "\nAll Others"
+    expect(answers[3].text).to eq "\nnone at all"
+    expect(answers[4].text).to eq "\nCommentary"
+
+  end
+
+  scenario "User adds group question to bottom of survey" do
+    build_a_three_question_survey
+
+    add_a_pick_one_question_in_question_group
+
+    expect(Question.last.text).to eq "<p>Just need another question here for drag/drop test</p>"
+    expect(Question.last.display_order).to eq 5
+  end
+
+  scenario "User adds inline question to bottom of survey" do
+    build_a_three_question_survey
+
+    add_a_text_question_in_inline_question_group
+
+    expect(Question.last.text).to eq "<p>Give me your thoughts Inline?</p>"
+    expect(Question.last.display_order).to eq 4
+  end
+
   scenario "User saves a survey with all the different question types", :js=>true do
     build_a_survey
     click_button "Save Changes"
-    expect(page).to have_content(/[Ss]uccessfully update/)
+    expect(page).to have_content('Successfully update')
     expect(page).to have_selector("input[value='How was Boston?']")
   end
 end #end feature

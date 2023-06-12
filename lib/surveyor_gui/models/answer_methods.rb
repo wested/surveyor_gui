@@ -5,12 +5,16 @@ module SurveyorGui
       def self.included(base)
         base.send :belongs_to, :question
         base.send :has_many, :responses
-        base.send :belongs_to, :column
-        base.send :default_scope, lambda { base.order('display_order') }
+        base.send :belongs_to, :column, optional: true
+        base.send :default_scope, lambda { order('display_order') }
         base.send :attr_accessible, :text, :response_class, :display_order, :original_choice, :hide_label, :question_id,
                   :display_type, :is_comment, :column if defined? ActiveModel::MassAssignmentSecurity
-        base.send :scope, :is_not_comment, -> { base.where(is_comment: false) }
-        base.send :scope, :is_comment, -> { base.where(is_comment: true) }
+        base.send :scope, :is_not_comment, -> { where(is_comment: false) }
+        base.send :scope, :is_not_omit, -> { where(is_exclusive: false) }
+        base.send :scope, :is_not_other_omit_comment, -> { is_not_omit.is_not_comment.where.not(response_class: "string") }
+        base.send :scope, :is_other, -> { is_not_omit.is_not_comment.where(response_class: "string") }
+        base.send :scope, :is_comment, -> { where(is_comment: true) }
+        base.send :scope, :is_omit, -> { where(is_exclusive: true) }
 
         base.send :validates_numericality_of, :weight, allow_blank: true
         base.send :validates_length_of, :text, maximum: 255
