@@ -43,3 +43,5 @@ config/initializers/secret_token.rb
 .ruby-gemset
 
 Gemfile.lock
+
+.tool-versions

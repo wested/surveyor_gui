@@ -1,6 +1,6 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-gem 'surveyor', git: "https://github.com/wested/surveyor.git", branch: 'rails_6'
+gem 'surveyor', git: 'https://github.com/wested/surveyor.git', branch: 'ruby_3_0_6_update'
 
 gem 'sprockets', '~> 4.0'
 

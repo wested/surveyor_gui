@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'jquery-ui-rails'
   s.add_dependency 'sassc-rails'
   s.add_dependency 'bootstrap-sass', '~> 3.3'
-  s.add_dependency 'formtastic', '~> 3.1'
+  s.add_dependency 'formtastic', '>= 4.0.0'
 
   s.add_development_dependency "mysql2"
 
