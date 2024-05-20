@@ -18,7 +18,6 @@ require 'database_cleaner'
 require 'rspec/retry'
 require 'rack/utils'
 require 'rails-controller-testing'
-require 'webdrivers'
 require 'capybara-screenshot/rspec'
 
 # Requires supporting ruby files with custom matchers and macros, etc,

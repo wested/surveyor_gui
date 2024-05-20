@@ -31,14 +31,13 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'uglifier', '>= 1.0.3'
   s.add_development_dependency('rspec-rails', '~> 3.0')
-  s.add_development_dependency('sprockets', '~> 3.7')
+  s.add_development_dependency('sprockets', '~> 4.0')
 
   # tests fail with capybara 3...lots of custom rspec shenanigans that result in many failing tests...failing rspec
   # customizations will need to be addressed before upgrading :(
   s.add_development_dependency('capybara')
   s.add_development_dependency('capybara-screenshot')
   s.add_development_dependency('selenium-webdriver')
-  s.add_development_dependency('webdrivers', '~> 4.0')
   s.add_development_dependency('launchy', '~> 2.4.2')
   s.add_development_dependency('puma')
   s.add_development_dependency('json_spec', '~> 1.1.1')

@@ -18,7 +18,6 @@ feature "User adds scores using browser", %q{
   scenario "user adds scores to pick one question", js: true do
     #Given I have a survey with two questions
     visit surveyor_gui.surveyforms_path
-    # page.save_screenshot(File.join(Rails.root, "tmp", "hotel.png"), :full => true)
     expect(page).to have_content("Scores")
     within "tr", text: "Scores" do
       click_link "Edit"
@@ -63,7 +62,6 @@ feature "User adds scores using browser", %q{
   scenario "user adds scores to pick any question", js: true do
     #Given I have a survey with two questions
     visit surveyor_gui.surveyforms_path
-    # page.save_screenshot(File.join(Rails.root, "tmp", "hotel.png"), :full => true)
     expect(page).to have_content("Scores")
     within "tr", text: "Scores" do
       click_link "Edit"
@@ -107,7 +105,6 @@ feature "User adds scores using browser", %q{
   scenario "user adds scores to group question", js: true do
     #Given I have a survey with two questions
     visit surveyor_gui.surveyforms_path
-    # page.save_screenshot(File.join(Rails.root, "tmp", "hotel.png"), :full => true)
     expect(page).to have_content("Scores")
     within "tr", text: "Scores" do
       click_link "Edit"
@@ -148,7 +145,6 @@ feature "User adds scores using browser", %q{
     end
     wait_for_ajax
 
-    page.save_screenshot(File.join(Rails.root, "tmp", "hotel.png"), :full => true)
     find("fieldset.questions .question_group_element", match: :first)
     sleep 1
     within "fieldset.questions .question_group_element", text: "Choose the animals you don't like" do
