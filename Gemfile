@@ -5,6 +5,7 @@ gem 'surveyor', git: 'https://github.com/wested/surveyor.git', branch: 'master'
 gem 'sprockets', '~> 4.0'
 
 group :test do
+  gem 'net-smtp'
   gem 'rails-controller-testing'
   gem 'byebug'
 end
