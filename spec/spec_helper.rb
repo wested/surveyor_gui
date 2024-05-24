@@ -7,15 +7,12 @@ rescue LoadError => e
 end
 
 require 'rspec/rails'
-#require 'rspec/autorun'
 
 require 'capybara/rails'
 require 'capybara/rspec'
-#require 'capybara/poltergeist'
 require 'factories'
 require 'json_spec'
 require 'database_cleaner'
-require 'rspec/retry'
 require 'rack/utils'
 require 'rails-controller-testing'
 require 'capybara-screenshot/rspec'
@@ -55,7 +52,9 @@ RSpec.configure do |config|
   # end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  #config.fixture_paths = [
+  #  Rails.root.join('spec/fixtures')
+  #]
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
@@ -75,10 +74,10 @@ RSpec.configure do |config|
 
   # rspec-retry
   # https://github.com/rspec/rspec-core/issues/456
-  config.verbose_retry       = true # show retry status in spec process
-  retry_count                = ENV['RSPEC_RETRY_COUNT']
-  config.default_retry_count = retry_count.try(:to_i) || 1
-  puts "RSpec retry count is #{config.default_retry_count}"
+  #config.verbose_retry       = true # show retry status in spec process
+  #retry_count                = ENV['RSPEC_RETRY_COUNT']
+  #config.default_retry_count = retry_count.try(:to_i) || 1
+  #puts "RSpec retry count is #{config.default_retry_count}"
 
   # host
   config.before :each do
