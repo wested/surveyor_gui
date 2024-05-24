@@ -26,11 +26,12 @@ Gem::Specification.new do |s|
   s.add_dependency 'sassc-rails'
   s.add_dependency 'bootstrap-sass', '~> 3.3'
   s.add_dependency 'formtastic', '>= 4.0.0'
+  s.add_dependency 'sprockets-rails'
 
   s.add_development_dependency "mysql2"
 
   s.add_development_dependency 'uglifier', '>= 1.0.3'
-  s.add_development_dependency('rspec-rails', '~> 3.0')
+  s.add_development_dependency('rspec-rails')
   s.add_development_dependency('sprockets', '~> 4.0')
 
   # tests fail with capybara 3...lots of custom rspec shenanigans that result in many failing tests...failing rspec
@@ -43,8 +44,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency('json_spec', '~> 1.1.1')
   s.add_development_dependency('factory_bot_rails')
   s.add_development_dependency('database_cleaner')
-  s.add_development_dependency('rspec-retry', "= 0.4.4")
-  s.add_development_dependency('cliver', '~> 0.3')
+  #s.add_development_dependency('rspec-retry', "= 0.4.4")
+  #s.add_development_dependency('rspec-retry')
+  #s.add_development_dependency('cliver', '~> 0.3')
   s.add_development_dependency('rails-controller-testing')
 
   #s.add_dependency 'surveyor'

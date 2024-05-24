@@ -7,9 +7,6 @@ module CapybaraHelper
     end
   end
 end
-RSpec.configure do |config|
-  config.order =  :default
-end
 describe "surveyor_gui/surveyforms/edit.html.erb" do
   include CapybaraHelper
   let(:surveyform){ FactoryBot.create(:surveyform) }
