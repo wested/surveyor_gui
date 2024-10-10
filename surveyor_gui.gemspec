@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   # s.executables = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency 'rails', '~> 6.1'
+  s.add_dependency 'rails', '~> 7.0.8'
   s.add_dependency 'jquery-rails'
   s.add_dependency 'jquery-ui-rails'
   s.add_dependency 'sassc-rails'
@@ -47,7 +47,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency('cliver', '~> 0.3')
   s.add_development_dependency('rails-controller-testing')
 
-  # s.add_dependency 'surveyor', '~> 1.4.1.pre'
+  #s.add_dependency 'surveyor'
 
   s.add_dependency 'will_paginate'
 
@@ -59,7 +59,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'lazy_high_charts'
 
   # TODO The editor fails when upgrading to the new 5.0 version.  So will need to be fixed when upgrading the whole project
-  s.add_dependency 'tinymce-rails', '= 4.8.3'
+  s.add_dependency 'tinymce-rails', '> 5.0'
   s.add_dependency 'cocoon'
   s.add_dependency 'font-awesome-rails'
 end

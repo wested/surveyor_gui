@@ -11,7 +11,6 @@ require 'rspec/rails'
 
 require 'capybara/rails'
 require 'capybara/rspec'
-#require 'capybara/poltergeist'
 require 'factories'
 require 'json_spec'
 require 'database_cleaner'
