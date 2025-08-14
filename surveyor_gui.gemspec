@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   # s.executables = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency 'rails', '~> 7.1.0'
+  s.add_dependency 'rails', '~> 7.2.0'
   s.add_dependency 'jquery-rails'
   s.add_dependency 'jquery-ui-rails'
   s.add_dependency 'sassc-rails'
@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "mysql2"
 
   s.add_development_dependency 'uglifier', '>= 1.0.3'
-  s.add_development_dependency('rspec-rails')
+  s.add_development_dependency('rspec-rails', '~> 7.0.0')
   s.add_development_dependency('sprockets', '~> 4.0')
 
   # tests fail with capybara 3...lots of custom rspec shenanigans that result in many failing tests...failing rspec
