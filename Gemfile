@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'surveyor', git: 'https://github.com/wested/surveyor.git', branch: 'rails_7_update'
+gem 'surveyor', git: 'https://github.com/wested/surveyor.git', tag: 'rails_7_2'
 
 gem 'sprockets', '~> 4.0'
 
