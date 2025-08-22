@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "mysql2"
 
   s.add_development_dependency 'uglifier', '>= 1.0.3'
-  s.add_development_dependency('rspec-rails', '~> 3.0')
+  s.add_development_dependency('rspec-rails', '>= 5.0')
   s.add_development_dependency('sprockets', '~> 4.0')
 
   # tests fail with capybara 3...lots of custom rspec shenanigans that result in many failing tests...failing rspec
@@ -43,7 +43,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency('json_spec', '~> 1.1.1')
   s.add_development_dependency('factory_bot_rails')
   s.add_development_dependency('database_cleaner')
-  s.add_development_dependency('rspec-retry', "= 0.4.4")
   s.add_development_dependency('cliver', '~> 0.3')
   s.add_development_dependency('rails-controller-testing')
 
@@ -59,7 +58,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'lazy_high_charts'
 
   # TODO The editor fails when upgrading to the new 5.0 version.  So will need to be fixed when upgrading the whole project
-  s.add_dependency 'tinymce-rails', '= 4.8.3'
+  s.add_dependency 'tinymce-rails', '>= 4.0', '< 5.0'
   s.add_dependency 'cocoon'
   s.add_dependency 'font-awesome-rails'
 end
